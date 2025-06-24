@@ -15,7 +15,9 @@ const Header: React.FC = () => {
 
         <nav className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
           <Link to="/why-it-matters">Why It Matters</Link>
-          <Link to="/contact">Contact</Link>
+          <Link to="/enroll">Enroll Now</Link>
+          <Link to="/Account">Account</Link>
+          <Link to="/Contact">Contact</Link>
 
           <div className="dropdown">
             <span
@@ -33,6 +35,7 @@ const Header: React.FC = () => {
             )}
           </div>
         </nav>
+
 
         <div
           className="mobile-toggle"
