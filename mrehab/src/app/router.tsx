@@ -4,6 +4,7 @@ import TechnologiesMobileApp from './pages/technologies-mobileapp';
 import Technologies3DPrinting from './pages/Technologies3DPrinting';
 import WhyItMatters from './pages/WhyItMatters';
 import Enroll from './pages/enroll';
+import ThankYou from './pages/thankyou';
 
 import Landing from './pages/landing';
 const AppRouter: React.FC = () => (
@@ -14,6 +15,7 @@ const AppRouter: React.FC = () => (
             <Route path="/technologies/3Dprinting" element={<Technologies3DPrinting />} />
             <Route path="/why-it-matters" element={<WhyItMatters />} />
             <Route path="/enroll" element={<Enroll />} />
+            <Route path="/thankyou" element={<ThankYou />} />
             
             {/* Add more routes as needed */}
             {/* Example: <Route path="/about" element={<About />} /> */}
