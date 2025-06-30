@@ -42,7 +42,7 @@ const Landing: React.FC = () => {
         <div className="stats">
           <div><h3>+30%</h3><p>Improvement in motor control</p></div>
           <div><h3>10x</h3><p>Cheaper than traditional rehab kits</p></div>
-          <div><h3>92%</h3><p>User satisfaction with visual progress</p></div>
+          <div><h3>98%</h3><p>User satisfaction with progress</p></div>
         </div>
       </section>
 

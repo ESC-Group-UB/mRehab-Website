@@ -63,7 +63,10 @@ export default function Enroll() {
                             <li>Free U.S. shipping</li>
                         </ul>
 
-                        <button className="enroll-button">Buy Now</button>
+                        <a href="https://buy.stripe.com/test_aFa4gyeH94Jy5rd1zZ2Nq00">
+                            <button className="enroll-button">
+                            Buy Now</button>
+                        </a>
                     </div>
                 </div>
             </div>
