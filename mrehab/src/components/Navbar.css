@@ -1,0 +1,67 @@
+@import url('../colors.css');
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 5%;
+  background-color: var(--color-white); /* solid background */
+  border-bottom: 1px solid #eee;
+  font-family: 'Segoe UI', sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.navbar-left .logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--color-main);
+  text-decoration: none;
+}
+
+.navbar-center {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.navbar-center a {
+  position: relative;
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: 500;
+  padding: 0.3rem 0;
+  transition: color 0.2s ease;
+}
+
+.navbar-center a::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -2px;
+  background-color: var(--color-main);
+  transition: width 0.3s ease-in-out;
+}
+
+.navbar-center a:hover::after {
+  width: 100%;
+}
+
+.navbar-right .buy-button {
+  background-color: var(--color-main);
+  color: var(--color-white);
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.navbar-right .buy-button:hover {
+  background-color: var(--color-main-hover);
+}
