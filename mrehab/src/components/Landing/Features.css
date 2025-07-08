@@ -1,0 +1,79 @@
+@import url('../../colors.css');
+
+.features-section {
+  background-color: var(--color-white);
+  padding: 4rem 5%;
+  text-align: center;
+  color: var(--color-text-dark);
+}
+
+.features-header .tagline {
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.features-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.features-subtitle {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.features-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  justify-items: center;
+}
+
+.feature-card {
+  border: 1px solid var(--color-gray-light);
+  padding: 2rem;
+  text-align: left;
+  background-color: var(--color-white);
+  max-width: 360px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.feature-icon-image {
+  width: 5rem;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.feature-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.feature-icon {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.feature-heading {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.feature-description {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.feature-link {
+  font-weight: 500;
+  color: var(--color-main);
+  text-decoration: none;
+}
+
+.feature-link .arrow {
+  margin-left: 4px;
+  font-size: 1rem;
+}
