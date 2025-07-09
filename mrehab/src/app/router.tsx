@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import TechnologiesMobileApp from './pages/technologies-mobileapp';
 import Technologies3DPrinting from './pages/Technologies3DPrinting';
 import WhyItMatters from './pages/WhyItMatters';
-import Enroll from './pages/enroll';
+import { BuyNow } from './pages/buyNow';
 import ThankYou from './pages/thankyou';
 
 import Landing from './pages/landing';
@@ -14,7 +14,7 @@ const AppRouter: React.FC = () => (
             <Route path="/technologies/mobileapp" element={<TechnologiesMobileApp />} />
             <Route path="/technologies/3Dprinting" element={<Technologies3DPrinting />} />
             <Route path="/why-it-matters" element={<WhyItMatters />} />
-            <Route path="/enroll" element={<Enroll />} />
+            <Route path="/enroll" element={<BuyNow />} />
             <Route path="/thankyou" element={<ThankYou />} />
             
             {/* Add more routes as needed */}
