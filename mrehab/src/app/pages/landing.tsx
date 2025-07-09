@@ -1,6 +1,5 @@
 import React from 'react';
 import './landing.css';
-import Header from '../../components/Header';
 import { Link } from 'react-router-dom';
 import {Navbar} from '../../components/Navbar';
 import { Hero1 } from '../../components/Landing/Hero1';
