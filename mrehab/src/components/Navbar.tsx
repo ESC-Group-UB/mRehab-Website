@@ -14,7 +14,9 @@ export function Navbar() {
         <a href="#">For Providers</a>
       </nav>
       <div className="navbar-right">
-        <button className="buy-button">Buy Now</button>
+        <a href="/enroll">
+          <button className="buy-button">Buy Now</button>
+        </a>
       </div>
     </header>
   );
