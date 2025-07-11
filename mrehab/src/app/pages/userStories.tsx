@@ -1,7 +1,7 @@
 import React from "react";
 import { Navbar } from "../../components/Navbar";
 
-export function BuyNow() {
+export function UserStories() {
   return (
     <>
     <Navbar/>
