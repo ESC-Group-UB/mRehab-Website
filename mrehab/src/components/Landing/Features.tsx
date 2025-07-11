@@ -21,7 +21,7 @@ export function Features() {
             <p className="feature-description">
               Your personal recovery coach real-time feedback and smart adjustments that keep you on track.
             </p>
-            <a href="#" className="feature-link">
+            <a href="/how-it-works" className="feature-link">
               <span className="arrow">→</span>
             </a>
         </div>
@@ -35,7 +35,7 @@ export function Features() {
             <p className="feature-description">
               Custom tools built just for your rehab designed to fit your needs and improve results.
             </p>
-            <a href="#" className="feature-link">
+            <a href="/how-it-works" className="feature-link">
               <span className="arrow">→</span>
             </a>
         </div>
@@ -49,7 +49,7 @@ export function Features() {
             <p className="feature-description">
               Stay motivated by seeing your progress in real time, anytime, from your phone.
             </p>
-            <a href="#" className="feature-link">
+            <a href="/how-it-works" className="feature-link">
               <span className="arrow">→</span>
             </a>
         </div>

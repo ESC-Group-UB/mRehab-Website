@@ -5,13 +5,13 @@ export function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar-left">
-        <a href="#" className="logo">Logo</a>
+        <a href="/" className="logo">Logo</a>
       </div>
       <nav className="navbar-center">
-        <a href="#">Start Recovery</a>
-        <a href="#">How It Works</a>
-        <a href="#">User Stories</a>
-        <a href="#">For Providers</a>
+        <a href="/start">Start Recovery</a>
+        <a href="/how-it-works">How It Works</a>
+        <a href="/user-stories">User Stories</a>
+        <a href="providers">For Providers</a>
       </nav>
       <div className="navbar-right">
         <a href="/enroll">
