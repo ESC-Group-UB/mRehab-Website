@@ -4,6 +4,11 @@ import TechnologiesMobileApp from './pages/technologies-mobileapp';
 import Technologies3DPrinting from './pages/Technologies3DPrinting';
 import WhyItMatters from './pages/WhyItMatters';
 import { BuyNow } from './pages/buyNow';
+import { ForProviders } from './pages/forProdivders';
+import { HowItWorks } from './pages/HowItWorks';
+import { StartNow } from './pages/startNow';
+import { UserStories } from './pages/userStories';
+
 import ThankYou from './pages/thankyou';
 
 import Landing from './pages/landing';
@@ -14,13 +19,13 @@ const AppRouter: React.FC = () => (
             <Route path="/technologies/mobileapp" element={<TechnologiesMobileApp />} />
             <Route path="/technologies/3Dprinting" element={<Technologies3DPrinting />} />
             <Route path="/why-it-matters" element={<WhyItMatters />} />
-            <Route path="/enroll" element={<BuyNow />} />
             <Route path="/thankyou" element={<ThankYou />} />
-            
+            <Route path="/buy-now" element={<BuyNow />} />
+            <Route path="/for-providers" element={<ForProviders />} />  
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/start" element={<StartNow />} />
+            <Route path="/user-stories" element={<UserStories />} />
             {/* Add more routes as needed */}
-            {/* Example: <Route path="/about" element={<About />} /> */}
-            {/* Add more routes as needed */}
-
         </Routes>
     </Router>
 );
