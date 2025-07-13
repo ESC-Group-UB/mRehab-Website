@@ -1,12 +1,16 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+// Load environment variables from .env file
+dotenv.config();
 import Stripe from 'stripe';
 import bodyParser from 'body-parser';
 import {parseCheckoutWebhookData, handleCustomerEmail, CheckoutEventData, handleInternalCheckoutEmail} from './scripts/checkoutwebhook';
 import filterCheckoutEvent from './scripts/filterwebhooks';
+import {listFilesInBucket, getFileContents} from './AWS/awsFunctions';
+import { get } from 'http';
 
-dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -43,7 +47,20 @@ app.get('/api/hello', (_req, res) => {
   res.send({ message: 'Hello from backend' });
 });
 
+app.get('/api/aws', (req: Request, res: Response) => {
+  // listFilesInBucket();
+  getFileContents("activity/Heamchand_Horizontal Mug_20250626_0952_JSON.json")
+
+  res.send({
+    accessKeyId: process.env.ACCESSKEYID,
+    secretAccessKey: process.env.SECRETACCESSKEY,
+    region: "us-east-2",
+    s3Bucket: process.env.S3BUCKET,
+  });
+});
+
 // ✅ Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
