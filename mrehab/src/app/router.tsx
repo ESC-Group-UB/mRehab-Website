@@ -8,6 +8,7 @@ import { ForProviders } from './pages/forProdivders';
 import { HowItWorks } from './pages/HowItWorks';
 import { StartNow } from './pages/startNow';
 import { UserStories } from './pages/userStories';
+import Dashboard from './pages/dashboard'; // Importing the Dashboard component
 
 import ThankYou from './pages/thankyou';
 
@@ -25,6 +26,7 @@ const AppRouter: React.FC = () => (
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/start" element={<StartNow />} />
             <Route path="/user-stories" element={<UserStories />} />
+            <Route path="/dashboard" element={<Dashboard />} /> {/* Adding the Dashboard route */}
             {/* Add more routes as needed */}
         </Routes>
     </Router>

@@ -19,4 +19,6 @@ AWS.config.update({
   region: awsConfig.region,
 });
 
+export const dynamoDB = new AWS.DynamoDB.DocumentClient();
+
 export const S3 = new AWS.S3();
