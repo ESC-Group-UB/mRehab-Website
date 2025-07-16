@@ -35,8 +35,6 @@ router.post("/login", async (req, res) => {
     const auth = await loginUser(email, password);
     console.log("Login successful:");
     res.json(auth.AuthenticationResult); // contains ID token, Access token, Refresh token
-    //redicrect to dashboard
-    res.redirect(`${baseURL}dashboard`);
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     res.status(400).json({ error: errorMessage });
