@@ -18,7 +18,7 @@ router.get("/uploadtest", async (req: Request, res: Response) => {
     Username: "rohin113.rk@gmail.com",
     Timestamp: isoTimestamp,
     ExerciseName: "Shoulder Raise",
-    Accuracy: 382.7,
+    Accuracy: 282.7,
     Reps: 5,
     Duration: 17.3,
     Hand: "Left",
@@ -45,7 +45,7 @@ router.get("/uploadtest", async (req: Request, res: Response) => {
     res.send({ message: "✅ Test entry uploaded successfully", entry: testEntry });
   } catch (err) {
     console.error("❌ Error uploading test entry:", err);
-    res.status(500).send({ error: "Failed to upload test entry" });
+    res.status(500).send({ error: "Failed to upload test entry", details: err instanceof Error ? err.message : String(err) });
   }
 });
 
