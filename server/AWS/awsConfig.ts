@@ -1,17 +1,18 @@
-// mRehabReactNative/src/config/awsConfig.js
-// IMPORTANT: Replace with your actual keys, but ideally, load these from
-// environment variables or a secure configuration service for production builds.
-// DO NOT COMMIT ACTUAL KEYS TO VERSION CONTROL if this file itself is committed.
-// Consider adding this file to .gitignore if you put real keys here temporarily.
-export const awsConfig = {
-  accessKeyId: process.env.ACCESSKEYID as string, // Replace with your actual Access Key ID
-  secretAccessKey: process.env.SECRETACCESSKEY as string, // Replace with your actual Secret Access Key
-  region: "us-east-2", // Your AWS region
-  s3Bucket: process.env.S3BUCKET as string, // Your S3 bucket name
-};
+// mRehabReactNative/src/config/awsConfig.ts
 
-// It's better to initialize AWS SDK here once
-import AWS from "aws-sdk"; // Use the standard aws-sdk import
+import AWS from "aws-sdk";
+
+export const awsConfig = {
+  accessKeyId: process.env.ACCESSKEYID as string,
+  secretAccessKey: process.env.SECRETACCESSKEY as string,
+  region: "us-east-2",
+  s3Bucket: process.env.S3BUCKET as string,
+
+  // 🔐 Cognito-specific config
+  userPoolId: process.env.COGNITO_USER_POOL_ID as string,
+  clientId: process.env.COGNITO_CLIENT_ID as string,
+  identityPoolId: process.env.COGNITO_POOL_ID as string, // Optional if using Identity Pools
+};
 
 AWS.config.update({
   accessKeyId: awsConfig.accessKeyId,
@@ -20,5 +21,7 @@ AWS.config.update({
 });
 
 export const dynamoDB = new AWS.DynamoDB.DocumentClient();
-
 export const S3 = new AWS.S3();
+
+// 🧠 Add Cognito Identity Service Provider
+export const CognitoISP = new AWS.CognitoIdentityServiceProvider();

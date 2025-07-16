@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 
 async function createTestAccount() {
   const testAccount = await nodemailer.createTestAccount();
-  console.log("Test Account:", testAccount);
+  // console.log("Test Account:", testAccount);
 }
 
 createTestAccount();

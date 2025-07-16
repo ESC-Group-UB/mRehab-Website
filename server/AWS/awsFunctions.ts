@@ -8,7 +8,6 @@ export async function listFilesInBucket(prefix = "") {
     };
 
     const data = await S3.listObjectsV2(params).promise();
-    console.log("✅ Files:", data.Contents);
     return data.Contents;
   } catch (err) {
     console.error("❌ Error listing files:", err);

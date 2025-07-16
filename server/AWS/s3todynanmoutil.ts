@@ -52,7 +52,6 @@ export async function migrateS3ToDynamoDB(): Promise<void> {
         };
 
         await uploadSessionToDynamoDB(entry);
-        console.log(`✅ Migrated: ${key}`);
       } catch (err) {
         console.error(`❌ Failed to migrate ${file.Key}:`, err);
       }
