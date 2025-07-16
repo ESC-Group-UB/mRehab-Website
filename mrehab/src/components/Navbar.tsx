@@ -17,6 +17,11 @@ export function Navbar() {
         <a href="/buy-now">
           <button className="buy-button">Buy Now</button>
         </a>
+        <a
+          href="/login"
+        >
+          <button className="buy-button">Login with Cognito</button>
+        </a>
       </div>
     </header>
   );

@@ -1,49 +1,32 @@
-import express, { Request, Response } from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import Stripe from 'stripe';
-import bodyParser from 'body-parser';
-import {parseCheckoutWebhookData, handleCustomerEmail, CheckoutEventData, handleInternalCheckoutEmail} from './scripts/checkoutwebhook';
-import filterCheckoutEvent from './scripts/filterwebhooks';
+// server/index.ts
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
+import authRoutes from "./routes/auth";
+import awsRoutes from "./routes/database";
+
 const app = express();
 const PORT = process.env.PORT || 5000;
+export default app;
 
-// ✅ Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-05-28.basil',
-});
-
-// ✅ Webhook secret (from Stripe CLI)
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
-
-// ✅ Use CORS normally
+// Configure middlewares
+app.use(express.json()); // ✅ This parses incoming JSON requests
 app.use(cors());
 
-// 👇 Mount the raw body parser *before* any middleware that consumes the body (like express.json)
-app.post('/api/stripe', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
-  const checkoutSession = filterCheckoutEvent(req, stripe, webhookSecret);
+// Mount routes
+app.use("/api/auth", authRoutes);
+app.use("/api/aws", awsRoutes);
 
-  if (checkoutSession) {
-    console.log('✅ Checkout complete! Session:', checkoutSession);
-    const checkoutEventData  = await parseCheckoutWebhookData(checkoutSession);
-    handleCustomerEmail(checkoutEventData);
-    // handleInternalCheckoutEmail(checkoutEventData);
-    // You can pass to a handler here if needed:
-    // handleCheckoutCompletion(checkoutSession);
-  }
-
-  res.sendStatus(200);
+// Health check
+app.get("/api/hello", (_req, res) => {
+  res.send({ message: "Hello from backend" });
 });
 
-// ✅ Optional: Health check
-app.get('/api/hello', (_req, res) => {
-  res.send({ message: 'Hello from backend' });
-});
-
-// ✅ Start server
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

@@ -1,5 +1,13 @@
 const nodemailer = require("nodemailer");
 
+
+async function createTestAccount() {
+  const testAccount = await nodemailer.createTestAccount();
+  // console.log("Test Account:", testAccount);
+}
+
+createTestAccount();
+
 // Create a test account or replace with real credentials.
 const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
@@ -29,4 +37,3 @@ export async function sendEmail(
   console.log('📬 Preview your email at:', nodemailer.getTestMessageUrl(info));
 }
 
-sendEmail('Jasen Bednar', 'doesntmatter@gmail.com', 'Test Email', 'This is a test email from mRehab server utilities.', '<b>This is a test email from mRehab server utilities.</b>');

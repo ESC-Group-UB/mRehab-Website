@@ -15,11 +15,9 @@ export function filterCheckoutEvent(
     if (event.type === 'checkout.session.completed') {
       return event.data.object as Stripe.Checkout.Session;
     } else {
-      console.log(`ℹ️ Skipped non-checkout event: ${event.type}`);
       return null;
     }
   } catch (err: any) {
-    console.error('❌ Webhook signature verification failed:', err.message);
     return null;
   }
 }

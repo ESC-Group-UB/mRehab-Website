@@ -43,7 +43,6 @@ const handleCustomerEmail = async (CheckoutEventData: CheckoutEventData) => {
 
     try {
         await sendEmail("mRehab Team", customerEmail, subject, text, html);
-        console.log(`✅ Email sent to ${customerEmail}`);
     } catch (error) {
         console.error("❌ Failed to send email:", error);
     }
@@ -96,7 +95,6 @@ const handleInternalCheckoutEmail =  async (CheckoutEventData: CheckoutEventData
     `;
     try {
         await sendEmail("mRehab Order fullfilment", "mRehabTeam@gmail.com", subject, text, html);
-        console.log(`✅ Email sent to mRehabTeam@gmail.com`);
     } catch (error) {
         console.error("❌ Failed to send email:", error);
     }
