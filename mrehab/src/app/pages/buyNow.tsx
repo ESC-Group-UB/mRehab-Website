@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { Navbar } from "../../components/Navbar";
+import ImageGallery from "../../components/BuyNow/ImageGallery";
+import ProductInfo from "../../components/BuyNow/ProductInfo";
+import styles from "./BuyNow.module.css";
+
+const images = [
+  "/logo512.png",
+  "/logo512.png",
+  "/logo512.png",
+  "/logo512.png",
+];
 
 export function BuyNow() {
+  const [selectedImage, setSelectedImage] = useState(images[0]);
+
   return (
     <>
-    <Navbar/>
+      <Navbar />
+      <div className={styles.buyContainer}>
+        <ImageGallery
+          images={images}
+          selectedImage={selectedImage}
+          setSelectedImage={setSelectedImage}
+        />
+        <ProductInfo />
+      </div>
     </>
   );
 }

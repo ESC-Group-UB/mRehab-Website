@@ -1,0 +1,179 @@
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 5rem 2rem;
+  background-color: #f9f9f9;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #111;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  color: #444;
+  max-width: 720px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Step Grid Section */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+  padding: 4rem 2rem;
+  background-color: #fff;
+}
+
+/* Why It Works Section */
+.whyItWorks {
+  background-color: #fcfcfc;
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.whyItWorks h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.whySubtitle {
+  font-size: 1.15rem;
+  color: #555;
+  max-width: 680px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+}
+
+.benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 500px;
+  color: #333;
+  font-size: 1.05rem;
+  line-height: 2;
+  text-align: left;
+}
+
+.benefits li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.benefits li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  color: green;
+  font-weight: bold;
+}
+
+/* Coach Section */
+.coachSection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background: #f8f8f8;
+  gap: 3rem;
+}
+
+.coachText {
+  flex: 1;
+  max-width: 500px;
+}
+
+.coachText h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.coachText p {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.coachText ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.coachText li {
+  font-size: 1rem;
+  line-height: 1.8;
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.coachText li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-main, #e60583);
+  font-weight: bold;
+}
+
+.coachImage {
+  flex: 1;
+  max-width: 400px;
+}
+
+.coachImage img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Final CTA Section */
+.cta {
+  text-align: center;
+  background-color: #f1f1f1;
+  padding: 4rem 2rem;
+}
+
+.cta h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 1rem;
+}
+
+.ctaSubtitle {
+  font-size: 1.15rem;
+  color: #555;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.7;
+}
+
+.ctaButton {
+  background-color: #000;
+  color: #fff;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.ctaButton:hover {
+  background-color: #333;
+}
