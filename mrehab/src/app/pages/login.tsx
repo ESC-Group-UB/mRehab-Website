@@ -5,7 +5,7 @@ import { Navbar } from "../../components/Navbar";
 
 export default function Login() {
 
-  const baseURL = process.env.REACT_APP_BACKEND_API_URL;
+  const baseURL = process.env.REACT_APP_BACKEND_API_URL; 
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

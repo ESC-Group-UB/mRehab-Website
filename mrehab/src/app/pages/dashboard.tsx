@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AccuracyGraph from "../../components/AccuracyGraph";
+import {Navbar} from "../../components/Navbar"
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;;
 
@@ -54,6 +55,8 @@ export default function Dashboard() {
   }, [username, filterHand, filterStartDate, filterEndDate]);
 
   return (
+    <>
+    <Navbar/>
     <div style={{ padding: "30px", maxWidth: "1000px", margin: "0 auto" }}>
       <h1 style={{ fontSize: "2rem", marginBottom: "10px" }}>📊 mRehab Dashboard</h1>
       <p>Welcome {name}</p>
@@ -118,5 +121,6 @@ export default function Dashboard() {
         <p>No entries found.</p>
       )}
     </div>
+    </>
   );
 }
