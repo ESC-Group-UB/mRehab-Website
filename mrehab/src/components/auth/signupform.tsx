@@ -33,7 +33,9 @@ const SignupButton: React.FC = () => {
       <input name="givenName" placeholder="First Name" onChange={handleChange} />
       <input name="familyName" placeholder="Last Name" onChange={handleChange} />
       <input name="gender" placeholder="Gender" onChange={handleChange} />
-      <input name="address" placeholder="Address" onChange={handleChange} />
+      <input name="address" placeholder="Address" onChange={handleChange} /> 
+      {/* need to split this into street adress, citty, state and zip code */}
+      
       <button onClick={handleSignup}>Sign Up</button>
     </div>
   );

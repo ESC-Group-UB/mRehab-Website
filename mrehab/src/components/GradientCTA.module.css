@@ -1,0 +1,41 @@
+.container {
+  width: 100%;
+  color: white;
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, var(--color-main), #e60583);
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 3rem; /* was 2.5rem */
+  font-weight: 800;
+  margin-bottom: 1.25rem;
+  line-height: 1.2;
+}
+
+.description {
+  font-size: 1.25rem; /* was 1.14rem */
+  margin-bottom: 2rem;
+  line-height: 1.7;
+  max-width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.button {
+  display: inline-block;
+  background-color: white;
+  color: var(--color-main);
+  font-weight: 600;
+  padding: 1rem 2rem; /* was 0.75rem 1.5rem */
+  font-size: 1.05rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.button:hover {
+  opacity: 0.9;
+}

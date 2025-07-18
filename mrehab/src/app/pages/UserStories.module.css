@@ -1,0 +1,32 @@
+.hero {
+  text-align: center;
+  padding: 5rem 2rem 3rem 2rem;
+  background-color: #f9f9f9;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #111;
+}
+
+.heroSubtitle {
+  font-size: 1.2rem;
+  color: #555;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.testimonialBlock {
+  padding: 4rem 2rem;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.testimonialBlock h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #222;
+}
