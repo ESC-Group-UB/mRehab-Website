@@ -4,6 +4,8 @@ import styles from "./login.module.css";
 import { Navbar } from "../../components/Navbar";
 
 export default function Login() {
+
+  const baseURL = process.env.REACT_APP_BACKEND_API_URL;
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,12 +25,11 @@ export default function Login() {
     setError("");
 
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch(`${baseURL}api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
       navigate("/dashboard");

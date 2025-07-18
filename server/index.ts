@@ -23,6 +23,7 @@ app.use("/api/aws", awsRoutes);
 
 // Health check
 app.get("/api/hello", (_req, res) => {
+  console.log("hello called");
   res.send({ message: "Hello from backend" });
 });
 
