@@ -1,21 +1,35 @@
-# Use official Node.js image
-FROM node:18
+# ---------- Build Stage ----------
+FROM node:18-alpine AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy dependency files and install
+# Install only what's needed to build
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
-# Copy the rest of the source code
+# Copy all source code
 COPY . .
 
-# Build TypeScript
+# Compile TypeScript to JavaScript
 RUN npm run build
 
-# Expose the backend port
+# ---------- Runtime Stage ----------
+FROM node:18-alpine
+
+# Set memory cap (in MB)
+ENV NODE_OPTIONS="--max-old-space-size=512"
+
+WORKDIR /app
+
+# Install only production dependencies
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+# Copy the compiled output from the build stage
+COPY --from=builder /app/dist ./dist
+
+# Expose app port
 EXPOSE 5000
 
-# Run the compiled JavaScript file
+# Start app
 CMD ["node", "dist/index.js"]
