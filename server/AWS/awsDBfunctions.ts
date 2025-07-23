@@ -42,48 +42,7 @@ export async function uploadSessionToDynamoDB(
   }
 }
 
-export async function uploadUserToDynamoDB(
-  username: string,
-): Promise<void> {
-  const entry = {
-    Username: username,
-    AllowedToView: [],
-    SharingWith: [],
-  };
-  try {
-    const params = {
-      TableName: "AuthorizedUsers",
-      Item: entry,
-    };
 
-    await dynamoDB.put(params).promise();
-  } catch (err) {
-    console.error("❌ Failed to upload session:", err);
-    throw err;
-  }
-}
-
-export async function addAuthorizedUser(
-  username: string,
-  authorizedUser: string
-): Promise<void> {
-  const params = {
-    TableName: "AuthorizedUsers",
-    Key: { Username: username },
-    UpdateExpression: "SET AllowedToView = list_append(if_not_exists(AllowedToView, :emptyList), :newUser)",
-    ExpressionAttributeValues: {
-      ":newUser": [authorizedUser],
-      ":emptyList": [],
-    },
-  }
-  await dynamoDB.update(params).promise().then(() => {
-    console.log(`✅ Added ${authorizedUser} to ${username}'s allowed users`);
-  }).catch((err) => {
-    console.error("❌ Failed to add authorized user:", err);
-    throw err;
-
-  });
-}
   
 
 

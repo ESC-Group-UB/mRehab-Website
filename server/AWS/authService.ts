@@ -1,7 +1,14 @@
 import { CognitoISP } from "./awsConfig";
 import { awsConfig } from "./awsConfig";
 import crypto from "crypto";
-import { uploadUserToDynamoDB } from "./awsDBfunctions";
+import { uploadUserToDynamoDB } from "./AuthorisedUsersFunctions";
+import dotenv from "dotenv";
+dotenv.config();
+
+
+
+const UserPoolId = process.env.COGNITO_POOL_ID;
+
 
 // 🔐 Generate SecretHash for Cognito if client secret is enabled
 function generateSecretHash(username: string, clientId: string, clientSecret: string): string {
@@ -75,4 +82,17 @@ export async function loginUser(email: string, password: string) {
   };
 
   return CognitoISP.initiateAuth(params).promise();
+}
+
+// check if vaild email
+export async function checkIfValidEmail(email: string) {
+  console.log(UserPoolId)
+  const params = {
+    UserPoolId:  UserPoolId as string,
+    Filter: `email = "${email}"`,
+  };
+  console.log(params)
+
+  const response = await CognitoISP.listUsers(params).promise();
+  return response.Users && response.Users.length > 0;
 }
