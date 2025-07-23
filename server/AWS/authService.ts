@@ -1,6 +1,7 @@
 import { CognitoISP } from "./awsConfig";
 import { awsConfig } from "./awsConfig";
 import crypto from "crypto";
+import { uploadUserToDynamoDB } from "./awsDBfunctions";
 
 // 🔐 Generate SecretHash for Cognito if client secret is enabled
 function generateSecretHash(username: string, clientId: string, clientSecret: string): string {
@@ -32,6 +33,8 @@ export async function signUpUser(email: string, password: string, givenName: str
     ],
   };
 
+  // add user to the DynamoDB AuthorizedUsers table
+  await uploadUserToDynamoDB(email);
   return CognitoISP.signUp(params).promise();
 }
 

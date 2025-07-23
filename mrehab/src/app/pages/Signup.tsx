@@ -39,7 +39,8 @@ const Signup: React.FC = () => {
           email: formData.email,
           code: verificationCode
         });
-        console.log("✅ Signup successful:", response.data);
+          window.location.href = `${home}login`;
+          console.log("✅ Signup successful:", response.data);
     } catch (err: any) {
       console.error("❌ Signup failed:", err.response?.data || err.message);
       setError(err.response?.data?.message || "Signup failed.");
@@ -57,7 +58,6 @@ const Signup: React.FC = () => {
         address: `${formData.street} ${formData.city} ${formData.state} ${formData.zip}`
       });
       console.log("✅ Signup successful:", response.data);
-      window.location.href = `${home}login`;
       setStep("verify");
     } catch (err: any) {
       console.error("❌ Signup failed:", err.response?.data || err.message);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AccuracyGraph from "../../components/AccuracyGraph";
 import {Navbar} from "../../components/Navbar"
+import AddViewer from "../../components/DashBoard/addViewer";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;;
 
@@ -15,6 +16,7 @@ export default function Dashboard() {
 
   // Get user info from ID token
   useEffect(() => {
+    console.log("🔍 Fetching user info from ID token");
     // const token = localStorage.getItem("accessToken");
     const idToken = localStorage.getItem("idToken");
     if (idToken) {
@@ -120,6 +122,7 @@ export default function Dashboard() {
       ) : (
         <p>No entries found.</p>
       )}
+      <AddViewer/>
     </div>
     </>
   );
