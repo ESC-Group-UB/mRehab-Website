@@ -1,4 +1,5 @@
 import { dynamoDB } from "./awsConfig";
+import {checkIfValidEmail} from "./authService";
 
 
 export async function uploadUserToDynamoDB(
@@ -21,12 +22,77 @@ export async function uploadUserToDynamoDB(
     throw err;
   }
 }
+// need to check if the emails are valid
+export async function AddingAuthorizedUserHandler(
+    username: string, 
+    authorizedUser: string
+): Promise<{message: string}> {
 
+    if (username === authorizedUser) {
+        return {"message": "❌ You cannot add yourself as an authorized user"};
+    }
+
+
+    var result = await checkIfValidEmail(authorizedUser)
+    if (!result) {
+        console.log(`❌ ${authorizedUser} is not a valid email`);
+        return {"message": `❌ ${authorizedUser} is not a valid email`};
+    }
+    var isAuth = await checkIfUserIsAuthorized(username, authorizedUser);
+    if (isAuth){
+        console.log(`✅ ${authorizedUser} is already authorized for ${username}`);
+        return {"message": `✅ ${authorizedUser} is already authorized for ${username}`};
+    }
+    var result = await addAuthorizedUser(username, authorizedUser);
+    if (!result) {
+        console.log(`❌ Failed to add ${authorizedUser} to ${username}'s allowed users`);
+        return {"message": `❌ Failed to add ${authorizedUser} to ${username}'s allowed users`};
+
+    }
+    var result2 = await addUserToYourAllowedToView(username, authorizedUser);
+    if (!result2) {
+        console.log(`❌ Failed to add ${username} to ${authorizedUser}'s allowed to view users`);
+        return {"message": `❌ Failed to add ${username} to ${authorizedUser}'s allowed to view users`};
+    }
+    console.log(`✅ Successfully added ${authorizedUser} to ${username}'s allowed users and ${username} to ${authorizedUser}'s allowed to view users`);
+    return {"message": `✅ Successfully added ${authorizedUser} to ${username}'s allowed users and ${username} to ${authorizedUser}'s allowed to view users`};
+    
+    
+}
+
+
+// workflow of adding an autorized user,
+// already check if auth user is a valid user
+export async function checkIfUserIsAuthorized(
+    username: string, 
+    authorizedUser: string
+): Promise<boolean> {
+  const params = {
+    TableName: "AuthorizedUsers",
+    Key: { Username: username },
+    ProjectionExpression: "SharingWith",
+  };
+
+  try {
+    const result = await dynamoDB.get(params).promise();
+    const sharingWith = result.Item?.SharingWith || [];
+    return sharingWith.includes(authorizedUser);
+  } catch (err) {
+    console.error("❌ Failed to check if user is authorized:", err);
+    throw err;
+  }
+}
+
+
+// check to see if user is already authorized
+// if not, add to the authorized users table
+
+// next need to add the user to the allowed to view list of the user
 
 export async function addAuthorizedUser(
   username: string,
   authorizedUser: string
-): Promise<void> {
+): Promise<boolean> {
   const params = {
     TableName: "AuthorizedUsers",
     Key: { Username: username },
@@ -35,20 +101,21 @@ export async function addAuthorizedUser(
       ":newUser": [authorizedUser],
       ":emptyList": [],
     },
-  }
-  await dynamoDB.update(params).promise().then(() => {
+  };
+  try {
+    await dynamoDB.update(params).promise();
     console.log(`✅ Added ${authorizedUser} to ${username}'s allowed users`);
-  }).catch((err) => {
+    return true;
+  } catch (err) {
     console.error("❌ Failed to add authorized user:", err);
-    throw err;
-
-  });
+    return false;
+  }
 }
 
 export async function addUserToYourAllowedToView(
   username: string,
   authorizedUser: string
-): Promise<void> {
+): Promise<boolean> {
   const params = {
     TableName: "AuthorizedUsers",
     Key: { Username: authorizedUser },
@@ -57,11 +124,13 @@ export async function addUserToYourAllowedToView(
       ":newUser": [username],
       ":emptyList": [],
     },
-  }
-  await dynamoDB.update(params).promise().then(() => {
+  };
+  try {
+    await dynamoDB.update(params).promise();
     console.log(`✅ Added ${username} to ${authorizedUser}'s allowed to view users`);
-  }).catch((err) => {
+    return true;
+  } catch (err) {
     console.error("❌ Failed to add user to allowed to view:", err);
-    throw err;
-  });
+    return false;
+  }
 }

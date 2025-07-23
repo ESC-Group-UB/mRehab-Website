@@ -85,7 +85,7 @@ export async function loginUser(email: string, password: string) {
 }
 
 // check if vaild email
-export async function checkIfValidEmail(email: string) {
+export async function checkIfValidEmail(email: string): Promise<boolean> {
   console.log(UserPoolId)
   const params = {
     UserPoolId:  UserPoolId as string,
@@ -94,5 +94,5 @@ export async function checkIfValidEmail(email: string) {
   console.log(params)
 
   const response = await CognitoISP.listUsers(params).promise();
-  return response.Users && response.Users.length > 0;
+  return !!(response.Users && response.Users.length > 0);
 }

@@ -42,21 +42,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/checkEmail", async (req, res) => {
-  const { email } = req.query;
-  console.log("Checking email:", email);
-  checkIfValidEmail(email as string)
-    .then((isValid) => {
-      res.json({ isValid });
-    })
-    .catch((err) => {
-      console.error("Error checking email:", err);
-      res.status(500).json({ error: "Failed to check email validity." });
-    });
-});
-
-
-
 router.get("/status", (req, res) => {
   res.json({ status: "User authentication status endpoint" });
 });

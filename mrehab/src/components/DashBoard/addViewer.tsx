@@ -7,18 +7,6 @@ export default function AddViewer() {
 
   const [viewerEmail, setViewerEmail] = useState("");
 
-  const checkEmail = async (email: string): Promise<boolean> => {
-    try {
-      const response = await axios.get(`${baseURL}api/auth/checkEmail`, {
-        params: { email },
-      });
-      console.log("Email validity response:", response.data);
-      return response.data.isValid;
-    } catch (error) {
-      console.error("Error checking email validity:", error);
-      return false;
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,12 +19,6 @@ export default function AddViewer() {
 
     const decoded = JSON.parse(atob(idToken.split(".")[1]));
     const currentUserEmail = decoded.email;
-
-    const isValid = await checkEmail(viewerEmail);
-    if (!isValid) {
-      console.error("Invalid email address");
-      return;
-    }
 
     try {
       const response = await axios.post(`${baseURL}${api}`, {
