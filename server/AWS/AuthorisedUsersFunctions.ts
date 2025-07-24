@@ -22,7 +22,6 @@ export async function uploadUserToDynamoDB(
     throw err;
   }
 }
-// need to check if the emails are valid
 export async function AddingAuthorizedUserHandler(
     username: string, 
     authorizedUser: string
@@ -31,8 +30,6 @@ export async function AddingAuthorizedUserHandler(
     if (username === authorizedUser) {
         return {"message": "❌ You cannot add yourself as an authorized user"};
     }
-
-
     var result = await checkIfValidEmail(authorizedUser)
     if (!result) {
         console.log(`❌ ${authorizedUser} is not a valid email`);
@@ -134,3 +131,24 @@ export async function addUserToYourAllowedToView(
     return false;
   }
 }
+
+
+// function to get all people a user can view
+export async function getAllowedToViewUsers(
+  username: string
+):Promise<string[]> {
+  const params = {
+    TableName: "AuthorizedUsers",
+    Key: { Username: username },
+    ProjectionExpression: "AllowedToView",
+  };
+
+  try {
+    const result = await dynamoDB.get(params).promise();
+    return result.Item?.AllowedToView || [];
+  } catch (err) {
+    console.error("❌ Failed to get allowed to view users:", err);
+    throw err;
+  }
+}
+

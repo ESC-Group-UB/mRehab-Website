@@ -1,7 +1,18 @@
-import React from "react";
+import React, { use } from "react";
 import "./Navbar.css";
+import { useEffect, useState } from "react";
 
 export function Navbar() {
+
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const idToken = localStorage.getItem("idToken");
+    if (idToken) {
+      setLoggedIn(true);
+    }
+  }, []);
+
   return (
     <header className="navbar">
       <div className="navbar-left">
@@ -16,7 +27,11 @@ export function Navbar() {
       </nav>
 
       <div className="navbar-right">
-        <a href="/login" className="login-button">Login</a>
+        {loggedIn ? (
+          <a href="/dashboard" className="login-button">Dashboard</a>
+        ) : (
+          <a href="/login" className="login-button">Login</a>
+        )}
       </div>
     </header>
   );

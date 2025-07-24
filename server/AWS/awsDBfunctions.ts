@@ -65,11 +65,12 @@ export function getEntriesByUsername(
 
 export async function getFilteredEntries(params: {
   username: string;
+  exerciseName?: string;
   hand?: string;
   start?: string;
   end?: string;
 }): Promise<ActivitySessionsEntry[]> {
-  const { username, hand, start, end } = params;
+  const { username, exerciseName, hand, start, end } = params;
 
   const queryInput: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName: "ActivitySessions",
@@ -83,9 +84,15 @@ export async function getFilteredEntries(params: {
     const result = await dynamoDB.query(queryInput).promise();
     let items = result.Items as ActivitySessionsEntry[] || [];
 
-    // In-memory filters for optional fields
+    // ✅ Optional filters
     if (hand) {
       items = items.filter(entry => entry.Hand === hand);
+    }
+
+    if (exerciseName) {
+      items = items.filter(entry =>
+        entry.ExerciseName?.toLowerCase() === exerciseName.toLowerCase()
+      );
     }
 
     if (start && end) {

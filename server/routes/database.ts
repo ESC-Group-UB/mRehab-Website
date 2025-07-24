@@ -51,13 +51,14 @@ router.get("/uploadtest", async (req: Request, res: Response) => {
 
 // /api/aws/filtered
 router.get("/filtered", async (req: Request, res: Response) => {
-  const { username, hand, start, end } = req.query;
+  const { username, hand, start, end, exerciseName} = req.query;
   try {
     const entries = await getFilteredEntries({
       username: username as string,
       hand: hand as string,
       start: start as string,
       end: end as string,
+      exerciseName: exerciseName as string
     });
     res.json({ entries });
   } catch (err) {
