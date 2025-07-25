@@ -56,6 +56,7 @@ export default function Dashboard() {
 
   function handleSignout(event: React.FormEvent<HTMLButtonElement>): void {
     event.preventDefault();
+    console.log("🔒 Signing out...");
     localStorage.removeItem("idToken");
     localStorage.removeItem("accessToken");
     window.location.href = "/login";
@@ -182,7 +183,7 @@ export default function Dashboard() {
         )}
 
         <AddViewer />
-        <button onSubmit={handleSignout}>
+        <button onClick={handleSignout} style={{ marginTop: "20px", padding: "10px 20px", backgroundColor: "#f44336", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer" }}>
           Signout
         </button>
       </div>
