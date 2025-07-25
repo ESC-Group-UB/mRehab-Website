@@ -31,7 +31,12 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
+      console.log("Login successful:", data);
       if (!res.ok) throw new Error(data.message || "Login failed");
+      // Store tokens in localStorage
+      localStorage.setItem("idToken", data.IdToken);
+      localStorage.setItem("accessToken", data.AccessToken);
+      
       navigate("/dashboard");
     } catch (err: any) {
       setError(err.message);

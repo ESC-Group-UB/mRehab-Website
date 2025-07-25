@@ -8,6 +8,7 @@ dotenv.config();
 
 import authRoutes from "./routes/auth";
 import awsRoutes from "./routes/database";
+import AuthorizedUserRotes from "./routes/AuthorizedUsers";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,12 +21,15 @@ app.use(cors());
 // Mount routes
 app.use("/api/auth", authRoutes);
 app.use("/api/aws", awsRoutes);
+app.use("/api/authorizedUsers", AuthorizedUserRotes);
 
 // Health check
 app.get("/api/hello", (_req, res) => {
   console.log("hello called");
   res.send({ message: "Hello from backend" });
 });
+
+
 
 // Start server
 app.listen(PORT, () => {

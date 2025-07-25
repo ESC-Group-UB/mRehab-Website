@@ -1,6 +1,6 @@
 // server/routes/auth.ts
 import express from "express";
-import { signUpUser, confirmUser, loginUser } from "../AWS/authService";
+import { signUpUser, confirmUser, loginUser, checkIfValidEmail } from "../AWS/authService";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
