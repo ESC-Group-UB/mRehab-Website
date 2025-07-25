@@ -1,8 +1,9 @@
 # Stage 1: Build React TS frontend
-FROM node:18 AS builder
+FROM node:18-alpine AS builder
 WORKDIR /app
+COPY package*.json ./
+RUN npm install --frozen-lockfile
 COPY . .
-RUN npm install
 RUN npm run build
 
 # Stage 2: Serve with NGINX
