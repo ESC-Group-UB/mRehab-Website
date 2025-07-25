@@ -3,7 +3,6 @@ import AccuracyGraph from "../../components/AccuracyGraph";
 import { Navbar } from "../../components/Navbar";
 import AddViewer from "../../components/DashBoard/addViewer";
 import { ViewOthers } from "../../components/DashBoard/viewOthers";
-import { Sidebar } from "../../components/DashBoard/sidebar";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
