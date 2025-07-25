@@ -24,6 +24,9 @@ export default function Dashboard() {
       const displayName = user.given_name || user.name || "User";
       setName(displayName);
     }
+    else {
+      window.location.href = "/login"; // Redirect to login if not authenticated
+    }
   }, []);
 
   useEffect(() => {
@@ -48,9 +51,15 @@ export default function Dashboard() {
         setError(err.message || "Failed to fetch entries.");
       }
     };
-
     fetchEntries();
   }, [selectedPatient, filterHand, filterExercise, filterStartDate, filterEndDate]);
+
+  function handleSignout(event: React.FormEvent<HTMLButtonElement>): void {
+    event.preventDefault();
+    localStorage.removeItem("idToken");
+    localStorage.removeItem("accessToken");
+    window.location.href = "/login";
+  }
 
   return (
     <>
@@ -173,7 +182,9 @@ export default function Dashboard() {
         )}
 
         <AddViewer />
-        <Sidebar />
+        <button onSubmit={handleSignout}>
+          Signout
+        </button>
       </div>
     </>
   );
