@@ -15,10 +15,10 @@ router.get("/uploadtest", async (req: Request, res: Response) => {
   const isoTimestamp = now.toISOString();
 
   const testEntry: ActivitySessionsEntry = {
-    Username: "rohin113.rk@gmail.com",
+    Username: "rkumar32@buffalo.edu",
     Timestamp: isoTimestamp,
-    ExerciseName: "Shoulder Raise",
-    Accuracy: 282.7,
+    ExerciseName: "Horizontal Bowl",
+    Accuracy: 150,
     Reps: 5,
     Duration: 17.3,
     Hand: "Left",
