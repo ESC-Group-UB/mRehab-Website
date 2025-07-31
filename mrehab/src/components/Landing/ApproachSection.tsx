@@ -13,7 +13,6 @@ export function ApproachSection() {
           </p>
           <div className="approach-features">
             <div className="feature">
-              <div className="feature-icon">🛠</div>
               <div>
                 <h4>Easy Setup</h4>
                 <p>
@@ -22,7 +21,6 @@ export function ApproachSection() {
               </div>
             </div>
             <div className="feature">
-              <div className="feature-icon">📈</div>
               <div>
                 <h4>Track Your Progress</h4>
                 <p>

@@ -36,13 +36,15 @@
 .approach-features {
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 1rem;
+
 }
 
 .feature {
   display: flex;
   gap: 1rem;
   align-items: flex-start;
+  padding-left: 1rem;
 }
 
 .feature-icon {

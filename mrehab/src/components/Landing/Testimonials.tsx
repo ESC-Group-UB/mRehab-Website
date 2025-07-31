@@ -4,39 +4,39 @@ import "./Testimonials.css";
 const testimonials = [
   {
     quote:
-      "I was nervous about recovering at home after surgery, but mRehab made it feel like I had a personal trainer guiding me every step. The exercises were easy to follow, and the tools actually made rehab something I looked forward to.",
+      "After my stroke, I struggled to stay consistent with exercises. mRehab’s daily reminders and real-time feedback kept me on track — it’s like having a coach in my pocket. I’ve regained more control in my arm than I ever thought possible.",
     name: "Amanda Lee",
-    role: "Patient, Post-Op Recovery",
+    role: "Patient, Stroke Recovery",
   },
   {
     quote:
-      "As a physical therapist, I love how mRehab supports my patients outside the clinic. The adaptive routines and progress tracking help them stay engaged and on target between visits.",
+      "mRehab bridges the gap between clinic visits and at-home therapy. The smart tools mimic real-life tasks, which is crucial for neuro rehab. My patients are not just recovering — they’re regaining independence.",
     name: "Dr. Marcus Bennett",
     role: "Physical Therapist, Buffalo Rehab Group",
   },
   {
     quote:
-      "The app helped me regain strength in my hand after an injury at work. I could actually see my progress week by week, and that kept me motivated.",
+      "Rebuilding hand movement after my stroke felt overwhelming. But with mRehab, I could actually *see* my progress each week. That visual feedback kept me going, and now I can write again.",
     name: "Carlos M.",
-    role: "Patient, Hand Injury Recovery",
+    role: "Patient, Upper Limb Rehab",
   },
   {
     quote:
-      "I’ve tried other recovery apps, but mRehab is by far the most intuitive and effective. The AI suggestions felt personalized, and the feedback was spot on.",
+      "Most apps felt generic, but mRehab felt built just for me. The AI suggestions adapted to how I was doing each day, and the feedback helped me adjust my form without guessing.",
     name: "Sarah Nguyen",
-    role: "Home User, Daily Rehab",
+    role: "Patient, Motor Recovery",
   },
   {
     quote:
-      "mRehab is exactly what modern rehab should look like — affordable, personalized, and accessible. The 3D tools are innovative and patients love using them.",
+      "The combination of evidence-based routines, 3D-printed rehab tools, and progress dashboards is unmatched. mRehab empowers both patients and clinicians — and at a fraction of the cost of traditional solutions.",
     name: "Dr. Nina Feldman",
     role: "Rehabilitation Specialist",
   },
   {
     quote:
-      "Between the smart tools and the easy-to-use app, I felt like I was in control of my recovery. I’ve already recommended mRehab to two of my friends.",
+      "The tools felt natural — like stacking cups or turning a doorknob. That made it easier to transfer what I practiced into everyday tasks. I’ve come a long way since starting mRehab.",
     name: "David R.",
-    role: "Patient, Knee Injury",
+    role: "Patient, Stroke Rehab",
   },
 ];
 

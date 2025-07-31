@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "./viewOthers.module.css";
 
 export function ViewOthers({
   onSelectPatient,
@@ -31,18 +32,21 @@ export function ViewOthers({
   }, []);
 
   return (
-    <div style={{ marginTop: "20px", marginBottom: "20px" }}>
-      <label htmlFor="patientSelect" style={{ marginRight: "10px" }}>
+    <div className={styles.container}>
+      <label htmlFor="patientSelect" className={styles.label}>
         Select a patient:
       </label>
       <select
         id="patientSelect"
         onChange={(e) => onSelectPatient(e.target.value)}
-        style={{ padding: "8px", width: "250px" }}
+        className={styles.select}
+        defaultValue=""
       >
-        <option value="">-- Choose a patient --</option>
+        <option value="" disabled>
+          -- Choose a patient --
+        </option>
         {viewers.map((viewer, idx) => (
-          <option key={idx} value={viewer}>
+          <option key={idx} value={viewer} className={styles.option}>
             {viewer}
           </option>
         ))}

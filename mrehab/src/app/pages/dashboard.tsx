@@ -3,6 +3,9 @@ import AccuracyGraph from "../../components/AccuracyGraph";
 import { Navbar } from "../../components/Navbar";
 import AddViewer from "../../components/DashBoard/addViewer";
 import { ViewOthers } from "../../components/DashBoard/viewOthers";
+import { PatientSidebar } from "../../components/DashBoard/patientSidebar";
+import FiltersBar from "../../components/DashBoard/FiltersBar";
+import ResultsSection from "../../components/DashBoard/ResultsSection";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -62,130 +65,43 @@ export default function Dashboard() {
   }
 
   return (
-    <>
-      <Navbar />
-      <div style={{ padding: "30px", maxWidth: "1000px", margin: "0 auto" }}>
-        <h1>👨‍⚕️ Physician Dashboard</h1>
-        <p>Welcome Dr. {name}</p>
-
-        <ViewOthers onSelectPatient={setSelectedPatient} />
-
+    <div style={{ display: "flex", minHeight: "100vh" }}>
+      <PatientSidebar
+        selectedPatient={selectedPatient}
+        onSelectPatient={setSelectedPatient}
+      />
+      <div style={{ padding: "30px", maxWidth: "1000px", margin: "0 auto", flexGrow: 1 }}>
+        {!selectedPatient ? (
+          <>
+            <h1>Welcome {name}</h1>
+            <p>Select a patient in the sidebar to begin</p>
+          </>
+        ) : null}
         {selectedPatient && (
           <>
-            {/* Filters */}
-            <div
-              style={{
-                margin: "20px 0",
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "10px",
-              }}
-            >
-              <select
-                value={filterHand}
-                onChange={(e) => setFilterHand(e.target.value)}
-                style={{ padding: "8px", flex: "1 1 120px" }}
-              >
-                <option value="">All Hands</option>
-                <option value="Left">Left</option>
-                <option value="Right">Right</option>
-              </select>
+            <FiltersBar
+              filterHand={filterHand}
+              filterExercise={filterExercise}
+              filterStartDate={filterStartDate}
+              filterEndDate={filterEndDate}
+              setFilterHand={setFilterHand}
+              setFilterExercise={setFilterExercise}
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+            />
 
-              <select
-                value={filterExercise}
-                onChange={(e) => setFilterExercise(e.target.value)}
-                style={{ padding: "8px", flex: "1 1 180px" }}
-              >
-                <option value="">All Exercises</option>
-                <option value="Vertical Bowl">Vertical Bowl</option>
-                <option value="Horizontal Bowl">Horizontal Bowl</option>
+            {error && <p style={{ color: "red", marginBottom: "20px" }}>⚠️ {error}</p>}
 
-                <option value="Horizontal Mug">Horizontal Mug</option>
-                <option value="Vertical Mug">Vertical Mug</option>
-                
-
-                <option value="Sip from Mug">Sip from Mug</option>
-                <option value="Quick Test Mug">Quick Test Mug</option>
-                <option value="Slow Pour Mug">Slow Pour Mug</option>
-
-                <option value="Phone Number">Phone Number</option>
-                <option value="Quick Tap">Quick Tap</option>
-              </select>
-
-              <input
-                type="date"
-                value={filterStartDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                style={{ padding: "8px", flex: "1 1 150px" }}
-              />
-
-              <input
-                type="date"
-                value={filterEndDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                style={{ padding: "8px", flex: "1 1 150px" }}
-              />
-            </div>
-
-            {/* Error */}
-            {error && (
-              <p style={{ color: "red", marginBottom: "20px" }}>
-                ⚠️ {error}
-              </p>
-            )}
-
-            {/* Accuracy Graph */}
             {entries.length > 0 && <AccuracyGraph data={entries} />}
 
-            {/* Results */}
             {entries.length > 0 ? (
-              <div style={{ marginTop: "30px" }}>
-                <h2>
-                  Results for <strong>{selectedPatient}</strong>
-                </h2>
-                <div
-                  style={{
-                    display: "grid",
-                    gap: "15px",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                  }}
-                >
-                  {entries.map((entry, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        padding: "16px",
-                        boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-                        backgroundColor: "#fff",
-                      }}
-                    >
-                      <h3>{entry.ExerciseName}</h3>
-                      <p>
-                        🕒 <strong>{new Date(entry.Timestamp).toLocaleString()}</strong>
-                      </p>
-                      <p>✅ Accuracy: {entry.Accuracy}</p>
-                      <p>🤚 Hand: {entry.Hand}</p>
-                      <p>🔁 Reps: {entry.Reps}</p>
-                      {entry.Reviewed && (
-                        <p style={{ color: "green" }}>🩺 Reviewed</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <ResultsSection entries={entries} selectedPatient={selectedPatient} />
             ) : (
               <p>No entries found for this patient.</p>
             )}
           </>
         )}
-
-        <AddViewer />
-        <button onClick={handleSignout} style={{ marginTop: "20px", padding: "10px 20px", backgroundColor: "#f44336", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer" }}>
-          Signout
-        </button>
       </div>
-    </>
+    </div>
   );
 }

@@ -3,7 +3,7 @@
 // It includes adding authorized users, retrieving who a user can view, and basic search functionality.
 
 import express from "express";
-import { AddingAuthorizedUserHandler, getAllowedToViewUsers } from "../AWS/AuthorisedUsersFunctions";
+import { AddingAuthorizedUserHandler, getAllowedToViewUsers, getAllowedToViewUsersFromCognito } from "../AWS/AuthorisedUsersFunctions";
 import { getUsersFromCognito } from "../AWS/authService";
 
 const router = express.Router();
@@ -58,5 +58,26 @@ router.get("/search", async (req, res) => {
 
     res.json(matches);
 });
+
+router.get("/search/auth", async (req, res) => {
+    const query = req.query.query?.toString().toLowerCase() ?? "";
+    const email = req.query.email?.toString().toLowerCase() ?? "";
+    
+    const mockDoctors = await getAllowedToViewUsersFromCognito(email);
+
+    console.log(mockDoctors);
+
+    const matches = mockDoctors
+        ? mockDoctors.filter(
+            (doc) =>
+                doc.name.toLowerCase().includes(query) ||
+                doc.email.toLowerCase().includes(query)
+        )
+        : [];
+
+    res.json(matches);
+});
+
+getAllowedToViewUsersFromCognito
 
 export default router;
