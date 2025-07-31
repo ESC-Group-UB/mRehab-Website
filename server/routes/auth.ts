@@ -16,9 +16,9 @@ const router = express.Router();
  * Returns: AWS Cognito signup result or an error message
  */
 router.post("/signup", async (req, res) => {
-  const { email, password, givenName, familyName, gender, address } = req.body;
+  const { email, password, givenName, familyName, gender, address, role } = req.body;
   try {
-    const result = await signUpUser(email, password, givenName, familyName, gender, address);
+    const result = await signUpUser(email, password, givenName, familyName, gender, address, role);
     res.json(result);
   } catch (err) {
     console.error("Signup error:", err);

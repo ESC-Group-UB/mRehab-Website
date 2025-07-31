@@ -19,7 +19,7 @@ function generateSecretHash(username: string, clientId: string, clientSecret: st
 }
 
 // 📝 Sign Up a New User
-export async function signUpUser(email: string, password: string, givenName: string, familyName: string, gender: string, address: string) {
+export async function signUpUser(email: string, password: string, givenName: string, familyName: string, gender: string, address: string, role: string) {
   const secretHash = generateSecretHash(
     email,
     awsConfig.clientId,
@@ -36,13 +36,34 @@ export async function signUpUser(email: string, password: string, givenName: str
       { Name: "given_name", Value: givenName },
       { Name: "family_name", Value: familyName },
       { Name: "gender", Value: gender },
-      { Name: "address", Value: address }
+      { Name: "address", Value: address },
+      { Name: "custom:role", Value: role }
     ],
   };
 
   // add user to the DynamoDB AuthorizedUsers table
   await uploadUserToDynamoDB(email);
-  return CognitoISP.signUp(params).promise();
+  const result = await CognitoISP.signUp(params).promise();
+  const roleAssigned = await assignRoleToUser(email, role);
+  if (!roleAssigned) {
+    console.log(`Failed to assign role ${role} to user ${email}`);
+  }
+  return result;
+}
+
+async function assignRoleToUser(email: string, role: string): Promise<boolean> {
+  const params = {
+    UserPoolId: UserPoolId as string,
+    Username: email,
+    GroupName: role,
+  };
+  const result = await CognitoISP.adminAddUserToGroup(params).promise();
+  if (result.$response.error) {
+    console.log(`Failed to assign role ${role} to user ${email}: ${result.$response.error.message}`);
+    return false;
+  }
+  console.log(`✅ Added ${email} to group ${role}`);
+  return true;
 }
 
 // ✅ Confirm sign up with code sent to email

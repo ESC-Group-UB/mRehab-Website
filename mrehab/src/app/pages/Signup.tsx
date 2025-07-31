@@ -21,13 +21,16 @@ const Signup: React.FC = () => {
     city: "",
     state: "",
     zip: "",
+    role: "",
   });
 
   const [verificationCode, setVerificationCode] = useState("")
 
   const [error, setError] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -133,6 +136,19 @@ const Signup: React.FC = () => {
                 onChange={handleChange}
                 className={styles.input}
                 />
+            </div>
+
+            <div>
+                <label>Are you a Patient or a Health Care provider</label>
+                <select
+                name="role"
+                onChange={handleChange}
+                className={styles.input}
+                >
+                  <option value="" disabled>Select your role</option>
+                  <option value="patient">Patient</option>
+                  <option value="provider">Health Care Provider</option>
+                </select>
             </div>
 
             <div>
