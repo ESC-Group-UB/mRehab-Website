@@ -6,6 +6,8 @@ import { ViewOthers } from "../../components/DashBoard/viewOthers";
 import { PatientSidebar } from "../../components/DashBoard/patientSidebar";
 import FiltersBar from "../../components/DashBoard/FiltersBar";
 import ResultsSection from "../../components/DashBoard/ResultsSection";
+import { jwtDecode } from "jwt-decode";
+
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -19,12 +21,27 @@ export default function Dashboard() {
   const [name, setName] = useState("");
   const [selectedPatient, setSelectedPatient] = useState("");
 
+   const handleSignOut = () => {
+        localStorage.removeItem("idToken");
+        localStorage.removeItem("accessToken");
+        window.location.href = "/login";
+    };
+
   useEffect(() => {
     const idToken = localStorage.getItem("idToken");
     if (idToken) {
       const user = JSON.parse(atob(idToken.split(".")[1]));
       const displayName = user.given_name || user.name || "User";
-      setName(displayName);
+      const decoded: any = jwtDecode (idToken);
+      const groups = decoded["cognito:groups"] || [];
+
+      if (groups.includes("provider") || groups.includes("Provider")) {
+        setName(displayName);
+      }
+      else {
+        alert("You are not authorized to view this page.");
+        handleSignOut(); // Sign out if not authorized
+      }
     }
     else {
       window.location.href = "/login"; // Redirect to login if not authenticated
@@ -55,14 +72,6 @@ export default function Dashboard() {
     };
     fetchEntries();
   }, [selectedPatient, filterHand, filterExercise, filterStartDate, filterEndDate]);
-
-  function handleSignout(event: React.FormEvent<HTMLButtonElement>): void {
-    event.preventDefault();
-    console.log("🔒 Signing out...");
-    localStorage.removeItem("idToken");
-    localStorage.removeItem("accessToken");
-    window.location.href = "/login";
-  }
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
