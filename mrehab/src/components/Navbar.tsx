@@ -1,14 +1,21 @@
 import React from "react";
 import "./Navbar.css";
 import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
 export function Navbar() {
 
   const [loggedIn, setLoggedIn] = useState(false);
+  const [providerDashboard, setProviderDashboard] = useState(false);
 
   useEffect(() => {
     const idToken = localStorage.getItem("idToken");
     if (idToken) {
+      const decoded: any = jwtDecode(idToken);
+      const groups = decoded["cognito:groups"] || [];
+      if (groups.includes("provider") || groups.includes("Provider")) {
+        setProviderDashboard(true);
+      }
       setLoggedIn(true);
     }
   }, []);
@@ -28,7 +35,11 @@ export function Navbar() {
 
       <div className="navbar-right">
         {loggedIn ? (
-          <a href="/dashboard" className="login-button">Dashboard</a>
+          providerDashboard ? (
+            <a href="/dashboard" className="login-button">Dashboard</a>
+          ) : (
+            <a href="/patient-dashboard" className="login-button">Dashboard</a>
+          )
         ) : (
           <a href="/login" className="login-button">Login</a>
         )}
