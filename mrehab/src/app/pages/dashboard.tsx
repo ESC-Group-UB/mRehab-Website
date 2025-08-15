@@ -7,9 +7,35 @@ import { PatientSidebar } from "../../components/DashBoard/patientSidebar";
 import FiltersBar from "../../components/DashBoard/FiltersBar";
 import ResultsSection from "../../components/DashBoard/ResultsSection";
 import { jwtDecode } from "jwt-decode";
+import ActivitiesSelector from "../../components/DashBoard/ActivitiesSelector";
 
+import styles from "./dashboard.module.css";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
+
+const defaultActivities: Record<string, boolean> = {
+  "Vertical Bowl": true,
+  "Horizontal Bowl": true,
+  "Horizontal Mug": true,
+  "Vertical Mug": true,
+  "Sip from Mug": true,
+  "Quick Test Mug": true,
+  "Slow Pour Mug": true,
+  "Phone Number": true,
+  "Quick Tap": true,
+};
+
+const categories: Record<string, string[]> = {
+  Bowl: ["Vertical Bowl", "Horizontal Bowl"],
+  Mug: [
+    "Vertical Mug",
+    "Horizontal Mug",
+    "Sip from Mug",
+    "Quick Test Mug",
+    "Slow Pour Mug",
+  ],
+  Other: ["Phone Number", "Quick Tap"],
+};
 
 export default function Dashboard() {
   const [entries, setEntries] = useState<any[]>([]);
@@ -21,30 +47,28 @@ export default function Dashboard() {
   const [name, setName] = useState("");
   const [selectedPatient, setSelectedPatient] = useState("");
 
-   const handleSignOut = () => {
-        localStorage.removeItem("idToken");
-        localStorage.removeItem("accessToken");
-        window.location.href = "/login";
-    };
+  const handleSignOut = () => {
+    localStorage.removeItem("idToken");
+    localStorage.removeItem("accessToken");
+    window.location.href = "/login";
+  };
 
   useEffect(() => {
     const idToken = localStorage.getItem("idToken");
     if (idToken) {
       const user = JSON.parse(atob(idToken.split(".")[1]));
       const displayName = user.given_name || user.name || "User";
-      const decoded: any = jwtDecode (idToken);
+      const decoded: any = jwtDecode(idToken);
       const groups = decoded["cognito:groups"] || [];
 
       if (groups.includes("provider") || groups.includes("Provider")) {
         setName(displayName);
-      }
-      else {
+      } else {
         alert("You are not authorized to view this page.");
-        handleSignOut(); // Sign out if not authorized
+        handleSignOut();
       }
-    }
-    else {
-      window.location.href = "/login"; // Redirect to login if not authenticated
+    } else {
+      window.location.href = "/login";
     }
   }, []);
 
@@ -74,20 +98,29 @@ export default function Dashboard() {
   }, [selectedPatient, filterHand, filterExercise, filterStartDate, filterEndDate]);
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <PatientSidebar
-        selectedPatient={selectedPatient}
-        onSelectPatient={setSelectedPatient}
-      />
-      <div style={{ padding: "30px", maxWidth: "1000px", margin: "0 auto", flexGrow: 1 }}>
+    <div className={styles.dashLayout}>
+      <aside className={styles.dashSidebar}>
+        <PatientSidebar
+          selectedPatient={selectedPatient}
+          onSelectPatient={setSelectedPatient}
+        />
+      </aside>
+
+      <main className={styles.dashContent}>
         {!selectedPatient ? (
           <>
             <h1>Welcome {name}</h1>
             <p>Select a patient in the sidebar to begin</p>
           </>
         ) : null}
+
         {selectedPatient && (
           <>
+            <ActivitiesSelector
+              patientEmail={selectedPatient}
+              categories={categories}
+            />
+
             <FiltersBar
               filterHand={filterHand}
               filterExercise={filterExercise}
@@ -99,7 +132,11 @@ export default function Dashboard() {
               setEndDate={setEndDate}
             />
 
-            {error && <p style={{ color: "red", marginBottom: "20px" }}>⚠️ {error}</p>}
+            {error && (
+              <p style={{ color: "red", marginBottom: "20px" }}>
+                ⚠️ {error}
+              </p>
+            )}
 
             {entries.length > 0 && <AccuracyGraph data={entries} />}
 
@@ -110,7 +147,7 @@ export default function Dashboard() {
             )}
           </>
         )}
-      </div>
+      </main>
     </div>
   );
 }

@@ -4,6 +4,8 @@ import {
   uploadSessionToDynamoDB,
   ActivitySessionsEntry,
   getFilteredEntries,
+  updateActivities,
+  getUserSettings
 } from "../AWS/awsDBfunctions";
 import { migrateS3ToDynamoDB } from "../AWS/s3todynanmoutil";
 
@@ -65,5 +67,26 @@ router.get("/filtered", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to fetch filtered entries" });
   }
 });
+
+
+router.put("/updateActivities", async(req: Request, res: Response) => {
+  const { email, activities } = req.body;
+  try {
+    const result = await updateActivities(email, activities);
+    res.json(result);
+  } catch (err) {
+}})
+
+
+router.get("/user-settings", async (req: Request, res: Response) => {
+  const { email } = req.query;
+  try {
+    const result = await getUserSettings(email as string);
+    console.log(result);
+
+    res.json(result);
+  } catch (err) {
+  }
+})
 
 export default router;

@@ -1,4 +1,6 @@
 import { dynamoDB } from "./awsConfig";
+import {createUserSettings} from "./authService";
+
 
 export interface ActivitySessionsEntry {
   Username: string;
@@ -108,5 +110,72 @@ export async function getFilteredEntries(params: {
   } catch (err) {
     console.error("❌ Error querying DynamoDB:", err);
     throw err;
+  }
+}
+
+
+/**
+ * Update the Activities dictionary for a given user.
+ * @param email The user's email (primary key in UserSettings table)
+ * @param updatedActivities An object with the same keys as the original activities but updated true/false values
+ */
+export async function updateActivities(
+  email: string,
+  updatedActivities: Record<string, boolean>
+) {
+  const now = new Date().toISOString();
+
+  const params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+    TableName: "UserSettings",
+    Key: {
+      Username: email.toLowerCase(), // adjust if your PK is named differently
+    },
+    UpdateExpression: "SET Activities = :a, UpdatedAt = :u",
+    ExpressionAttributeValues: {
+      ":a": updatedActivities,
+      ":u": now,
+    },
+    ConditionExpression: "attribute_exists(Username)", // ensures user settings exist
+    ReturnValues: "UPDATED_NEW",
+  };
+
+  try {
+    const res = await dynamoDB.update(params).promise();
+    return { ok: true, message: "Activities updated.", data: res.Attributes };
+  } catch (err: any) {
+    if (err.code === "ConditionalCheckFailedException") {
+      return { ok: false, message: "User settings do not exist." };
+    }
+    console.error("❌ Failed to update activities:", err);
+    throw err;
+  }
+}
+
+export async function getUserSettings(email: string) {
+  if (!email) {
+    throw new Error("Email is required");
+  }
+
+  const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
+    TableName: "UserSettings",
+    Key: {
+      Username: email.toLowerCase(), // adjust PK name if different
+    },
+  };
+
+  try {
+    const result = await dynamoDB.get(params).promise();
+    if (!result.Item) {
+      throw new Error(`User settings not found for ${email}`);
+    }
+    return result.Item; // full settings object
+  } catch (err) {
+    // cannot find activities
+    await createUserSettings(email);
+    const result = await dynamoDB.get(params).promise();
+    if (!result.Item) {
+      throw new Error(`User settings not found for ${email}`);
+    }
+    return result.Item; // full settings object
   }
 }
