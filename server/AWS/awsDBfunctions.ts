@@ -74,6 +74,8 @@ export async function getFilteredEntries(params: {
 }): Promise<ActivitySessionsEntry[]> {
   const { username, exerciseName, hand, start, end } = params;
 
+  console.log("🔍 getFilteredEntries called with params:", params);
+
   const queryInput: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName: "ActivitySessions",
     KeyConditionExpression: "Username = :u",
@@ -82,36 +84,55 @@ export async function getFilteredEntries(params: {
     },
   };
 
+  console.log("📦 DynamoDB queryInput:", JSON.stringify(queryInput, null, 2));
+
   try {
     const result = await dynamoDB.query(queryInput).promise();
-    let items = result.Items as ActivitySessionsEntry[] || [];
+    let items = (result.Items as ActivitySessionsEntry[]) || [];
 
-    // ✅ Optional filters
+    console.log(`✅ DynamoDB returned ${items.length} items`);
+
+    // 🔎 Apply optional filters
     if (hand) {
+      const before = items.length;
       items = items.filter(entry => entry.Hand === hand);
+      console.log(
+        `✋ Hand filter applied (${hand}) → ${before} → ${items.length}`
+      );
     }
 
     if (exerciseName) {
-      items = items.filter(entry =>
-        entry.ExerciseName?.toLowerCase() === exerciseName.toLowerCase()
+      const before = items.length;
+      items = items.filter(
+        entry =>
+          entry.ExerciseName?.toLowerCase() === exerciseName.toLowerCase()
+      );
+      console.log(
+        `🏋️ ExerciseName filter applied (${exerciseName}) → ${before} → ${items.length}`
       );
     }
 
     if (start && end) {
       const startTime = new Date(start).getTime();
       const endTime = new Date(end).getTime();
+      const before = items.length;
       items = items.filter(entry => {
         const ts = new Date(entry.Timestamp).getTime();
         return ts >= startTime && ts <= endTime;
       });
+      console.log(
+        `⏰ Date filter applied (${start} → ${end}) → ${before} → ${items.length}`
+      );
     }
 
+    console.log(`🎯 Final result count: ${items.length}`);
     return items;
   } catch (err) {
     console.error("❌ Error querying DynamoDB:", err);
     throw err;
   }
 }
+
 
 
 /**

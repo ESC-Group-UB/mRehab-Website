@@ -78,6 +78,4 @@ router.get("/search/auth", async (req, res) => {
     res.json(matches);
 });
 
-getAllowedToViewUsersFromCognito
-
 export default router;
