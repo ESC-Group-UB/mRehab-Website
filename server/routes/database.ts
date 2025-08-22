@@ -7,7 +7,7 @@ import {
   updateActivities,
   getUserSettings
 } from "../AWS/awsDBfunctions";
-import { cacheGet, cacheSet, cacheDel } from "../cache"; // <- your cache.ts
+import { cacheGet, cacheSet, cacheDel, cacheRoute } from "../cache"; // <- your cache.ts
 
 
 const router = express.Router();
@@ -81,16 +81,25 @@ function parseMaybeISO(s: string | undefined) {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
+
+// NOTE FOR CACHING, this function is the one that displays the check boxes for the activities on the 
+// doctor dashboard, since it gets called when the doctor clicks on the patient, it kinda will always
+// invalidate the user settings cache. This probably cant be casched as is, but
+// user settings can be casched in other ways so ill still make this clear the cache
 router.put("/updateActivities", async(req: Request, res: Response) => {
   const { email, activities } = req.body;
+  console.log("Updating activities for:", email, activities);
   try {
     const result = await updateActivities(email, activities);
+    const cachedKey = `/api/authorizedUsers/user-settings?email=${encodeURIComponent(email)}`;
+    await cacheDel(cachedKey);
+    console.log(`Cache invalidated for key: ${cachedKey}`);
     res.json(result);
   } catch (err) {
 }})
 
 
-router.get("/user-settings", async (req: Request, res: Response) => {
+router.get("/user-settings", cacheRoute(3600), async (req: Request, res: Response) => {
   const { email } = req.query;
   try {
     const result = await getUserSettings(email as string);
