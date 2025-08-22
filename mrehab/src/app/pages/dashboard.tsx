@@ -101,10 +101,7 @@ export default function Dashboard() {
 
         {selectedPatient && (
           <>
-            <ActivitiesSelector
-              patientEmail={selectedPatient}
-              categories={categories}
-            />
+            
 
             <FiltersBar
               filterHand={filterHand}
@@ -130,6 +127,10 @@ export default function Dashboard() {
             ) : (
               <p>No entries found for this patient.</p>
             )}
+            <ActivitiesSelector
+              patientEmail={selectedPatient}
+              categories={categories}
+            />
           </>
         )}
       </main>
