@@ -1,12 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar";
 import SplitSection from "../../components/SplitSection";
 import GradientCTA from "../../components/GradientCTA";
 import styles from "./forProdivders.module.css";
 
 export function ForProviders() {
-  const navigate = useNavigate();
 
   return (
     <div className={styles.page}>

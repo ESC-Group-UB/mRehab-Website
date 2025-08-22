@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import AccuracyGraph from "../../components/AccuracyGraph";
-import { Navbar } from "../../components/Navbar";
-import AddViewer from "../../components/DashBoard/addViewer";
-import { ViewOthers } from "../../components/DashBoard/viewOthers";
 import { PatientSidebar } from "../../components/DashBoard/patientSidebar";
 import FiltersBar from "../../components/DashBoard/FiltersBar";
 import ResultsSection from "../../components/DashBoard/ResultsSection";
@@ -12,18 +9,6 @@ import ActivitiesSelector from "../../components/DashBoard/ActivitiesSelector";
 import styles from "./dashboard.module.css";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
-
-const defaultActivities: Record<string, boolean> = {
-  "Vertical Bowl": true,
-  "Horizontal Bowl": true,
-  "Horizontal Mug": true,
-  "Vertical Mug": true,
-  "Sip from Mug": true,
-  "Quick Test Mug": true,
-  "Slow Pour Mug": true,
-  "Phone Number": true,
-  "Quick Tap": true,
-};
 
 const categories: Record<string, string[]> = {
   Bowl: ["Vertical Bowl", "Horizontal Bowl"],

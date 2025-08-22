@@ -1,5 +1,5 @@
 // components/ActivitiesSelector.tsx
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./ActivitiesSelector.module.css";
 
 type ActivitiesMap = Record<string, boolean>;
@@ -63,7 +63,7 @@ export default function ActivitiesSelector({
     return () => {
       cancelled = true;
     };
-  }, [patientEmail, baseURL, initialActivities]);
+  }, [patientEmail, initialActivities]);
 
   // Debounced autosave whenever activities change
   useEffect(() => {
@@ -103,7 +103,7 @@ export default function ActivitiesSelector({
     }, 700);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activities, loading, patientEmail, baseURL]);
+  }, [activities, loading, patientEmail]);
 
   const allKeys = useMemo(() => Object.keys(activities), [activities]);
 

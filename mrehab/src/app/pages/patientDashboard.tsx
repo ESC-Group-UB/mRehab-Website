@@ -5,7 +5,6 @@ import FiltersBar from "../../components/DashBoard/FiltersBar";
 import AccuracyGraph from "../../components/AccuracyGraph";
 import AddViewer from "../../components/DashBoard/addViewer";
 import ResultsSection from "../../components/DashBoard/ResultsSection";
-import { decode } from "punycode";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
