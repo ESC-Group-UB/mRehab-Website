@@ -9,6 +9,7 @@ dotenv.config();
 import authRoutes from "./routes/auth";
 import awsRoutes from "./routes/database";
 import AuthorizedUserRotes from "./routes/AuthorizedUsers";
+import uploadSessionRoutes from "./routes/uploadSession";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -22,6 +23,7 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api/aws", awsRoutes);
 app.use("/api/authorizedUsers", AuthorizedUserRotes);
+app.use("/api/uploadSession", uploadSessionRoutes);
 
 // Health check
 app.get("/api/hello", (_req, res) => {
