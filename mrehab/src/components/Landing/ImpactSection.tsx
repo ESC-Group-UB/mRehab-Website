@@ -2,9 +2,9 @@ import React from "react";
 import "./ImpactSection.css";
 
 const stats = [
-  { value: "+30%", label: "Improvement in motor control" },
-  { value: "10x", label: "More affordable than clinic-based rehab" },
-  { value: "98%", label: "Say mRehab keeps them motivated and on track" },
+  { value: "30%+", label: "Gain in hand and arm control after 6 weeks" },
+  { value: "10x", label: "Cheaper than traditional clinic-based rehab" },
+  { value: "98%", label: "Users say daily reminders keep them motivated" },
 ];
 
 export default function ImpactSection() {

@@ -1,0 +1,12 @@
+.sidebar {
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid #e0e0e0;
+}
+
+.searchInput {
+  width: 90%;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}

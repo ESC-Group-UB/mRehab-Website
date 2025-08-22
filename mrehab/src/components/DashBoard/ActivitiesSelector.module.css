@@ -1,0 +1,198 @@
+/* ActivitiesSelector.module.css */
+
+/* Theme hooks (fallbacks included) */
+:root {
+  --surface: var(--color-surface, #ffffff);
+  --surface-2: var(--color-surface-2, #f7f7f9);
+  --text: var(--color-text, #1f2937);
+  --muted: var(--color-muted, #6b7280);
+  --border: var(--color-border, #e5e7eb);
+  --accent: var(--color-main, #4f46e5);
+  --accent-contrast: var(--color-on-main, #ffffff);
+  --success: #2e7d32;
+  --error: #c62828;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Container */
+.activities {
+  display: grid;
+  gap: 1rem;
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* Top toolbar */
+.activities__toolbar {
+  display: grid;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+@media (min-width: 800px) {
+  .activities__toolbar {
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+  }
+}
+
+/* Search input */
+.activities__search {
+  width: 90%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.activities__search::placeholder {
+  color: var(--muted);
+}
+
+.activities__search:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 20%, transparent);
+}
+
+/* Bulk actions */
+.activities__bulk {
+  display: flex;
+  gap: 0.5rem;
+  justify-self: start;
+}
+
+@media (min-width: 800px) {
+  .activities__bulk {
+    justify-self: end;
+  }
+}
+
+/* Buttons */
+.btn {
+  padding: 0.55rem 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 120ms ease, transform 60ms ease;
+}
+
+.btn:hover { filter: brightness(1.05); }
+.btn:active { transform: translateY(1px); }
+
+.btn--secondary {
+  background: transparent;
+  color: var(--accent);
+}
+
+/* Groups wrapper */
+.activities__groups {
+  display: grid;
+  gap: 1rem;
+}
+
+/* Single group card */
+.activities__group {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.9rem;
+  box-shadow: var(--shadow);
+}
+
+/* Group header with master checkbox */
+.activities__groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.activities__groupTitle {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+/* List of items */
+.activities__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.activities__item {
+  display: block;
+}
+
+/* Checkbox row */
+.activities__label {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.5rem;
+  transition: background-color 120ms ease;
+}
+
+.activities__label:hover {
+  background: color-mix(in oklab, var(--accent) 6%, transparent);
+}
+
+.activities__name {
+  line-height: 1.2;
+}
+
+/* Loading & error states */
+.activities__loading,
+.activities__error {
+  padding: 0.8rem 1rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.activities__error {
+  border-color: color-mix(in oklab, var(--error) 40%, var(--border));
+  color: var(--error);
+}
+
+/* Save state badge */
+.activities__savestate {
+  justify-self: end;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.activities__collapseIcon {
+  font-size: 0.8rem;
+  margin-right: 0.25rem;
+  user-select: none;
+}
+
+.activities__savestate--saving {
+  opacity: 0.9;
+}
+
+.activities__savestate--saved {
+  color: var(--success);
+  animation: fadehold 1.8s ease;
+}
+
+.activities__savestate--error {
+  color: var(--error);
+}
+
+/* Small animation for "Saved" */
+@keyframes fadehold {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0.7; }
+}

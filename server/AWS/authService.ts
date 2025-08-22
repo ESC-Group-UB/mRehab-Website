@@ -2,6 +2,7 @@ import { CognitoISP } from "./awsConfig";
 import { awsConfig } from "./awsConfig";
 import crypto from "crypto";
 import { uploadUserToDynamoDB } from "./AuthorisedUsersFunctions";
+import { dynamoDB } from "./awsConfig";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -19,7 +20,7 @@ function generateSecretHash(username: string, clientId: string, clientSecret: st
 }
 
 // 📝 Sign Up a New User
-export async function signUpUser(email: string, password: string, givenName: string, familyName: string, gender: string, address: string) {
+export async function signUpUser(email: string, password: string, givenName: string, familyName: string, gender: string, address: string, role: string) {
   const secretHash = generateSecretHash(
     email,
     awsConfig.clientId,
@@ -36,13 +37,78 @@ export async function signUpUser(email: string, password: string, givenName: str
       { Name: "given_name", Value: givenName },
       { Name: "family_name", Value: familyName },
       { Name: "gender", Value: gender },
-      { Name: "address", Value: address }
+      { Name: "address", Value: address },
+      { Name: "custom:role", Value: role }
     ],
   };
 
   // add user to the DynamoDB AuthorizedUsers table
   await uploadUserToDynamoDB(email);
-  return CognitoISP.signUp(params).promise();
+  const result = await CognitoISP.signUp(params).promise();
+  const roleAssigned = await assignRoleToUser(email, role);
+  if (!roleAssigned) {
+    console.log(`Failed to assign role ${role} to user ${email}`);
+  }
+
+  // add user settings
+  createUserSettings(email);
+  return result;
+}
+
+export async function createUserSettings(email: string) {
+  const activities = {
+    "Vertical Bowl": true,
+    "Horizontal Bowl": true,
+    "Horizontal Mug": true,
+    "Vertical Mug": true,
+    "Sip from Mug": true,
+    "Quick Test Mug": true,
+    "Slow Pour Mug": true,
+    "Phone Number": true,
+    "Quick Tap": true,
+  };
+
+  const now = new Date().toISOString();
+
+  const params: AWS.DynamoDB.DocumentClient.PutItemInput = {
+    TableName: "UserSettings",
+    Item: {
+      // 🔑 Adjust PK name if your table uses a different key
+      Username: email.toLowerCase(),
+      Activities: activities,
+      CreatedAt: now,
+      UpdatedAt: now,
+    },
+    // ✅ Don’t overwrite if settings already exist
+    ConditionExpression: "attribute_not_exists(Username)",
+  };
+
+  try {
+    await dynamoDB.put(params).promise();
+    return { ok: true, message: "User settings created." };
+  } catch (err: any) {
+    if (err.code === "ConditionalCheckFailedException") {
+      // Row already exists — this is fine for sign-up flow being retried
+      return { ok: false, message: "Settings already exist for this user." };
+    }
+    console.error("Failed to create user settings:", err);
+    throw err;
+  }
+}
+
+async function assignRoleToUser(email: string, role: string): Promise<boolean> {
+  const params = {
+    UserPoolId: UserPoolId as string,
+    Username: email,
+    GroupName: role,
+  };
+  const result = await CognitoISP.adminAddUserToGroup(params).promise();
+  if (result.$response.error) {
+    console.log(`Failed to assign role ${role} to user ${email}: ${result.$response.error.message}`);
+    return false;
+  }
+  console.log(`✅ Added ${email} to group ${role}`);
+  return true;
 }
 
 // ✅ Confirm sign up with code sent to email

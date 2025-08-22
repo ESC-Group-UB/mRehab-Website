@@ -1,0 +1,42 @@
+.page {
+  background-color: #f9f9f9;
+  font-family: 'Titillium Web', sans-serif;
+}
+
+/* Final Custom CTA */
+.finalCta {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.finalCta h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-main);
+  margin-bottom: 1.5rem;
+}
+
+.finalCta p {
+  font-size: 1.15rem;
+  max-width: 640px;
+  margin: 0 auto 2rem auto;
+  line-height: 1.7;
+  color: #444;
+}
+
+.ctaButton {
+  background-color: #000;
+  color: #fff;
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.ctaButton:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+}

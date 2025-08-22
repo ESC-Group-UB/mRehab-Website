@@ -1,5 +1,6 @@
 import { dynamoDB } from "./awsConfig";
-import {checkIfValidEmail} from "./authService";
+import {checkIfValidEmail, getUsersFromCognito} from "./authService";
+import { get } from "http";
 
 
 export async function uploadUserToDynamoDB(
@@ -152,3 +153,10 @@ export async function getAllowedToViewUsers(
   }
 }
 
+export const getAllowedToViewUsersFromCognito = async (username: string): Promise<Array<{ name: string; email: string }>> => {
+  const users = await getUsersFromCognito();
+  const allowedUsers = await getAllowedToViewUsers(username);
+  console.log(`📄 Retrieved ${allowedUsers.length} allowed to view users for ${username}`); 
+  console.log(allowedUsers)
+  return users.filter(user => allowedUsers.includes(user.email));
+};

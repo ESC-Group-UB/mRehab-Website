@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./login.module.css";
 import { Navbar } from "../../components/Navbar";
-
+import { jwtDecode } from "jwt-decode";
 export default function Login() {
 
   const baseURL = process.env.REACT_APP_BACKEND_API_URL; 
@@ -36,9 +36,17 @@ export default function Login() {
       // Store tokens in localStorage
       localStorage.setItem("idToken", data.IdToken);
       localStorage.setItem("accessToken", data.AccessToken);
-      
-      navigate("/dashboard");
-    } catch (err: any) {
+
+      // Redirect to propper dashboard based on role
+      const decoded: any = jwtDecode(data.IdToken);
+      const groups = decoded["cognito:groups"] || [];
+      console.log("User groups:", groups);
+      if (groups.includes("Provider") || groups.includes("provider")) {
+        navigate("/dashboard");
+      } else if (groups.includes("Patient") || groups.includes("patient")) {
+        navigate("/patient-dashboard");
+      }
+      } catch (err: any) {
       setError(err.message);
     }
   };
