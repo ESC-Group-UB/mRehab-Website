@@ -20,7 +20,7 @@ function generateSecretHash(username: string, clientId: string, clientSecret: st
 }
 
 // 📝 Sign Up a New User
-export async function signUpUser(email: string, password: string, givenName: string, familyName: string, gender: string, address: string, role: string) {
+export async function signUpUser(email: string, password: string, givenName: string, familyName: string, gender: string, address: string, role: string, device: string) {
   const secretHash = generateSecretHash(
     email,
     awsConfig.clientId,
@@ -38,7 +38,7 @@ export async function signUpUser(email: string, password: string, givenName: str
       { Name: "family_name", Value: familyName },
       { Name: "gender", Value: gender },
       { Name: "address", Value: address },
-      { Name: "custom:role", Value: role }
+      { Name: "custom:role", Value: role },
     ],
   };
 
@@ -51,11 +51,11 @@ export async function signUpUser(email: string, password: string, givenName: str
   }
 
   // add user settings
-  createUserSettings(email);
+  createUserSettings(email,device);
   return result;
 }
 
-export async function createUserSettings(email: string) {
+export async function createUserSettings(email: string, device: string) {
   const activities = {
     "Vertical Bowl": true,
     "Horizontal Bowl": true,
@@ -76,6 +76,7 @@ export async function createUserSettings(email: string) {
       // 🔑 Adjust PK name if your table uses a different key
       Username: email.toLowerCase(),
       Activities: activities,
+      Device: device,
       CreatedAt: now,
       UpdatedAt: now,
     },

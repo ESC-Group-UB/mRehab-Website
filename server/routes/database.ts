@@ -91,7 +91,7 @@ router.put("/updateActivities", async(req: Request, res: Response) => {
   console.log("Updating activities for:", email, activities);
   try {
     const result = await updateActivities(email, activities);
-    const cachedKey = `/api/authorizedUsers/user-settings?email=${encodeURIComponent(email)}`;
+    const cachedKey = `/api/aws/user-settings?email=${encodeURIComponent(email)}`;
     await cacheDel(cachedKey);
     console.log(`Cache invalidated for key: ${cachedKey}`);
     res.json(result);
@@ -100,6 +100,7 @@ router.put("/updateActivities", async(req: Request, res: Response) => {
 
 
 router.get("/user-settings", cacheRoute(3600), async (req: Request, res: Response) => {
+  console.log("Fetching user settings for:", req.query);
   const { email } = req.query;
   try {
     const result = await getUserSettings(email as string);

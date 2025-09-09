@@ -24,7 +24,8 @@ export default function ProductInfo() {
         <option>Deluxe</option>
       </select> */}
 
-      <button className={styles.buyBtn}>Buy Now</button>
+        {/*  button should direct to /buy-now/confirm */}
+        <button className={styles.buyBtn} onClick={() => window.location.href = '/buy-now/confirm'}>Buy Now</button>
 
       <DetailsSection
         title="Details"
