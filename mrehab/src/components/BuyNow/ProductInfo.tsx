@@ -7,9 +7,10 @@ export default function ProductInfo() {
     <div className={styles.rightInfo}>
       <h1>mRehab Kit</h1>
       <p className={styles.price}>$59.00</p>
+      {/* removed for demo acuracy
       <div className={styles.stars}>
         ★★★★★ <span className={styles.reviewCount}>(123 reviews)</span>
-      </div>
+      </div> */}
 
       <p className={styles.desc}>
         Experience full recovery powered by our established mRehab Toolkit.

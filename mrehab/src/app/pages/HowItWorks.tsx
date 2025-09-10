@@ -3,7 +3,7 @@ import { Navbar } from "../../components/Navbar";
 import SplitSection from "../../components/SplitSection";
 import StepCard from "../../components/StepCard";
 import GradientCTA from "../../components/GradientCTA";
-import FeatureGridSection from "../../components/FeatureGridSection";
+// import FeatureGridSection from "../../components/FeatureGridSection";
 import styles from "./HowItWorks.module.css";
 
 export function HowItWorks() {
@@ -14,7 +14,7 @@ export function HowItWorks() {
       {/* Hero CTA */}
       <GradientCTA
         title="Smarter Rehab Starts Here"
-        description="Get clinically proven results with expert-designed plans, AI guidance, and smart 3D-printed tools — all from the comfort of your home."
+        description="Get clinically proven results with expert-designed plans, instant guidance, and smart 3D-printed tools, all from the comfort of your home."
         buttonText="Get Started"
         buttonLink="/buy-now"
       />
@@ -22,32 +22,31 @@ export function HowItWorks() {
       {/* Overview */}
       <SplitSection
         title="Rehabilitation, Simplified"
-        description="mRehab blends custom 3D-printed hardware, licensed therapist protocols, and real-time AI feedback — all accessible through a seamless mobile app. No guesswork. No clinic scheduling. Just smarter, proven recovery."
-        imageSrc="/logo512.png"
+        description="mRehab blends custom 3D-printed hardware, functional therapy protocols, and real-time, all accessible through a seamless mobile app. No guesswork. No clinic scheduling. Just smarter, proven recovery."
+        imageSrc="/images/product/product image 1.png"
         imageOnLeft={false}
-        primaryButtonText="Learn More"
       />
 
       {/* Step-by-step process */}
       <section className={styles.grid}>
         <StepCard
-          iconPath="/logo512.png"
-          title="Personalized Assessment"
-          description="Get evaluated in minutes using guided movements and questions. Our AI engine analyzes your mobility to personalize your plan."
-          actionText="Start Assessment"
-          onActionClick={() => {}}
+          title="Smart Motion Tracking"
+          description="Your phone’s sensors monitor every movement with precision to ensure form and progress."
         />
         <StepCard
-          iconPath="/logo512.png"
           title="Tailored Recovery Plan"
-          description="Receive a custom exercise routine and precision-fit 3D-printed tools designed for your current abilities and therapy goals."
+          description="Custom-made tools designed to specifically for your device, shipped to your door."
         />
         <StepCard
-          iconPath="/logo512.png"
-          title="AI-Guided Sessions"
-          description="Use the mRehab app to follow your plan with real-time feedback and visual progress tracking. Stay engaged and accountable."
+          title="Adaptive Rehab Tasks"
+          description="Functional rehab activities designed to improve your specific mobility challenges"
           actionText="See Demo"
-          onActionClick={() => {}}
+          onActionClick={() => {
+        const videoSection = document.querySelector(`.${styles.whyItWorks}`);
+        if (videoSection) {
+          videoSection.scrollIntoView({ behavior: "smooth" });
+        }
+          }}
         />
       </section>
 
@@ -55,18 +54,19 @@ export function HowItWorks() {
       <section className={styles.whyItWorks}>
         <h2>Clinically Proven to Improve Recovery</h2>
         <p className={styles.whySubtitle}>
-          In a 6-week clinical study, patients using mRehab showed a
-          <strong> 30% improvement in motor control</strong> compared to traditional home exercise programs.
+          In a 6-week clinical study, patients using mRehab showed
+          <strong> statistically significant improvements </strong> in motor control compared in stroke patients.
         </p>
-        <ul className={styles.benefits}>
-          <li>✓ Designed in collaboration with licensed therapists</li>
-          <li>✓ Tailored tools and plans, unique to each patient</li>
-          <li>✓ Real-time guidance and progress tracking via AI</li>
-          <li>✓ All-in-one kit shipped to your door</li>
-        </ul>
+        <video width="500" height="300" controls className={styles.demoVideo}>
+          <source src="/images/product/Demo Video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <p className={styles.caption}>
+          Usability Demo of mRehab kit in clinical studys
+        </p>
       </section>
 
-      {/* Coach Section */}
+      {/* Coach Section
       <section className={styles.coachSection}>
         <div className={styles.coachText}>
           <h2>Your AI-Powered Rehab Coach</h2>
@@ -84,10 +84,10 @@ export function HowItWorks() {
         <div className={styles.coachImage}>
           <img src="/images/coach.png" alt="AI Rehab Coach" />
         </div>
-      </section>
+      </section> */}
 
       {/* Feature Grid */}
-      <FeatureGridSection
+      {/* <FeatureGridSection
         sectionTitle="Why mRehab Works"
         features={[
           {
@@ -95,23 +95,23 @@ export function HowItWorks() {
             title: "Smart Motion Tracking",
             description: "Your phone’s sensors monitor every movement with precision to ensure form and progress.",
           },
-          {
-            icon: "/icons/ai.png",
-            title: "AI-Powered Feedback",
-            description: "Our engine analyzes data in real time and adapts your recovery plan instantly.",
-          },
+          // {
+          //   icon: "/icons/ai.png",
+          //   title: "AI-Powered Feedback",
+          //   description: "Our engine analyzes data in real time and adapts your recovery plan instantly.",
+          // },
           {
             icon: "/icons/tools.png",
             title: "3D-Printed Tools",
-            description: "Custom-made tools designed to match your exact mobility needs — shipped to your door.",
+            description: "Custom-made tools designed to specifically for your device, shipped to your door.",
           },
           {
             icon: "/icons/coach.png",
-            title: "Built-in Virtual Coach",
-            description: "Stay motivated and consistent with gentle nudges, tips, and milestone badges.",
+            title: "Adaptive Rehab Tasks",
+            description: "Functional rehab activities designed to improve your specific mobility challenges",
           },
         ]}
-      />
+      /> */}
 
       {/* Final CTA */}
       <section className={styles.cta}>
@@ -119,7 +119,12 @@ export function HowItWorks() {
         <p className={styles.ctaSubtitle}>
           Get your personalized rehab kit and join thousands accelerating their progress with mRehab.
         </p>
-        <button className={styles.ctaButton}>Order Your mRehab Kit</button>
+        <button
+          className={styles.ctaButton}
+          onClick={() => window.location.href = "/buy-now"}
+        >
+          Order Your mRehab Kit
+        </button>
       </section>
     </>
   );
