@@ -3,7 +3,6 @@ import './landing.css';
 import {Navbar} from '../../components/Navbar';
 import { Hero1 } from '../../components/Landing/Hero1';
 import { Features } from '../../components/Landing/Features';
-import { Testimonials } from '../../components/Landing/Testimonials';
 import { ApproachSection } from '../../components/Landing/ApproachSection';
 import ImpactSection from '../../components/Landing/ImpactSection';
 import GradientCTA from '../../components/GradientCTA';
