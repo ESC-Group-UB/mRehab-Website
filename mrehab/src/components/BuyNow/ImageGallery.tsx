@@ -27,7 +27,6 @@ export default function ImageGallery({
               className={`${styles.thumbButton} ${active ? styles.active : ""}`}
               onClick={() => setSelectedImage(src)}
               aria-label={`Select ${video ? "video" : "image"} ${index + 1}`}
-              aria-selected={active}
             >
               {video ? (
                 <div className={styles.videoThumbWrapper}>
