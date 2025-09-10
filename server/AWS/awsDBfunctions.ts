@@ -192,7 +192,7 @@ export async function getUserSettings(email: string) {
     return result.Item; // full settings object
   } catch (err) {
     // cannot find activities
-    await createUserSettings(email);
+    await createUserSettings(email, "Unknown Device");
     const result = await dynamoDB.get(params).promise();
     if (!result.Item) {
       throw new Error(`User settings not found for ${email}`);
