@@ -8,6 +8,7 @@ import {
   getUserSettings
 } from "../AWS/awsDBfunctions";
 import { cacheGet, cacheSet, cacheDel, cacheRoute } from "../cache"; // <- your cache.ts
+import { FormData, uploadInterestToDynamoDB } from "../AWS/intrest";
 
 
 const router = express.Router();
@@ -110,5 +111,25 @@ router.get("/user-settings", cacheRoute(3600), async (req: Request, res: Respons
   } catch (err) {
   }
 })
+
+router.post("/interest", async (req: Request, res: Response) => {
+  const { name, email, phoneCase, caseLink, device, message, role } = req.body;
+  console.log("Received interest form submission:", req.body);
+  const formData: FormData = {
+    name,
+    email,
+    device,
+    phone_case: phoneCase,
+    phone_case_link: caseLink,
+    role,
+    message,
+  };
+  try {
+    await uploadInterestToDynamoDB(formData);
+    res.status(200).json({ message: "Interest form submitted successfully." });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to submit interest form." });
+  }
+});
 
 export default router;

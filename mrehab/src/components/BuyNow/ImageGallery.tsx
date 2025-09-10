@@ -7,6 +7,8 @@ type Props = {
   setSelectedImage: (img: string) => void;
 };
 
+const isVideo = (src: string) => /\.(mp4|webm|ogg)(\?|#|$)/i.test(src);
+
 export default function ImageGallery({
   images,
   selectedImage,
@@ -15,19 +17,64 @@ export default function ImageGallery({
   return (
     <div className={styles.leftImages}>
       <div className={styles.thumbnailList}>
-        {images.map((img, index) => (
-          <img
-            key={index}
-            src={img}
-            alt={`Thumbnail ${index + 1}`}
-            className={`${styles.thumbnail} ${
-              selectedImage === img ? styles.active : ""
-            }`}
-            onClick={() => setSelectedImage(img)}
-          />
-        ))}
+        {images.map((src, index) => {
+          const active = selectedImage === src;
+          const video = isVideo(src);
+          return (
+            <button
+              key={index}
+              type="button"
+              className={`${styles.thumbButton} ${active ? styles.active : ""}`}
+              onClick={() => setSelectedImage(src)}
+              aria-label={`Select ${video ? "video" : "image"} ${index + 1}`}
+              aria-selected={active}
+            >
+              {video ? (
+                <div className={styles.videoThumbWrapper}>
+                  {/* No controls, no autoplay; pointer-events none ensures no accidental play */}
+                  <video
+                    className={styles.thumbnail}
+                    src={src}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    tabIndex={-1}
+                    style={{ pointerEvents: "none" }}
+                    // @ts-ignore for older iOS webviews
+                    webkit-playsinline="true"
+                  />
+                  <span className={styles.playBadge} aria-hidden="true">▶</span>
+                </div>
+              ) : (
+                <img
+                  src={src}
+                  alt={`Thumbnail ${index + 1}`}
+                  className={styles.thumbnail}
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
-      <img src={selectedImage} alt="Main Product" className={styles.mainImage} />
+
+      {/* Main viewer: show video with controls only when selected */}
+      {isVideo(selectedImage) ? (
+        <video
+          src={selectedImage}
+          className={styles.mainMedia}
+          controls
+          playsInline
+          preload="metadata"
+          // @ts-ignore
+          webkit-playsinline="true"
+        />
+      ) : (
+        <img
+          src={selectedImage}
+          alt="Main Product"
+          className={styles.mainMedia}
+        />
+      )}
     </div>
   );
 }

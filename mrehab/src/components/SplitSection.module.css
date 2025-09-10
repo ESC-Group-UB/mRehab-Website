@@ -12,23 +12,21 @@
 }
 
 .imageWrapper {
-  flex: 1;
+  flex: 1 1 300px;
   display: flex;
   justify-content: center;
+  align-items: center;
   min-width: 300px;
   max-width: 600px;
 }
 
 .image {
-    aspect-ratio: 1 / 1; /* square */
+  display: block;
   width: 100%;
-  max-height: 500px;
-  object-fit: cover;
+  height: auto;        /* keep natural aspect ratio */
+  max-height: 500px;   /* optional safety cap */
   border-radius: 12px;
-  /* max-width: 100%;
-  max-height: 500px;
-  height: auto;
-  border-radius: 12px; */
+  object-fit: contain; /* not strictly needed with height:auto, but harmless */
 }
 
 .textContent {

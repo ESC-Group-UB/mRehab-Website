@@ -17,6 +17,7 @@ export default function PatientDashboard() {
   const [filterEndDate, setEndDate] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [name, setName] = useState("");
+  const [hover, setHover] = useState(false);
 
   const handleSignOut = () => {
     localStorage.removeItem("idToken");
@@ -101,6 +102,26 @@ export default function PatientDashboard() {
 
         <hr style={{ margin: "40px 0" }} />
         <AddViewer />
+        {/* button to sign out */}
+      <button
+        onClick={handleSignOut}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        style={{
+          marginTop: "20px",
+          backgroundColor: hover ? "var(--color-main-hover)" : "var(--color-main)",
+          color: "var(--color-white)",
+          padding: "0.9rem 1.8rem",
+          fontWeight: 600,
+          fontSize: "1rem",
+          borderRadius: "8px",
+          border: "none",
+          cursor: "pointer",
+          transition: "background-color 0.3s ease",
+        }}
+      >
+        Sign Out
+      </button>
       </div>
     </>
   );

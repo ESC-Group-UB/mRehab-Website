@@ -6,7 +6,7 @@ export default function ProductInfo() {
   return (
     <div className={styles.rightInfo}>
       <h1>mRehab Kit</h1>
-      <p className={styles.price}>$59.00</p>
+      <p className={styles.price}>$35.00</p>
       {/* removed for demo acuracy
       <div className={styles.stars}>
         ★★★★★ <span className={styles.reviewCount}>(123 reviews)</span>
@@ -26,7 +26,7 @@ export default function ProductInfo() {
       </select> */}
 
         {/*  button should direct to /buy-now/confirm */}
-        <button className={styles.buyBtn} onClick={() => window.location.href = '/buy-now/confirm'}>Buy Now</button>
+        <button className={styles.buyBtn} onClick={() => window.location.href = '/interest-form'}>Buy Now</button>
 
       <DetailsSection
         title="Details"

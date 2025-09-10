@@ -12,6 +12,7 @@ import Signup from './pages/Signup';
 import PatientDashboard from './pages/patientDashboard';
 import BuyNowConfirm from './pages/BuyNowConfirm';
 import BuyNowSucess from './pages/BuyNowSucess';
+import IntrestForm from './pages/IntrestForm';
 
 import ThankYou from './pages/thankyou';
 
@@ -34,6 +35,7 @@ const AppRouter: React.FC = () => (
             <Route path="/login" element={<Login />} /> {/* Adding the Login route */}
             <Route path="/signup" element={<Signup />} /> {/* Adding the Signup route */}
             <Route path="/patient-dashboard" element={<PatientDashboard />} /> {/* Adding the PatientDashboard route */}
+            <Route path="/interest-form" element={<IntrestForm />} /> {/* Adding the Interest Form route */}
             {/* Add more routes as needed */}
         </Routes>
     </Router>
