@@ -13,12 +13,13 @@ const Landing: React.FC = () => {
       <Navbar />
       <Hero1/>
       <Features/>
-      <Testimonials/>
+      {/* <Testimonials/>
+      Removed for demo accuracy */}
       <ApproachSection/>
       <ImpactSection/>
       <GradientCTA
         title="Start Your Recovery Journey"
-        description="Discover how mRehab brings hospital-grade therapy into your living room."
+        description="Discover how mRehab brings clincal-grade therapy into your living room."
         buttonText="Buy Now"
         buttonLink="/buy-now"
       />

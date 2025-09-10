@@ -10,6 +10,9 @@ import Dashboard from './pages/dashboard'; // Importing the Dashboard component
 import Login from './pages/login';
 import Signup from './pages/Signup';
 import PatientDashboard from './pages/patientDashboard';
+import BuyNowConfirm from './pages/BuyNowConfirm';
+import BuyNowSucess from './pages/BuyNowSucess';
+import IntrestForm from './pages/IntrestForm';
 
 import ThankYou from './pages/thankyou';
 
@@ -21,6 +24,9 @@ const AppRouter: React.FC = () => (
             <Route path="/technologies/3Dprinting" element={<Technologies3DPrinting />} />
 ]            <Route path="/thankyou" element={<ThankYou />} />
             <Route path="/buy-now" element={<BuyNow />} />
+            <Route path="/buy-now/confirm" element={<BuyNowConfirm />} /> {/* Adding the BuyNowConfirm route */}
+            <Route path="/buy-now/success" element={<BuyNowSucess />} /> {/* Adding the BuyNowSuccess route */}
+
             <Route path="/for-providers" element={<ForProviders />} />  
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/start" element={<StartNow />} />
@@ -29,6 +35,7 @@ const AppRouter: React.FC = () => (
             <Route path="/login" element={<Login />} /> {/* Adding the Login route */}
             <Route path="/signup" element={<Signup />} /> {/* Adding the Signup route */}
             <Route path="/patient-dashboard" element={<PatientDashboard />} /> {/* Adding the PatientDashboard route */}
+            <Route path="/interest-form" element={<IntrestForm />} /> {/* Adding the Interest Form route */}
             {/* Add more routes as needed */}
         </Routes>
     </Router>

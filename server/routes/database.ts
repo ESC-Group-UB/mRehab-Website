@@ -8,6 +8,7 @@ import {
   getUserSettings
 } from "../AWS/awsDBfunctions";
 import { cacheGet, cacheSet, cacheDel, cacheRoute } from "../cache"; // <- your cache.ts
+import { FormData, uploadInterestToDynamoDB } from "../AWS/intrest";
 
 
 const router = express.Router();
@@ -91,7 +92,7 @@ router.put("/updateActivities", async(req: Request, res: Response) => {
   console.log("Updating activities for:", email, activities);
   try {
     const result = await updateActivities(email, activities);
-    const cachedKey = `/api/authorizedUsers/user-settings?email=${encodeURIComponent(email)}`;
+    const cachedKey = `/api/aws/user-settings?email=${encodeURIComponent(email)}`;
     await cacheDel(cachedKey);
     console.log(`Cache invalidated for key: ${cachedKey}`);
     res.json(result);
@@ -100,6 +101,7 @@ router.put("/updateActivities", async(req: Request, res: Response) => {
 
 
 router.get("/user-settings", cacheRoute(3600), async (req: Request, res: Response) => {
+  console.log("Fetching user settings for:", req.query);
   const { email } = req.query;
   try {
     const result = await getUserSettings(email as string);
@@ -109,5 +111,25 @@ router.get("/user-settings", cacheRoute(3600), async (req: Request, res: Respons
   } catch (err) {
   }
 })
+
+router.post("/interest", async (req: Request, res: Response) => {
+  const { name, email, phoneCase, caseLink, device, message, role } = req.body;
+  console.log("Received interest form submission:", req.body);
+  const formData: FormData = {
+    name,
+    email,
+    device,
+    phone_case: phoneCase,
+    phone_case_link: caseLink,
+    role,
+    message,
+  };
+  try {
+    await uploadInterestToDynamoDB(formData);
+    res.status(200).json({ message: "Interest form submitted successfully." });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to submit interest form." });
+  }
+});
 
 export default router;

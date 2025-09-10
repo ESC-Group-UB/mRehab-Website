@@ -1,2 +1,3 @@
 mrehab/.env.production
 server/.env.production
+/server/dist

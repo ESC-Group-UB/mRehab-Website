@@ -73,66 +73,66 @@ export function PatientSidebar({
   };
 
   return (
-    <Sidebar
-      collapsed={collapsed}
-      width="260px"
-      collapsedWidth="60px"
-      backgroundColor="#f9f9f9"
-      className={styles.sidebar}
+  <Sidebar
+    collapsed={collapsed}
+    width="260px"
+    collapsedWidth="60px"
+    backgroundColor="#f9f9f9"
+    className={styles.sidebar}
+  >
+    {/* Sidebar header with logo */}
+    <button
+      type="button"
+      onClick={() => setCollapsed(c => !c)}
+      className={collapsed ? styles.brandSmall : styles.brand}
+      aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
     >
-      <Menu>
-        <MenuItem onClick={() => setCollapsed(!collapsed)}>
-          {collapsed ? "👨🏻‍⚕️" :  "Mrehab"}
+      <div className={styles.brandInner}>
+        <img src="/mrehabIcon.png" alt="mRehab Logo" className={styles.brandImg} />
+      </div>
+    </button>
+
+    <Menu>
+      {collapsed ? (
+        <MenuItem onClick={() => setCollapsed(false)}>🔍</MenuItem>
+      ) : (
+        <MenuItem>
+          <input
+            type="text"
+            placeholder="Search patient..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={styles.searchInput}
+          />
         </MenuItem>
+      )}
 
-        {collapsed ? (
-          <MenuItem onClick={() => setCollapsed(false)}>🔍</MenuItem>
-        ) : (
-          <MenuItem>
-            <input
-              type="text"
-              placeholder="Search patient..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className={styles.searchInput}
-            />
-          </MenuItem>
-        )}
+      {collapsed ? (
+        <MenuItem onClick={() => setCollapsed(false)}>👥</MenuItem>
+      ) : (
+        <SubMenu
+          onClick={() => setPatientsOpen(!patientsOpen)}
+          label={"Patients"}
+          open={patientsOpen}
+        >
+          {displayedPatients.map((p, i) => (
+            <MenuItem
+              key={i}
+              active={p.email === selectedPatient}
+              onClick={() => onSelectPatient(p.email)}
+            >
+              {p.name || p.email}
+            </MenuItem>
+          ))}
+        </SubMenu>
+      )}
 
-        {collapsed ? (
-            <MenuItem onClick={() => setCollapsed(false)}>👥</MenuItem>
-        ) : (
-            <SubMenu
-            onClick={() => setPatientsOpen(!patientsOpen)}
-            label={"Patients"}
-            open={patientsOpen} >
-              {displayedPatients.map((p, i) => (
-                <MenuItem
-                  key={i}
-                  active={p.email === selectedPatient}
-                  onClick={() => onSelectPatient(p.email)}
-                >
-                  {p.name || p.email}
-                </MenuItem>
-              ))}
-            </SubMenu>
-        )}
-
-        {collapsed ? (
-            <MenuItem onClick={() => setCollapsed(false)}>⚙️</MenuItem>
-        ) : (
-            <SubMenu label={"Settings"}>
-                <MenuItem onClick={() => window.location.href = "/dashboard/settings"}>👤 Profile</MenuItem>
-                <MenuItem onClick={() => window.location.href = "/dashboard/billing"}>💳 Billing</MenuItem>
-            </SubMenu>
-        )}
-        
-        {collapsed ? (
-            <MenuItem onClick={() => setCollapsed(false)}>🚪</MenuItem>
-        ) : (
-            <MenuItem onClick={handleSignOut}>🚪 Sign Out</MenuItem>
-        )}
-      </Menu>
-    </Sidebar>
-  );
+      {collapsed ? (
+        <MenuItem onClick={() => setCollapsed(false)}>🚪</MenuItem>
+      ) : (
+        <MenuItem onClick={handleSignOut}>🚪 Sign Out</MenuItem>
+      )}
+    </Menu>
+  </Sidebar>
+);
 }

@@ -5,10 +5,10 @@ import ProductInfo from "../../components/BuyNow/ProductInfo";
 import styles from "./BuyNow.module.css";
 
 const images = [
-  "/logo512.png",
-  "/logo512.png",
-  "/logo512.png",
-  "/logo512.png",
+  "/images/product/product image 1.png",
+  "/images/product/Mrehabbowl.png",
+  "/images/product/mrehabmug.png",
+  "/images/product/mrehabVideo.mp4",
 ];
 
 export function BuyNow() {

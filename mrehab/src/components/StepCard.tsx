@@ -23,9 +23,11 @@ export default function StepCard({
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <div className={styles.iconWrapper}>
-            <img src={iconPath} alt={`icon`} className={styles.icon} />
-        </div>
+        {iconPath && (
+          <div className={styles.iconWrapper}>
+            <img src={iconPath} alt="icon" className={styles.icon} />
+          </div>
+        )}
       </div>
       <h3 className={styles.title}>{title}</h3>
       <p className={styles.desc}>{description}</p>

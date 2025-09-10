@@ -23,12 +23,15 @@ export function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar-left">
-        <a href="/" className="logo">mRehab</a>
+        <a href="/" className="logo">
+          <img src="/mrehabIcon.png" alt="mRehab Logo" height="35" />
+        </a>
       </div>
 
       <nav className="navbar-center">
         <a href="/how-it-works">How It Works</a>
-        <a href="/user-stories">User Stories</a>
+        {/* removed for demo accuracy
+        <a href="/user-stories">User Stories</a> */}
         <a href="/for-providers">For Providers</a>
         <a href="/buy-now">Buy Now</a>
       </nav>

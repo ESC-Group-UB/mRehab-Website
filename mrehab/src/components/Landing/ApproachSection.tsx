@@ -9,7 +9,7 @@ export function ApproachSection() {
           <h2>A Smarter, Simpler Way to Recover</h2>
           <p>
             Feel confident and supported every step of the way. mRehab makes it
-            easy to stay on track with your recovery — right from home.
+            easy to stay on track with your recovery, right from home.
           </p>
           <div className="approach-features">
             <div className="feature">
