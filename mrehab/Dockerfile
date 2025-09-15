@@ -27,9 +27,7 @@ COPY --from=builder /app/build ./build
 # Expose port
 EXPOSE 3000
 
-# Healthcheck
-# HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-#   CMD curl --fail http://localhost:3000/ || exit 1
+
 
 # Run serve with debug logs
 CMD ["serve", "-s", "build", "-l", "0.0.0.0:3000", "--debug"]
