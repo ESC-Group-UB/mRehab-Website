@@ -31,6 +31,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
   CMD curl --fail http://localhost:3000/ || exit 1
 
-
-# Run serve with debug logs
-CMD ["serve", "-s", "build", "-l", "0.0.0.0:3000", "--debug"]
+# ✅ Correct serve command
+CMD ["serve", "-s", "build", "-l", "tcp://0.0.0.0:3000", "--debug"]
