@@ -27,6 +27,9 @@ COPY --from=builder /app/build ./build
 # Expose port
 EXPOSE 3000
 
+# Add healthcheck so Coolify knows app is alive
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+  CMD curl --fail http://localhost:3000/ || exit 1
 
 
 # Run serve with debug logs
