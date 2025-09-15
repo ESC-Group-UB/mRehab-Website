@@ -1,13 +1,35 @@
+# --- Build stage ---
 FROM node:18-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm install --frozen-lockfile
-COPY . .
-RUN npm run build
 
-FROM node:18-alpine
+# Install deps
+COPY package*.json ./
+RUN echo "📦 Installing dependencies..." \
+ && npm ci \
+ && echo "✅ Dependencies installed"
+
+# Copy source and build
+COPY . .
+RUN echo "🚀 Building app..." \
+ && npm run build \
+ && echo "✅ Build finished"
+
+# --- Production stage ---
+FROM node:18-alpine AS runner
 WORKDIR /app
-RUN npm install -g serve
+
+# Install serve and curl for health/debugging
+RUN npm install -g serve && apk add --no-cache curl
+
+# Copy build output
 COPY --from=builder /app/build ./build
+
+# Expose port
 EXPOSE 3000
-CMD ["serve", "-s", "build", "-l", "3000"]
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+  CMD curl --fail http://localhost:3000/ || exit 1
+
+# Run serve with debug logs
+CMD ["serve", "-s", "build", "-l", "3000", "--listen", "0.0.0.0", "--debug"]
