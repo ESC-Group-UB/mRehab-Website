@@ -12,6 +12,7 @@ import AuthorizedUserRotes from "./routes/AuthorizedUsers";
 import uploadSessionRoutes from "./routes/uploadSession";
 import stripeRoutes from "./routes/stripe";
 import stripeWebhookRoutes from "./routes/stripeWebhooks";
+import ordersRoutes from "./routes/orders";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,6 +31,7 @@ app.use("/api/aws", awsRoutes);
 app.use("/api/authorizedUsers", AuthorizedUserRotes);
 app.use("/api/uploadSession", uploadSessionRoutes);
 app.use("/api/stripe", stripeRoutes);
+app.use("/api/orders", ordersRoutes);
 
 // Health check
 app.get("/api/hello", (_req, res) => {

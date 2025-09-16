@@ -37,6 +37,14 @@ export default function Login() {
       localStorage.setItem("idToken", data.IdToken);
       localStorage.setItem("accessToken", data.AccessToken);
 
+      //check to see if redirect path is set
+      const redirectPath = localStorage.getItem("redirectAfterLogin");
+      if (redirectPath) {
+        localStorage.removeItem("redirectAfterLogin");
+        window.location.href = redirectPath;
+        return;
+      }
+
       // Redirect to propper dashboard based on role
       const decoded: any = jwtDecode(data.IdToken);
       const groups = decoded["cognito:groups"] || [];

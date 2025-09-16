@@ -93,3 +93,29 @@ export const uploadOrder = async (order: Order): Promise<void> => {
     throw err;
   }
 };
+
+export async function ordersByEmail(email: string): Promise<Order[]> {
+  if (!email) {
+    throw new Error("ordersByEmail: email is required");
+  }
+
+  const params = {
+    TableName: "Orders",
+    IndexName: "email-index", // <-- requires a GSI on "email" (see below)
+    KeyConditionExpression: "#email = :email",
+    ExpressionAttributeNames: {
+      "#email": "email",
+    },
+    ExpressionAttributeValues: {
+      ":email": email,
+    },
+  };
+
+  try {
+    const result = await dynamoDB.query(params).promise();
+    return (result.Items as Order[]) || [];
+  } catch (err) {
+    console.error("❌ Failed to fetch orders by email:", err);
+    throw err;
+  }
+}
