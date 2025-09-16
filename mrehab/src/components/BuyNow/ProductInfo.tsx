@@ -1,6 +1,7 @@
 import React from "react";
 import DetailsSection from "./DetailsSection";
 import styles from "./ProductInfo.module.css";
+import { BuyNowButton } from "../BuyNow/BuyNowButton";
 
 export default function ProductInfo() {
   return (
@@ -26,8 +27,7 @@ export default function ProductInfo() {
       </select> */}
 
         {/*  button should direct to /buy-now/confirm */}
-        <button className={styles.buyBtn} onClick={() => window.location.href = '/interest-form'}>Buy Now</button>
-
+      <BuyNowButton />
       <DetailsSection
         title="Details"
         content="Includes 2 custom-fit devices designed to support common therapy goals, 1 Quickstart Guide, access to our mobile app, and a storage case."

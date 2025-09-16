@@ -5,6 +5,7 @@ import FiltersBar from "../../components/DashBoard/FiltersBar";
 import AccuracyGraph from "../../components/AccuracyGraph";
 import AddViewer from "../../components/DashBoard/addViewer";
 import ResultsSection from "../../components/DashBoard/ResultsSection";
+import OrdersHistory from "../../components/DashBoard/OrderHistory";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -78,6 +79,8 @@ export default function PatientDashboard() {
 
       <div style={{ padding: "30px", maxWidth: "1000px", margin: "0 auto" }}>
         <h1>Welcome {name}</h1>
+
+        <OrdersHistory />
 
         <FiltersBar
           filterHand={filterHand}

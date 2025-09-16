@@ -2,6 +2,7 @@
 import express, { Request, Response } from "express";
 import Stripe from "stripe";
 import {buildOrderFromSession, Order, uploadOrder} from "../AWS/orders";
+import {sendOrderReceivedEmail, sendInternalOrderNotification} from "../utilities/OrderEmails";
 
 
 const webhookRouter = express.Router();
@@ -31,15 +32,19 @@ webhookRouter.post(
 
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
-      console.log(session);
+      // console.log(session);
       console.log("✅ checkout.session.comple   ted:", session.id);
 
       const order:Order = buildOrderFromSession(session);
-      console.log("📦 Order to save:", order);
+      console.log("📦 Order to save:",  );
 
       // TODO: save order to DB (DynamoDB, etc.)
         uploadOrder(order);
-      
+      // TODO: send confirmation email to customer
+        sendOrderReceivedEmail(order.email ?? "jsmith720847@gmail.com", order.id);
+        sendInternalOrderNotification(
+          order
+        );
     }
 
     res.sendStatus(200);

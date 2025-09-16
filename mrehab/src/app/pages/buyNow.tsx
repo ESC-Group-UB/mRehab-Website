@@ -13,6 +13,7 @@ const images = [
 
 export function BuyNow() {
   const [selectedImage, setSelectedImage] = useState(images[0]);
+  
 
   return (
     <>
