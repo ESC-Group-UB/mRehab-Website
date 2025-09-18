@@ -1,5 +1,5 @@
 import Stripe from "stripe"
-import { sendEmail } from "../utilities/mailer";
+import sendEmail  from "../utilities/mailer";
 
 
 interface CheckoutEventData {
