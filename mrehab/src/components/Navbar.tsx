@@ -13,6 +13,7 @@ export function Navbar() {
   const menuBtnRef = useRef<HTMLButtonElement | null>(null);
   const menuPanelRef = useRef<HTMLDivElement | null>(null);
 
+  // Decode JWT once on mount; keep existing logic
   useEffect(() => {
     const idToken = localStorage.getItem("idToken");
     if (!idToken) return;
@@ -25,6 +26,7 @@ export function Navbar() {
       }
       setLoggedIn(true);
 
+      // Optional avatar/initials if available; graceful fallbacks
       const picture = decoded?.picture || decoded?.avatar_url || null;
       const name: string =
         decoded?.name ||
@@ -40,10 +42,11 @@ export function Navbar() {
         setInitials((first + second).toUpperCase());
       }
     } catch {
-      /* ignore decode issues */
+      /* ignore decode errors to avoid breaking navbar */
     }
   }, []);
 
+  // Subtle depth polish on scroll
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 2);
     onScroll();
@@ -59,7 +62,7 @@ export function Navbar() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  // Outside click to close
+  // Close on outside click/tap
   useEffect(() => {
     const onPointerDown = (e: PointerEvent) => {
       const t = e.target as Node;
@@ -76,7 +79,7 @@ export function Navbar() {
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [menuOpen, closeMenu]);
 
-  // Escape to close
+  // Close on Escape
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeMenu();
@@ -85,6 +88,7 @@ export function Navbar() {
     return () => document.removeEventListener("keydown", onKey);
   }, [closeMenu]);
 
+  // Keyboard toggle for the Menu button
   const onMenuKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -102,7 +106,7 @@ export function Navbar() {
         </a>
       </div>
 
-      {/* Single, unified actions for ALL breakpoints */}
+      {/* Unified actions (Menu + Avatar) for all breakpoints */}
       <div className="actions">
         <button
           ref={menuBtnRef}
@@ -122,15 +126,29 @@ export function Navbar() {
             viewBox="0 0 20 20"
             aria-hidden="true"
           >
-            <path d="M5 7l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="2" />
+            <path
+              d="M5 7l5 5 5-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
 
-        <a href={avatarHref} className="avatar-btn" aria-label="Profile">
+        {/* Brand-matched avatar when no image; avatar is the sole auth entry point */}
+        <a
+          href={avatarHref}
+          className={`avatar-btn ${avatarUrl ? "has-img" : "brand"}`}
+          aria-label="Profile"
+        >
           {avatarUrl ? (
             <img className="avatar-img" src={avatarUrl} alt="" />
           ) : initials ? (
-            <span className="avatar-initials" aria-hidden="true">{initials}</span>
+            <span className="avatar-initials" aria-hidden="true">
+              {initials}
+            </span>
           ) : (
             <svg
               className="avatar-icon"
@@ -165,23 +183,7 @@ export function Navbar() {
         <a role="menuitem" tabIndex={-1} href="/buy-now" onClick={onMenuLinkClick}>
           Buy Now
         </a>
-
-        {/* When logged out, show Login quick action aligned with palette */}
-        {!loggedIn ? (
-          <a role="menuitem" tabIndex={-1} href="/login" className="menu-cta" onClick={onMenuLinkClick}>
-            Login
-          </a>
-        ) : (
-          <a
-            role="menuitem"
-            tabIndex={-1}
-            href={providerDashboard ? "/dashboard" : "/patient-dashboard"}
-            className="menu-cta"
-            onClick={onMenuLinkClick}
-          >
-            Dashboard
-          </a>
-        )}
+        {/* Intentionally no Login/Dashboard here; avatar handles auth */}
       </div>
     </header>
   );

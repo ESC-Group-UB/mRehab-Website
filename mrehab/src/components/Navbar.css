@@ -1,6 +1,6 @@
 @import url('../colors.css');
 
-/* ================= Base / Desktop+Mobile (unified) ================= */
+/* ================= Base (unified for desktop & mobile) ================= */
 .navbar {
   position: sticky;
   top: 0;
@@ -8,19 +8,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.85rem 5%;
+  padding: 0.6rem 5%; /* slightly thinner but comfy */
   background-color: var(--color-white);
   border-bottom: 1px solid #eee;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-  transition: box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
+  transition: box-shadow 150ms ease, border-color 150ms ease, background-color 150ms ease;
   font-family: 'Segoe UI', sans-serif;
-  will-change: box-shadow, background-color;
-  backdrop-filter: saturate(160%) blur(8px); /* subtle polish, safe fallback */
+  backdrop-filter: saturate(160%) blur(8px); /* subtle polish w/ fallback */
 }
 
 .navbar.scrolled {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.07);
-  border-bottom-color: #e8e8e8;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+  border-bottom-color: #e9e9e9;
 }
 
 .navbar-left .logo {
@@ -31,33 +30,34 @@
   font-weight: 700;
   color: var(--color-main);
   text-decoration: none;
-  transform: translateZ(0); /* crisper hover on some GPUs */
+  transform: translateZ(0);
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.55rem;
 }
 
-/* ================ Menu Button ================ */
+/* ================= Menu Button ================= */
 .menu-button {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.52rem 0.9rem;
+  gap: 0.38rem;
+  padding: 0.45rem 0.8rem; /* tighter, still ≥ 40px with min-height */
+  min-height: 40px;
   font: inherit;
   color: var(--text-color);
   background: linear-gradient(180deg, #fff, #fafafa);
   border: 1px solid #e6e6e6;
   border-radius: 12px;
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  transition: transform 120ms ease, box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
 }
 
 .menu-button:hover {
-  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-  border-color: #e0e0e0;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+  border-color: #e1e1e1;
   transform: translateY(-1px);
 }
 
@@ -72,18 +72,21 @@
 
 .menu-label {
   font-weight: 700;
-  font-size: 0.96rem;
+  font-size: 0.95rem;
   letter-spacing: 0.2px;
-  color: var(--text-color);
 }
 
-.chevron { transition: transform 140ms ease; }
-.chevron.open { transform: rotate(180deg); }
+.chevron {
+  transition: transform 120ms cubic-bezier(.2,.8,.2,1);
+}
+.chevron.open {
+  transform: rotate(180deg);
+}
 
-/* ================ Avatar ================ */
+/* ================= Avatar ================= */
 .avatar-btn {
-  width: 44px;
-  height: 44px;
+  width: 40px; /* slightly smaller; still a11y-safe */
+  height: 40px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -92,12 +95,12 @@
   border: 1px solid #e6e6e6;
   background: #fafafa;
   overflow: hidden;
-  transition: transform 120ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  transition: transform 120ms ease, box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
 }
 
 .avatar-btn:hover {
-  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-  border-color: #e0e0e0;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+  border-color: #e1e1e1;
   transform: translateY(-1px);
 }
 
@@ -106,31 +109,55 @@
   outline-offset: 2px;
 }
 
-.avatar-img { width: 100%; height: 100%; object-fit: cover; }
+/* Brand-colored avatar when no image to match your red/pink palette */
+.avatar-btn.brand {
+  background: linear-gradient(135deg, var(--color-main), #e60583);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 6px 14px rgba(230, 5, 131, 0.24);
+}
+.avatar-btn.brand:hover {
+  box-shadow: 0 10px 22px rgba(230, 5, 131, 0.30);
+}
+.avatar-btn.brand .avatar-initials,
+.avatar-btn.brand .avatar-icon {
+  color: #fff;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .avatar-initials {
   font-weight: 800;
-  font-size: 0.9rem;
-  color: var(--color-main);
+  font-size: 0.88rem;
   letter-spacing: 0.4px;
+  color: var(--color-main);
 }
-.avatar-icon { display: block; }
 
-/* ================ Dropdown Panel ================ */
+.avatar-icon {
+  display: block;
+  color: var(--text-color);
+}
+
+/* ================= Dropdown Panel ================= */
 .dropdown-panel {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 8px);
   right: 5%;
   background: var(--color-white);
   border: 1px solid #eee;
-  border-radius: 14px;
-  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.10);
-  min-width: 240px;
-  padding: 0.35rem;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+  min-width: 220px;
+  padding: 0.3rem;
   opacity: 0;
   transform: translateY(-6px) scale(0.98);
   transform-origin: top right;
   pointer-events: none;
-  transition: opacity 140ms ease, transform 140ms ease;
+  transition: opacity 120ms ease, transform 120ms ease, box-shadow 120ms ease;
   z-index: 101;
 }
 
@@ -142,12 +169,12 @@
 
 .dropdown-panel a {
   display: block;
-  padding: 0.7rem 0.8rem;
-  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  border-radius: 9px;
   text-decoration: none;
   color: var(--text-color);
   font-weight: 600;
-  font-size: 0.98rem;
+  font-size: 0.96rem;
   transition: background-color 120ms ease, color 120ms ease;
 }
 
@@ -157,21 +184,7 @@
   outline: none;
 }
 
-/* Prominent CTA inside menu that matches your gradient tokening */
-.menu-cta {
-  margin-top: 0.25rem;
-  background: linear-gradient(135deg, var(--color-main), #e60583);
-  color: #fff !important;
-  text-align: center;
-  box-shadow: 0 6px 16px rgba(230, 5, 131, 0.28);
-}
-.menu-cta:hover,
-.menu-cta:focus-visible {
-  background: linear-gradient(135deg, var(--color-main), #e60583);
-  box-shadow: 0 10px 24px rgba(230, 5, 131, 0.35);
-}
-
-/* ================ Reduced Motion ================ */
+/* ================= Reduced Motion ================= */
 @media (prefers-reduced-motion: reduce) {
   .navbar,
   .menu-button,
@@ -182,8 +195,8 @@
   }
 }
 
-/* ================ Responsive polish (optional tweaks) ================ */
+/* ================= Mobile tweak ================= */
 @media (max-width: 768px) {
-  .navbar { padding: 0.75rem 5%; }
-  .dropdown-panel { min-width: 210px; }
+  .navbar { padding: 0.55rem 5%; }
+  .dropdown-panel { min-width: 200px; }
 }
