@@ -64,7 +64,7 @@
 /* Mobile sizing tweaks */
 @media (max-width: 900px) {
   .buyBtn {
-    min-width: 0;              /* allow full width in sticky container */
+    max-width: 50%;
     padding: 0.95rem 1rem;
     font-size: 1rem;
   }
