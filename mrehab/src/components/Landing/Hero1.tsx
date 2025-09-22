@@ -14,7 +14,7 @@ export function Hero1() {
           from the comfort of your home.
         </p>
         <div className="hero-buttons">
-          <Link to="https://forms.gle/ccswQgWvNDRCiu2U9" className="btn primary">
+          <Link to="/buy-now" className="btn primary">
             Get the mRehab Starter Kit
           </Link>
           <Link to="/how-it-works" className="btn secondary">

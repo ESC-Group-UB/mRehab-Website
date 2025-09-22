@@ -15,8 +15,8 @@ export default function ImageGallery({
   setSelectedImage,
 }: Props) {
   return (
-    <div className={styles.leftImages}>
-      <div className={styles.thumbnailList}>
+    <section className={styles.leftImages} aria-label="Product media gallery">
+      <div className={styles.thumbnailList} role="listbox" aria-label="Thumbnails">
         {images.map((src, index) => {
           const active = selectedImage === src;
           const video = isVideo(src);
@@ -24,13 +24,14 @@ export default function ImageGallery({
             <button
               key={index}
               type="button"
+              role="option"
+              aria-selected={active}
+              aria-label={`Select ${video ? "video" : "image"} ${index + 1}`}
               className={`${styles.thumbButton} ${active ? styles.active : ""}`}
               onClick={() => setSelectedImage(src)}
-              aria-label={`Select ${video ? "video" : "image"} ${index + 1}`}
             >
               {video ? (
                 <div className={styles.videoThumbWrapper}>
-                  {/* No controls, no autoplay; pointer-events none ensures no accidental play */}
                   <video
                     className={styles.thumbnail}
                     src={src}
@@ -39,7 +40,7 @@ export default function ImageGallery({
                     preload="metadata"
                     tabIndex={-1}
                     style={{ pointerEvents: "none" }}
-                    // @ts-ignore for older iOS webviews
+                    // @ts-ignore (older iOS webviews)
                     webkit-playsinline="true"
                   />
                   <span className={styles.playBadge} aria-hidden="true">▶</span>
@@ -49,6 +50,7 @@ export default function ImageGallery({
                   src={src}
                   alt={`Thumbnail ${index + 1}`}
                   className={styles.thumbnail}
+                  loading="lazy"
                 />
               )}
             </button>
@@ -56,24 +58,28 @@ export default function ImageGallery({
         })}
       </div>
 
-      {/* Main viewer: show video with controls only when selected */}
-      {isVideo(selectedImage) ? (
-        <video
-          src={selectedImage}
-          className={styles.mainMedia}
-          controls
-          playsInline
-          preload="metadata"
-          // @ts-ignore
-          webkit-playsinline="true"
-        />
-      ) : (
-        <img
-          src={selectedImage}
-          alt="Main Product"
-          className={styles.mainMedia}
-        />
-      )}
-    </div>
+      {/* Main viewer inside a fixed-ratio frame to prevent layout shift */}
+      <div className={styles.mediaFrame}>
+        {isVideo(selectedImage) ? (
+          <video
+            src={selectedImage}
+            className={styles.mainMedia}
+            controls
+            playsInline
+            preload="metadata"
+            // @ts-ignore
+            webkit-playsinline="true"
+          />
+        ) : (
+          <img
+            src={selectedImage}
+            alt="Main Product"
+            className={styles.mainMedia}
+            loading="eager"
+            decoding="async"
+          />
+        )}
+      </div>
+    </section>
   );
 }

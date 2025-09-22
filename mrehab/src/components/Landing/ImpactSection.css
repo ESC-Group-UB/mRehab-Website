@@ -42,3 +42,78 @@
   font-size: 1rem;
   color: var(--color-text-dark);
 }
+
+/* =========================
+   RESPONSIVE STYLES
+   ========================= */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .impact-heading h2 {
+    font-size: 2rem;
+  }
+  .impact-heading p {
+    font-size: 1rem;
+  }
+  .stat-card h3 {
+    font-size: 2.2rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .impact-section {
+    padding: 4rem 1.5rem;
+  }
+
+  .impact-heading h2 {
+    font-size: 1.8rem;
+    line-height: 1.3;
+  }
+
+  .impact-heading p {
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  .impact-stats {
+    gap: 2rem;
+  }
+
+  .stat-card {
+    flex: 1 1 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .stat-card h3 {
+    font-size: 2rem;
+  }
+
+  .stat-card p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 480px) {
+  .impact-section {
+    padding: 3rem 1rem;
+  }
+
+  .impact-heading h2 {
+    font-size: 1.5rem;
+  }
+
+  .impact-heading p {
+    font-size: 0.9rem;
+  }
+
+  .stat-card h3 {
+    font-size: 1.8rem;
+  }
+
+  .stat-card p {
+    font-size: 0.85rem;
+  }
+}

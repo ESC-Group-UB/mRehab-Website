@@ -25,18 +25,18 @@ export function BuyNowButton() {
   }, []);
 
   const handleCheckout = useCallback(async () => {
+    if (processingCheckout) return; // guard against rapid taps
     setError(null);
 
-    // 1️⃣ Check login
+    // 1) Check login
     const idToken = localStorage.getItem("idToken");
     if (!idToken) {
-      // Save redirect path and go to login
       localStorage.setItem("redirectAfterLogin", window.location.pathname);
       window.location.href = "/login";
       return;
     }
 
-    // 2️⃣ Decode user
+    // 2) Decode user
     const user = decodeJwtPayload(idToken);
     if (!user) {
       localStorage.setItem("redirectAfterLogin", window.location.pathname);
@@ -55,7 +55,7 @@ export function BuyNowButton() {
     setProcessingCheckout(true);
 
     try {
-      // 3️⃣ Optionally fetch device info from backend
+      // 3) Optionally fetch device info from backend
       let finalDevice = device;
       if (!finalDevice) {
         try {
@@ -69,7 +69,7 @@ export function BuyNowButton() {
         }
       }
 
-      // 4️⃣ Create Stripe checkout session
+      // 4) Create Stripe checkout session
       const res = await fetch(`${apiBase}api/stripe/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,7 +90,7 @@ export function BuyNowButton() {
     } finally {
       setProcessingCheckout(false);
     }
-  }, [apiBase]);
+  }, [apiBase, processingCheckout]);
 
   return (
     <>
@@ -98,10 +98,12 @@ export function BuyNowButton() {
         className={styles.buyBtn}
         onClick={handleCheckout}
         disabled={processingCheckout}
+        aria-busy={processingCheckout}
+        aria-live="polite"
       >
         {processingCheckout ? "Processing…" : "Buy Now"}
       </button>
-      {error && <p style={{ color: "red", marginTop: "8px" }}>{error}</p>}
+      {error && <p className={styles.errorMsg}>{error}</p>}
     </>
   );
 }

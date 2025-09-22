@@ -5,13 +5,9 @@ import { BuyNowButton } from "../BuyNow/BuyNowButton";
 
 export default function ProductInfo() {
   return (
-    <div className={styles.rightInfo}>
-      <h1>mRehab Kit</h1>
-      <p className={styles.price}>$35.00</p>
-      {/* removed for demo acuracy
-      <div className={styles.stars}>
-        ★★★★★ <span className={styles.reviewCount}>(123 reviews)</span>
-      </div> */}
+    <aside className={styles.rightInfo} aria-label="Product information">
+      <h1 className={styles.title}>mRehab Kit</h1>
+      <p className={styles.price} aria-label="Price">$35.00</p>
 
       <p className={styles.desc}>
         Experience full recovery powered by our established mRehab Toolkit.
@@ -19,15 +15,11 @@ export default function ProductInfo() {
         guidance for home rehab success.
       </p>
 
-        {/* only have 1 version for now */}
-      {/* <label htmlFor="type-select">Type</label>
-      <select id="type-select">
-        <option>Standard</option>
-        <option>Deluxe</option>
-      </select> */}
+      {/* Desktop / tablet buy button (hidden on mobile, where we show a sticky bar) */}
+      <div className={styles.inlineBuy}>
+        <BuyNowButton />
+      </div>
 
-        {/*  button should direct to /buy-now/confirm */}
-      <BuyNowButton />
       <DetailsSection
         title="Details"
         content="Includes 2 custom-fit devices designed to support common therapy goals, 1 Quickstart Guide, access to our mobile app, and a storage case."
@@ -40,6 +32,14 @@ export default function ProductInfo() {
         title="Returns"
         content="Because each mRehab kit is made specifically for your needs, we do not offer returns or exchanges."
       />
-    </div>
+
+      {/* Mobile sticky Buy bar */}
+      <div className={styles.stickyBar} role="region" aria-label="Buy now">
+        <div className={styles.stickyInner}>
+          <span className={styles.stickyPrice}>$35.00</span>
+          <BuyNowButton />
+        </div>
+      </div>
+    </aside>
   );
 }

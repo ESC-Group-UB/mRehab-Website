@@ -13,19 +13,18 @@ const images = [
 
 export function BuyNow() {
   const [selectedImage, setSelectedImage] = useState(images[0]);
-  
 
   return (
     <>
       <Navbar />
-      <div className={styles.buyContainer}>
+      <main className={styles.buyContainer}>
         <ImageGallery
           images={images}
           selectedImage={selectedImage}
           setSelectedImage={setSelectedImage}
         />
         <ProductInfo />
-      </div>
+      </main>
     </>
   );
 }
