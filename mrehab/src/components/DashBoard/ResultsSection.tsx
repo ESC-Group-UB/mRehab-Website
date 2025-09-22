@@ -1,4 +1,6 @@
+import React from "react";
 import EntryCard from "./EntryCard";
+import styles from "./ResultsSection.module.css";
 
 type Props = {
   entries: any[];
@@ -7,17 +9,25 @@ type Props = {
 
 export default function ResultsSection({ entries, selectedPatient }: Props) {
   return (
-    <div style={{ marginTop: "30px" }}>
-      <h2>Results for <strong>{selectedPatient}</strong></h2>
-      <div style={{
-        display: "grid",
-        gap: "15px",
-        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-      }}>
-        {entries.map((entry, index) => (
-          <EntryCard key={index} entry={entry} />
-        ))}
+    <section className={styles.wrap} aria-label="Results">
+      <div className={styles.container}>
+        <h2 className={styles.title}>
+          Results for <strong className={styles.patient}>{selectedPatient}</strong>
+        </h2>
+
+        {/* Empty state (optional but helpful on mobile) */}
+        {(!entries || entries.length === 0) ? (
+          <p style={{ color: "#555", margin: "8px 0 0" }}>
+            No entries to display.
+          </p>
+        ) : (
+          <div className={styles.grid}>
+            {entries.map((entry, index) => (
+              <EntryCard key={index} entry={entry} />
+            ))}
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 }

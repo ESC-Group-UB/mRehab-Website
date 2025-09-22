@@ -1,0 +1,116 @@
+@import url('../../colors.css');
+
+.wrap {
+  margin-top: 2rem;
+  padding: 0 1rem;
+  max-width: 640px;
+}
+
+.title {
+  margin: 0 0 0.75rem 0;
+  font-weight: 800;
+  font-size: clamp(1.1rem, 0.95rem + 1vw, 1.5rem);
+  color: var(--text-color, #111);
+}
+
+.inputWrap {
+  position: relative;
+  max-width: 480px;
+}
+
+.input {
+  width: 100%;
+  display: block;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font: inherit;
+  color: var(--text-color, #111);
+  background: #fff;
+  transition: border-color 120ms ease, box-shadow 160ms ease;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--color-main, #e60583);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+.hint {
+  margin: 6px 0 0 2px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Results dropdown */
+.results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+.resultsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 280px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.item {
+  padding: 12px 14px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.item:last-child { border-bottom: 0; }
+
+.item:hover,
+.item[aria-selected="true"],
+.item.active {
+  background: #faf6fb; /* soft brand-ish */
+}
+
+.name {
+  display: block;
+  font-weight: 700;
+  color: var(--text-color, #111);
+}
+.email {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Loading / empty / error states */
+.stateRow {
+  padding: 12px 14px;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* Status message (toast style inline) */
+.status {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.status.success { color: #1b5e20; }
+.status.error { color: #b71c1c; }
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .wrap { padding: 0 0.75rem; }
+  .input { padding: 12px; border-radius: 12px; }
+  .results { border-radius: 12px; }
+  .item { padding: 12px; }
+}

@@ -1,0 +1,82 @@
+@import url('../../colors.css');
+
+.wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+/* Base field styles shared by selects & inputs */
+.field {
+  flex: 1 1 160px;                /* grows but won’t get too tiny */
+  min-width: 140px;               /* safety floor for mid-widths */
+  padding: 10px 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text-color, #111);
+  font: inherit;
+  line-height: 1.2;
+  transition: border-color 120ms ease, box-shadow 160ms ease, background-color 120ms ease;
+}
+
+.field:hover {
+  border-color: #dedede;
+}
+
+.field:focus-visible {
+  outline: 2px solid var(--color-main, #e60583);
+  outline-offset: 2px;
+}
+
+/* Selects: remove native arrow, add a lightweight chevron */
+.select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 2px),
+    calc(100% - 12px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px; /* room for arrow */
+  color: var(--text-color, #111);
+}
+
+/* Date inputs: consistent look */
+.date {
+  color: var(--text-color, #111);
+}
+
+/* Compact spacing on small screens; fields full-width nicely */
+@media (max-width: 680px) {
+  .wrap {
+    gap: 8px;
+  }
+
+  .field {
+    flex: 1 1 100%;
+    min-width: 0;
+    padding: 10px 12px;
+  }
+
+  .select {
+    padding-right: 34px;
+  }
+}
+
+/* Very small phones: slightly larger tap targets */
+@media (max-width: 420px) {
+  .field {
+    padding: 12px 14px;
+    border-radius: 12px;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .field { transition: none !important; }
+}
