@@ -1,38 +1,132 @@
+@import url('../../colors.css');
+
 .rightInfo {
-  width: 50%;
+  /* ⬇️ NEW: let it fill remaining space on desktop */
+  flex: 1 1 0%;
+  width: auto;
+
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: 0.75rem;
+}
+
+/* Mobile: full width when stacked */
+@media (max-width: 900px) {
+  .rightInfo {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+}
+
+/* Typographic polish */
+.title {
+  font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2rem);
+  line-height: 1.15;
+  margin: 0 0 0.25rem 0;
+  color: var(--text-color);
 }
 
 .price {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.stars {
-  color: #ffc107;
-  font-size: 1.2rem;
-}
-
-.reviewCount {
-  color: #555;
-  margin-left: 0.5rem;
-  font-size: 0.9rem;
+  font-size: clamp(1.1rem, 0.95rem + 0.7vw, 1.6rem);
+  font-weight: 800;
+  color: var(--text-color);
+  margin: 0 0 0.5rem 0;
 }
 
 .desc {
-  color: #333;
-  line-height: 1.5;
+  color: var(--text-color);
+  line-height: 1.55;
+  margin: 0.25rem 0 0.5rem 0;
 }
 
-.buyBtn {
-  background-color: black;
-  color: white;
+/* Existing button (component) wrapper — desktop/tablet only */
+.inlineBuy {
+  margin: 0.75rem 0 0.5rem 0;
+}
+
+/* Optional: style the internal button generically via container selector */
+.inlineBuy :where(button, a) {
+  width: auto;
+  min-width: 180px;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  border-radius: 6px;
-  margin-top: 1rem;
+  border-radius: 10px;
+}
+
+/* Details sections spacing */
+:where(details) {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  background: #fff;
+}
+:where(details + details) {
+  margin-top: 0.6rem;
+}
+
+/* ===== Mobile sticky bar ===== */
+.stickyBar {
+  display: none; /* hidden on desktop */
+}
+
+.stickyInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stickyPrice {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+/* Make the Buy button fill remaining space on small screens */
+.stickyInner :where(button, a) {
+  flex: 1 1 auto;
+  display: inline-flex;
+  justify-content: center;
+  padding: 0.9rem 1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .rightInfo {
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  /* Make the desktop button narrower or hide it entirely */
+  .inlineBuy {
+    display: none; /* we’ll use the sticky bar instead on mobile */
+  }
+
+  .stickyBar {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(env(safe-area-inset-bottom, 0) + 0px);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: saturate(160%) blur(8px);
+    border-top: 1px solid #eee;
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.08);
+    z-index: 999;
+  }
+}
+
+@media (max-width: 480px) {
+  .stickyInner {
+    padding: 0.5rem 0.75rem;
+    gap: 0.6rem;
+  }
+  .stickyInner :where(button, a) {
+    padding: 0.85rem 1rem;
+  }
 }

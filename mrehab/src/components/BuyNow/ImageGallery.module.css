@@ -1,17 +1,33 @@
-/* Gallery container */
-.leftImages {
-  /* control these two numbers to taste */
-  --thumb: 64px;          /* thumbnail column width */
-  --gap: 12px;            /* space between thumbs and main */
+@import url('../../colors.css');
 
-  /* keep it responsive but not huge */
+.leftImages {
+  --thumb: 72px;
+  --gap: 14px;
+
+  /* ⬇️ NEW: make gallery take the left third on desktop */
+  flex: 0 0 40%;
+  max-width: 40%;
+
   width: 100%;
-  max-width: 50%;       /* <- tighten overall gallery width */
   display: grid;
-  grid-template-columns: var(--thumb) 1fr;
+  grid-template-columns: var(--thumb) 1fr; /* thumbs | main */
   gap: var(--gap);
   align-items: start;
 }
+
+/* Keep mobile full-width */
+@media (max-width: 900px) {
+  .leftImages {
+    flex: 1 1 100%;
+    max-width: 100%;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "main"
+      "thumbs";
+  }
+}
+
 
 /* Thumbnails column */
 .thumbnailList {
@@ -20,76 +36,127 @@
   gap: 10px;
 }
 
-/* Clickable wrapper for thumbs (unchanged behavior) */
+/* Clickable thumbs */
 .thumbButton {
   background: none;
   border: 2px solid transparent;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 0;
   margin: 0;
   cursor: pointer;
   display: block;
 }
 
-/* Active state border */
-.active { border-color: #007bff; }
+.active {
+  border-color: var(--color-main);
+}
 
 /* Actual thumbnail media */
 .thumbnail {
   width: 100%;
-  height: 64px;           /* matches --thumb nicely */
+  height: var(--thumb);
   object-fit: cover;
   display: block;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: transform .12s ease;
 }
-.thumbButton:hover .thumbnail { transform: scale(1.02); }
 
-/* Main viewer (image or video) */
-.mainMedia {
-  max-width: 100%;
-  max-height: 380px;      /* slightly smaller for nicer balance */
-  width: 100%;
-  object-fit: contain;
-  border-radius: 10px;
-  display: block;
-  padding-top: 20px;
-
-  /* subtle “card” look to separate from page */
-  margin-left: 0;         /* grid handles spacing now */
+.thumbButton:hover .thumbnail,
+.thumbButton:focus-visible .thumbnail {
+  transform: scale(1.02);
+  outline: none;
 }
 
-/* Video thumb overlay (keep) */
+/* ===== Main viewer FRAME (prevents layout shift) ===== */
+.mediaFrame {
+  grid-column: 2 / -1;     /* occupy the main column in the grid */
+  width: 100%;
+  aspect-ratio: 4 / 3;     /* desktop/tablet default ratio */
+  background: #fafafa;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;        /* hide any overflow on zoom */
+}
+
+/* Media fills the frame without affecting layout size */
+.mainMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;     /* letterbox/pillarbox as needed */
+  display: block;
+}
+
+/* Video thumb overlay */
 .videoThumbWrapper { position: relative; }
+
 .playBadge {
   position: absolute;
-  right: 4px;
-  bottom: 4px;
-  font-size: 10px;
+  right: 6px;
+  bottom: 6px;
+  font-size: 12px;
   line-height: 1;
-  padding: 2px 4px;
-  border-radius: 4px;
+  padding: 3px 6px;
+  border-radius: 6px;
   color: #fff;
   background: rgba(0,0,0,.6);
   pointer-events: none;
 }
 
-/* Responsive tweaks */
-@media (max-width: 1200px) {
-  .leftImages { max-width: 520px; }
+/* ===== Wide tablet: let gallery use full width but keep ratio ===== */
+@media (max-width: 1024px) {
+  .leftImages { max-width: 100%; }
 }
+
+/* ===== Phones: stack layout, thumbs become horizontal carousel ===== */
 @media (max-width: 900px) {
   .leftImages {
-    max-width: 100%;
-    grid-template-columns: var(--thumb) 1fr;
+    --thumb: 64px;
+    --gap: 12px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "main"
+      "thumbs";
+    gap: var(--gap);
   }
-  .mainMedia { max-height: 320px; }
-}
-@media (max-width: 600px) {
-  .leftImages {
-    --thumb: 56px;
+
+  .mediaFrame {
+    grid-area: main;
+    aspect-ratio: 1 / 1;   /* square frame on mobile feels stable */
+  }
+
+  .thumbnailList {
+    grid-area: thumbs;
+    flex-direction: row;
     gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
-  .thumbnail { height: 56px; }
-  .mainMedia { max-height: 280px; }
+
+  .thumbnailList::-webkit-scrollbar {
+    height: 6px;
+  }
+  .thumbnailList::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 999px;
+  }
+
+  .thumbButton {
+    min-width: var(--thumb);
+    flex: 0 0 auto;
+  }
+}
+
+/* ===== Small phones ===== */
+@media (max-width: 480px) {
+  .leftImages { --thumb: 56px; }
+}
+
+/* ===== Optional: fine-tune ratios by breakpoint ===== */
+@media (min-width: 1200px) {
+  .mediaFrame { aspect-ratio: 16 / 9; } /* widescreen hero on large screens */
 }

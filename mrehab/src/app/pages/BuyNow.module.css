@@ -1,5 +1,28 @@
+@import url('../../colors.css');
+
 .buyContainer {
   display: flex;
-  padding: 2rem;
+  align-items: flex-start;
+  justify-content: center;
   gap: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Tablet & down: stack vertically, tighter padding */
+@media (max-width: 900px) {
+  .buyContainer {
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1rem 1.25rem;
+  }
+}
+
+/* Small phones: a bit tighter still */
+@media (max-width: 480px) {
+  .buyContainer {
+    padding: 0.75rem 1rem;
+    gap: 1rem;
+  }
 }
