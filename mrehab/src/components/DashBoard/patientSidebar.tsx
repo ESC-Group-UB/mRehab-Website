@@ -46,7 +46,7 @@ export function PatientSidebar({
       return;
     }
     setPatientsOpen(true); // open submenu on valid search
-    console.log("🔍 Searching for:", searchTerm);
+    
 
 
     const idToken = localStorage.getItem("idToken");

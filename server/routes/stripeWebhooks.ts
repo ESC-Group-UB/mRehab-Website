@@ -32,11 +32,11 @@ webhookRouter.post(
 
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
-      // console.log(session);
-      console.log("✅ checkout.session.comple   ted:", session.id);
+      // 
+      
 
       const order:Order = buildOrderFromSession(session);
-      console.log("📦 Order to save:",  );
+      
 
       // TODO: save order to DB (DynamoDB, etc.)
         uploadOrder(order);

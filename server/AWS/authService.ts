@@ -47,7 +47,7 @@ export async function signUpUser(email: string, password: string, givenName: str
   const result = await CognitoISP.signUp(params).promise();
   const roleAssigned = await assignRoleToUser(email, role);
   if (!roleAssigned) {
-    console.log(`Failed to assign role ${role} to user ${email}`);
+    
   }
 
   // add user settings
@@ -105,10 +105,10 @@ async function assignRoleToUser(email: string, role: string): Promise<boolean> {
   };
   const result = await CognitoISP.adminAddUserToGroup(params).promise();
   if (result.$response.error) {
-    console.log(`Failed to assign role ${role} to user ${email}: ${result.$response.error.message}`);
+    
     return false;
   }
-  console.log(`✅ Added ${email} to group ${role}`);
+  
   return true;
 }
 
@@ -157,7 +157,7 @@ export async function checkIfValidEmail(email: string): Promise<boolean> {
     UserPoolId:  UserPoolId as string,
     Filter: `email = "${email}"`,
   };
-  console.log(params)
+  
 
   const response = await CognitoISP.listUsers(params).promise();
   return !!(response.Users && response.Users.length > 0);

@@ -57,7 +57,7 @@ export async function migrateS3ToDynamoDB(): Promise<void> {
       }
     }
 
-    console.log("🎉 Migration complete.");
+    
   } catch (err) {
     console.error("❌ Error listing files in S3:", err);
     throw err;

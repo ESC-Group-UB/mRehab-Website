@@ -12,7 +12,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 stripeRouter.post("/create-checkout-session", async (req: Request, res: Response) => {
   try {
-    console.log("Creating checkout session for:", req.body.email);
+    
 
     const session = await stripe.checkout.sessions.create({
       line_items: [

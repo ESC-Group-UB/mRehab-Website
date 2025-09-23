@@ -17,7 +17,7 @@ function toISOIfPossible(ts: string): string {
 router.post("/upload", async (req: Request, res: Response) => {
   try {
     const body = req.body as Partial<ActivitySessionsEntry>;
-    console.log("📩 /upload payload:", JSON.stringify(body));
+    
 
     // --- Minimal validation ---
     if (!body?.Username || !body?.Timestamp || !body?.ExerciseName) {
@@ -58,7 +58,7 @@ router.post("/upload", async (req: Request, res: Response) => {
 
     // --- Write to DynamoDB ---
     await uploadSessionToDynamoDB(normalized);
-    console.log("✅ Session uploaded to DynamoDB:", normalized.SessionID);
+    
 
     // --- Invalidate cache (simple user-wide nuke) ---
     // Expect your GET endpoints to cache with keys like:

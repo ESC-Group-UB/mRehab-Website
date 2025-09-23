@@ -17,7 +17,7 @@ const router = express.Router();
  */
 router.post("/signup", async (req, res) => {
   const { email, password, givenName, familyName, gender, address, role, device } = req.body;
-  console.log("Signup request for:", email, role, device);
+  
   try {
     const result = await signUpUser(email, password, givenName, familyName, gender, address, role, device);
     res.json(result);
@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     const auth = await loginUser(email, password);
-    console.log("Login successful:");
+    
     res.json(auth.AuthenticationResult);
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);

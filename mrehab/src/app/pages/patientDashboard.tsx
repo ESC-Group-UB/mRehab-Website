@@ -76,7 +76,6 @@ export default function PatientDashboard() {
   return (
     <>
       <Navbar />
-
       <div style={{ padding: "30px", maxWidth: "1000px", margin: "0 auto" }}>
         <h1>Welcome {name}</h1>
 

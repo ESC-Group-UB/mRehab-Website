@@ -35,7 +35,7 @@ app.use("/api/orders", ordersRoutes);
 
 // Health check
 app.get("/api/hello", (_req, res) => {
-  console.log("hello called");
+  
   res.send({ message: "Hello from backend" });
 });
 
@@ -43,5 +43,5 @@ app.get("/api/hello", (_req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  
 });
