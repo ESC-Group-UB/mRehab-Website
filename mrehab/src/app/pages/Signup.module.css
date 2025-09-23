@@ -1,73 +1,136 @@
 :root {
   --color-main: #ab0060;
+  --color-bg: #ffffff;
+  --color-input-bg: #f9f9f9;
+  --color-input-border: #d5d5d5;
+  --color-text: var(--color-text-dark, #1f1f1f);
+  --shadow-elev: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
 .pageWrapper {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  min-height: 100dvh;
   background: var(--color-white);
   font-family: 'Titillium Web', sans-serif;
-  padding: 1rem;
+  padding: 24px 16px;
 }
 
 .card {
-  background: #ffffff;
-  padding: 2.5rem;
-  border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 60%;
+  max-width: 720px;
+  background: var(--color-bg);
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-elev);
   box-sizing: border-box;
 }
 
+/* Stepper */
+.stepper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f6f6f7;
+  color: #666;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.stepDot {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: #eaeaea;
+  font-size: 0.9rem;
+}
+
+.step .stepLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.step.active {
+  background: #fde7f1;
+  color: #7a0042;
+}
+.step.active .stepDot {
+  background: var(--color-main);
+  color: #fff;
+}
+.step.done {
+  background: #eef8f2;
+  color: #1a7f53;
+}
+
+/* Titles */
 .title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.4rem;
-  color: var(--color-text-dark);
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 6px 0 4px 0;
+  color: var(--color-text);
   text-align: center;
 }
 
 .subtitle {
   font-size: 1rem;
   color: #777;
-  margin-bottom: 2rem;
+  margin: 0 0 16px 0;
   text-align: center;
 }
 
+/* Form & rows */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 14px;
 }
 
-.formGroupRow {
+.inputGroup {
   display: flex;
-  gap: 1rem;
-  flex-wrap: nowrap; /* Keep side-by-side unless screen is too small */
-  width: 100%;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.formGroupRow > div:not(:last-child) {
-  margin-right: 1rem;
+label,
+.legend {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  font-weight: 600;
 }
 
-label {
-  font-size: 0.9rem;
-  color: var(--color-text-dark);
-  margin-bottom: 0.25rem;
-  display: block;
+.legend {
+  margin-bottom: 6px;
 }
 
 .input {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-input-border);
+  border-radius: 12px;
   font-size: 1rem;
-  background: #f9f9f9;
+  background: var(--color-input-bg);
   font-family: 'Titillium Web', sans-serif;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.input::placeholder {
+  color: #aaa;
 }
 
 .input:focus {
@@ -76,53 +139,175 @@ label {
   background: #fff;
 }
 
-.signupButton {
-  width: 100%;
-  padding: 0.8rem;
-  background-color: var(--color-main);
-  color: white;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  font-family: 'Titillium Web', sans-serif;
+.helpText {
+  font-size: 0.85rem;
+  color: #888;
 }
 
+/* Password field with show/hide */
+.passwordField {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.passwordField .input {
+  padding-right: 80px;
+}
+.ghostBtn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid #ddd;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.ghostBtn:hover {
+  background: #f3f3f3;
+}
+
+/* Fieldset for role */
+.fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.radioRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-input-border);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  user-select: none;
+}
+.radio input {
+  accent-color: var(--color-main);
+}
+
+/* Responsive rows using grid */
+.row {
+  display: grid;
+  gap: 12px;
+}
+.row2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.row3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Buttons & links */
+.signupButton {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: var(--color-main);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.02s ease;
+}
 .signupButton:hover {
   background-color: #8e004f;
 }
+.signupButton:active {
+  transform: translateY(1px);
+}
+.signupButton[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 .links {
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
+  margin-top: 12px;
+  font-size: 0.95rem;
   text-align: center;
   color: #555;
   font-family: 'Titillium Web', sans-serif;
 }
 
-.links span {
+.linkBtn {
+  background: none;
+  border: none;
   color: var(--color-main);
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 700;
   text-decoration: underline;
+  padding: 0;
 }
-
-.links span:hover {
+.linkBtn:hover {
   color: #8e004f;
 }
 
+/* Alerts */
 .error {
-  color: #d32f2f;
+  color: #b3261e;
   background-color: #fdecea;
-  padding: 0.6rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.95rem;
   text-align: center;
-  font-family: 'Titillium Web', sans-serif;
 }
 
+/* Verify */
 .verification {
   text-align: center;
+}
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+  .card {
+    padding: 20px;
+    max-width: 96%;
+    margin: 0 auto;
+    border-radius: 14px;
+  }
+  .title {
+    font-size: 1.55rem;
+  }
+  .subtitle {
+    font-size: 0.95rem;
+  }
+  .row2 {
+    grid-template-columns: 1fr;
+  }
+  .row3 {
+    grid-template-columns: 1fr;
+  }
+  .stepper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+  .title {
+    font-size: 1.4rem;
+  }
+  .step {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+  .stepDot {
+    width: 24px;
+    height: 24px;
+    font-size: 0.85rem;
+  }
 }

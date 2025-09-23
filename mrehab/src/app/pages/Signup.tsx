@@ -9,121 +9,90 @@ const home = process.env.REACT_APP_API_URL;
 
 const Signup: React.FC = () => {
   const deviceOptions: Record<string, string[]> = {
-  iPhone: [
-    // 2024–2025
-    "iPhone 16 Pro Max",
-    "iPhone 16 Pro",
-    "iPhone 16 Plus",
-    "iPhone 16",
-    "iPhone 16e",               // 2025
-    // 2023
-    "iPhone 15 Pro Max",
-    "iPhone 15 Pro",
-    "iPhone 15 Plus",
-    "iPhone 15",
-    // 2022
-    "iPhone 14 Pro Max",
-    "iPhone 14 Pro",
-    "iPhone 14 Plus",
-    "iPhone 14",
-    // 2021
-    "iPhone 13 Pro Max",
-    "iPhone 13 Pro",
-    "iPhone 13",
-    "iPhone 13 mini",
-    // 2020
-    "iPhone 12 Pro Max",
-    "iPhone 12 Pro",
-    "iPhone 12",
-    "iPhone 12 mini",
-    // SE within window
-    "iPhone SE (3rd generation, 2022)",
-  ],
-
-  Samsung: [
-    // S25 family (2025)
-    "Galaxy S25 Ultra",
-    "Galaxy S25+",
-    "Galaxy S25",
-    // S24 family (2024)
-    "Galaxy S24 Ultra",
-    "Galaxy S24+",
-    "Galaxy S24",
-    "Galaxy S24 FE",
-    // S23 family (2023)
-    "Galaxy S23 Ultra",
-    "Galaxy S23+",
-    "Galaxy S23",
-    "Galaxy S23 FE",
-    // S22 family (2022)
-    "Galaxy S22 Ultra",
-    "Galaxy S22+",
-    "Galaxy S22",
-    // S21 family (2021–2022 FE)
-    "Galaxy S21 Ultra",
-    "Galaxy S21+",
-    "Galaxy S21",
-    "Galaxy S21 FE",
-
-    // Foldables (Z series) — 2021→2025
-    "Galaxy Z Fold7",
-    "Galaxy Z Flip7",
-    "Galaxy Z Flip7 FE",
-    "Galaxy Z Fold6",
-    "Galaxy Z Flip6",
-    "Galaxy Z Fold5",
-    "Galaxy Z Flip5",
-    "Galaxy Z Fold4",
-    "Galaxy Z Flip4",
-    "Galaxy Z Fold3",
-    "Galaxy Z Flip3",
-  ],
-
-  Google: [
-    // 2025 (Pixel 10 family)
-    "Pixel 10 Pro Fold",
-    "Pixel 10 Pro XL",
-    "Pixel 10 Pro",
-    "Pixel 10",
-    // 2024 (Pixel 9 family)
-    "Pixel 9 Pro Fold",
-    "Pixel 9 Pro XL",
-    "Pixel 9 Pro",
-    "Pixel 9",
-    "Pixel 9a",
-    // 2023–2024
-    "Pixel 8a",
-    "Pixel 8 Pro",
-    "Pixel 8",
-    "Pixel Fold",
-    // 2022–2023
-    "Pixel 7a",
-    "Pixel 7 Pro",
-    "Pixel 7",
-    // 2021–2022
-    "Pixel 6a",
-    "Pixel 6 Pro",
-    "Pixel 6",
-    "Pixel 5a (5G)",
-  ],
-};
-  const [brand, setBrand] = useState("");
-  const [model, setModel] = useState("");
-
-  const handleBrandChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newBrand = e.target.value;
-    setBrand(newBrand);
-    setModel(""); // reset model when brand changes
-  };
-
-  const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newModel = e.target.value;
-    setModel(newModel);
-    setFormData({ ...formData, device: newModel });
+    iPhone: [
+      "iPhone 16 Pro Max",
+      "iPhone 16 Pro",
+      "iPhone 16 Plus",
+      "iPhone 16",
+      "iPhone 16e",
+      "iPhone 15 Pro Max",
+      "iPhone 15 Pro",
+      "iPhone 15 Plus",
+      "iPhone 15",
+      "iPhone 14 Pro Max",
+      "iPhone 14 Pro",
+      "iPhone 14 Plus",
+      "iPhone 14",
+      "iPhone 13 Pro Max",
+      "iPhone 13 Pro",
+      "iPhone 13",
+      "iPhone 13 mini",
+      "iPhone 12 Pro Max",
+      "iPhone 12 Pro",
+      "iPhone 12",
+      "iPhone 12 mini",
+      "iPhone SE (3rd generation, 2022)",
+    ],
+    Samsung: [
+      "Galaxy S25 Ultra",
+      "Galaxy S25+",
+      "Galaxy S25",
+      "Galaxy S24 Ultra",
+      "Galaxy S24+",
+      "Galaxy S24",
+      "Galaxy S24 FE",
+      "Galaxy S23 Ultra",
+      "Galaxy S23+",
+      "Galaxy S23",
+      "Galaxy S23 FE",
+      "Galaxy S22 Ultra",
+      "Galaxy S22+",
+      "Galaxy S22",
+      "Galaxy S21 Ultra",
+      "Galaxy S21+",
+      "Galaxy S21",
+      "Galaxy S21 FE",
+      "Galaxy Z Fold7",
+      "Galaxy Z Flip7",
+      "Galaxy Z Flip7 FE",
+      "Galaxy Z Fold6",
+      "Galaxy Z Flip6",
+      "Galaxy Z Fold5",
+      "Galaxy Z Flip5",
+      "Galaxy Z Fold4",
+      "Galaxy Z Flip4",
+      "Galaxy Z Fold3",
+      "Galaxy Z Flip3",
+    ],
+    Google: [
+      "Pixel 10 Pro Fold",
+      "Pixel 10 Pro XL",
+      "Pixel 10 Pro",
+      "Pixel 10",
+      "Pixel 9 Pro Fold",
+      "Pixel 9 Pro XL",
+      "Pixel 9 Pro",
+      "Pixel 9",
+      "Pixel 9a",
+      "Pixel 8a",
+      "Pixel 8 Pro",
+      "Pixel 8",
+      "Pixel Fold",
+      "Pixel 7a",
+      "Pixel 7 Pro",
+      "Pixel 7",
+      "Pixel 6a",
+      "Pixel 6 Pro",
+      "Pixel 6",
+      "Pixel 5a (5G)",
+    ],
   };
 
   const navigate = useNavigate();
   const [step, setStep] = useState<"signup" | "verify">("signup");
+
+  const [brand, setBrand] = useState("");
+  const [model, setModel] = useState("");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -136,12 +105,26 @@ const Signup: React.FC = () => {
     state: "",
     zip: "",
     role: "",
-    device: "", // Added device property
+    device: "",
   });
 
-  const [verificationCode, setVerificationCode] = useState("")
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState<"idle" | "signup" | "verify">("idle");
+
+  const handleBrandChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newBrand = e.target.value;
+    setBrand(newBrand);
+    setModel("");
+    setFormData((prev) => ({ ...prev, device: "" }));
+  };
+
+  const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newModel = e.target.value;
+    setModel(newModel);
+    setFormData((prev) => ({ ...prev, device: newModel }));
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -151,246 +134,365 @@ const Signup: React.FC = () => {
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("")
+    setError("");
+    setLoading("verify");
     try {
-        const response = await axios.post(`${baseURL}api/auth/confirm`, {
-          email: formData.email,
-          code: verificationCode
-        });
-          window.location.href = `${home}login`;
-          
+      await axios.post(`${baseURL}api/auth/confirm`, {
+        email: formData.email,
+        code: verificationCode,
+      });
+      window.location.href = `${home}login`;
     } catch (err: any) {
-      console.error("❌ Signup failed:", err.response?.data || err.message);
-      setError(err.response?.data?.message || "Signup failed.");
+      console.error("❌ Verify failed:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Verification failed.");
+    } finally {
+      setLoading("idle");
     }
-
-  }
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading("signup");
     try {
-      
-      const response = await axios.post(`${baseURL}api/auth/signup`, {
+      await axios.post(`${baseURL}api/auth/signup`, {
         ...formData,
-        address: `${formData.street} ${formData.city} ${formData.state} ${formData.zip}`
+        address: `${formData.street} ${formData.city} ${formData.state} ${formData.zip}`.trim(),
       });
-      
       setStep("verify");
     } catch (err: any) {
       console.error("❌ Signup failed:", err.response?.data || err.message);
       setError(err.response?.data?.message || "Signup failed.");
+    } finally {
+      setLoading("idle");
     }
   };
 
+  const disabledSignup =
+    !formData.email ||
+    !formData.password ||
+    !formData.givenName ||
+    !formData.familyName ||
+    !formData.role ||
+    !formData.street ||
+    !formData.city ||
+    !formData.state ||
+    !formData.zip ||
+    loading !== "idle";
+
   return (
     <>
-    <Navbar/>
-    <div className={styles.pageWrapper}>
-      <div className={styles.card}>
-        {step === "signup" ? (
-          <>
-            <h2 className={styles.title}>Create Your Account</h2>
-            <p className={styles.subtitle}>Sign up to get started with mRehab</p>
+      <Navbar />
+      <div className={styles.pageWrapper}>
+        <div className={styles.card}>
+          {/* Stepper */}
+          <ol className={styles.stepper} aria-label="Signup steps">
+            <li className={`${styles.step} ${step === "signup" ? styles.active : styles.done}`}>
+              <span className={styles.stepDot} aria-hidden>1</span>
+              <span className={styles.stepLabel}>Create account</span>
+            </li>
+            <li className={`${styles.step} ${step === "verify" ? styles.active : ""}`}>
+              <span className={styles.stepDot} aria-hidden>2</span>
+              <span className={styles.stepLabel}>Verify email</span>
+            </li>
+          </ol>
 
-            <form onSubmit={handleSignup} className={styles.form}>
-            {error && <p className={styles.error}>{error}</p>}
+          {step === "signup" ? (
+            <>
+              <h2 className={styles.title}>Create Your Account</h2>
+              <p className={styles.subtitle}>Sign up to get started with mRehab</p>
 
-            <div>
-                <label>Email</label>
-                <input
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={styles.input}
-                required
-                />
-            </div>
+              <form onSubmit={handleSignup} className={styles.form} noValidate>
+                {error && <p className={styles.error} role="alert">{error}</p>}
 
-            <div>
-                <label>Password</label>
-                <input
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={styles.input}
-                required
-                />
-            </div>
-
-            <div className={styles.formGroupRow}>
-                <div>
-                <label>First Name</label>
-                <input
-                    name="givenName"
-                    value={formData.givenName}
+                {/* Email */}
+                <div className={styles.inputGroup}>
+                  <label htmlFor="email">Email</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    inputMode="email"
+                    value={formData.email}
                     onChange={handleChange}
                     className={styles.input}
                     required
-                />
+                    placeholder="you@example.com"
+                  />
                 </div>
-                <div>
-                <label>Last Name</label>
-                <input
-                    name="familyName"
-                    value={formData.familyName}
+
+                {/* Password with toggle */}
+                <div className={styles.inputGroup}>
+                  <label htmlFor="password">Password</label>
+                  <div className={styles.passwordField}>
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className={styles.input}
+                      required
+                      placeholder="Create a password"
+                    />
+                    <button
+                      type="button"
+                      className={styles.ghostBtn}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      onClick={() => setShowPassword((v) => !v)}
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                  <p className={styles.helpText}>Use at least 8 characters.</p>
+                </div>
+
+                {/* Names */}
+                <div className={`${styles.row} ${styles.row2}`}>
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="givenName">First Name</label>
+                    <input
+                      id="givenName"
+                      name="givenName"
+                      autoComplete="given-name"
+                      value={formData.givenName}
+                      onChange={handleChange}
+                      className={styles.input}
+                      required
+                      placeholder="First name"
+                    />
+                  </div>
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="familyName">Last Name</label>
+                    <input
+                      id="familyName"
+                      name="familyName"
+                      autoComplete="family-name"
+                      value={formData.familyName}
+                      onChange={handleChange}
+                      className={styles.input}
+                      required
+                      placeholder="Last name"
+                    />
+                  </div>
+                </div>
+
+                {/* Role (radio for faster mobile selection) */}
+                <fieldset className={styles.fieldset}>
+                  <legend className={styles.legend}>Role</legend>
+                  <div className={styles.radioRow}>
+                    <label className={styles.radio}>
+                      <input
+                        type="radio"
+                        name="role"
+                        value="patient"
+                        checked={formData.role === "patient"}
+                        onChange={handleChange}
+                      />
+                      Patient
+                    </label>
+                    <label className={styles.radio}>
+                      <input
+                        type="radio"
+                        name="role"
+                        value="provider"
+                        checked={formData.role === "provider"}
+                        onChange={handleChange}
+                      />
+                      Health Care Provider
+                    </label>
+                  </div>
+                </fieldset>
+
+                {/* Gender (optional text keeps your schema unchanged) */}
+                <div className={styles.inputGroup}>
+                  <label htmlFor="gender">Gender (optional)</label>
+                  <input
+                    id="gender"
+                    name="gender"
+                    value={formData.gender}
                     onChange={handleChange}
                     className={styles.input}
-                    required
-                />
+                    placeholder="e.g., Female / Male / Non-binary / Prefer not to say"
+                  />
                 </div>
-            </div>
 
-            <div>
-                <label>Gender</label>
-                <input
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                className={styles.input}
-                />
-            </div>
-
-            <div>
-                <label>Are you a Patient or a Health Care provider</label>
-                <select
-                name="role"
-                onChange={handleChange}
-                className={styles.input}
-                >
-                  <option value="" disabled>Select your role</option>
-                  <option value="patient">Patient</option>
-                  <option value="provider">Health Care Provider</option>
-                </select>
-            </div>
-
-            <div>
-              <label>What Device Will You Use mRehab With?</label>
-
-              {/* Brand Selector */}
-              <select
-                name="brand"
-                value={brand}
-                onChange={handleBrandChange}
-                className={styles?.input}
-              >
-                <option value="" disabled>Select brand</option>
-                {Object.keys(deviceOptions).map((b) => (
-                  <option key={b} value={b}>
-                    {b}
-                  </option>
-                ))}
-              </select>
-
-              {/* Model Selector */}
-              {brand && (
-                <select
-                  name="device"
-                  value={model}
-                  onChange={handleModelChange}
-                  className={styles?.input}
-                >
-                  <option value="" disabled>Select model</option>
-                  {deviceOptions[brand].map((m) => (
-                    <option key={m} value={m}>
-                      {m}
+                {/* Device */}
+                <div className={styles.inputGroup}>
+                  <label>What Device Will You Use mRehab With?</label>
+                  <select
+                    name="brand"
+                    value={brand}
+                    onChange={handleBrandChange}
+                    className={styles.input}
+                    aria-label="Select device brand"
+                  >
+                    <option value="" disabled>
+                      Select brand
                     </option>
-                  ))}
-                </select>
-              )}
-            </div>
+                    {Object.keys(deviceOptions).map((b) => (
+                      <option key={b} value={b}>
+                        {b}
+                      </option>
+                    ))}
+                  </select>
 
-            
+                  {brand && (
+                    <select
+                      name="device"
+                      value={model}
+                      onChange={handleModelChange}
+                      className={styles.input}
+                      aria-label="Select device model"
+                    >
+                      <option value="" disabled>
+                        Select model
+                      </option>
+                      {deviceOptions[brand].map((m) => (
+                        <option key={m} value={m}>
+                          {m}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                  <p className={styles.helpText}>
+                    We use this to optimize sensor feedback for your phone.
+                  </p>
+                </div>
 
-            <div>
-                <label>Street Address</label>
-                <input
-                name="street"
-                value={formData.street}
-                onChange={handleChange}
-                className={styles.input}
-                required
-                />
-            </div>
-
-            <div className={styles.formGroupRow}>
-                <div>
-                <label>City</label>
-                <input
-                    name="city"
-                    value={formData.city}
+                {/* Address */}
+                <div className={styles.inputGroup}>
+                  <label htmlFor="street">Street Address</label>
+                  <input
+                    id="street"
+                    name="street"
+                    autoComplete="address-line1"
+                    value={formData.street}
                     onChange={handleChange}
                     className={styles.input}
                     required
-                />
+                    placeholder="123 Main St"
+                  />
                 </div>
-                <div>
-                <label>State</label>
-                <input
-                    name="state"
-                    value={formData.state}
-                    onChange={handleChange}
-                    className={styles.input}
-                    required
-                />
+
+                <div className={`${styles.row} ${styles.row3}`}>
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="city">City</label>
+                    <input
+                      id="city"
+                      name="city"
+                      autoComplete="address-level2"
+                      value={formData.city}
+                      onChange={handleChange}
+                      className={styles.input}
+                      required
+                    />
+                  </div>
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="state">State</label>
+                    <input
+                      id="state"
+                      name="state"
+                      autoComplete="address-level1"
+                      value={formData.state}
+                      onChange={handleChange}
+                      className={styles.input}
+                      required
+                      placeholder="NY"
+                    />
+                  </div>
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="zip">Zip Code</label>
+                    <input
+                      id="zip"
+                      name="zip"
+                      autoComplete="postal-code"
+                      inputMode="numeric"
+                      pattern="\d*"
+                      value={formData.zip}
+                      onChange={handleChange}
+                      className={styles.input}
+                      required
+                      placeholder="10001"
+                    />
+                  </div>
                 </div>
-                <div>
-                <label>Zip Code</label>
-                <input
-                    name="zip"
-                    value={formData.zip}
-                    onChange={handleChange}
-                    className={styles.input}
-                    required
-                />
-                </div>
-            </div>
 
-            <button type="submit" className={styles.signupButton}>
-                Sign Up
-            </button>
-            </form>
+                <button
+                  type="submit"
+                  className={styles.signupButton}
+                  disabled={disabledSignup}
+                  aria-busy={loading === "signup"}
+                >
+                  {loading === "signup" ? "Creating account…" : "Sign Up"}
+                </button>
+              </form>
 
-
-            <div className={styles.links}>
-              <p>
-                Already have an account?{" "}
-                <span onClick={() => navigate("/login")}>Log In</span>
+              <div className={styles.links}>
+                <p>
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    className={styles.linkBtn}
+                    onClick={() => navigate("/login")}
+                  >
+                    Log In
+                  </button>
+                </p>
+              </div>
+            </>
+          ) : (
+            <div className={styles.verification}>
+              <h2 className={styles.title}>Verify Your Email</h2>
+              <p className={styles.subtitle}>
+                Enter the 6-digit code sent to <strong>{formData.email}</strong>.
               </p>
-            </div>
-          </>
-        ) : (
-          <div className={styles.verification}>
-            <h2 className={styles.title}>Verify Your Email</h2>
-            <p className={styles.subtitle}>
-              A verification link has been sent to <strong>{formData.email}</strong>.
-              <br />
-              Please check your inbox to activate your account.
-            </p>
-            <form onSubmit={handleVerify} className={styles.form}>
-                {error && <p className={styles.error}>{error}</p>}
-            <div>
-                <label>Verifcation Code</label>
-                <input
+              <form onSubmit={handleVerify} className={styles.form} noValidate>
+                {error && <p className={styles.error} role="alert">{error}</p>}
+                <div className={styles.inputGroup}>
+                  <label htmlFor="code">Verification Code</label>
+                  <input
+                    id="code"
                     name="code"
                     type="text"
+                    inputMode="numeric"
+                    pattern="\d*"
+                    maxLength={6}
                     value={verificationCode}
-                    onChange={e => setVerificationCode(e.target.value)}
+                    onChange={(e) => setVerificationCode(e.target.value)}
                     className={styles.input}
                     required
-                />
+                    placeholder="••••••"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className={styles.signupButton}
+                  disabled={!verificationCode || loading === "verify"}
+                  aria-busy={loading === "verify"}
+                >
+                  {loading === "verify" ? "Verifying…" : "Confirm"}
+                </button>
+              </form>
+
+              <div className={styles.links}>
+                <p>
+                  Wrong email?{" "}
+                  <button
+                    type="button"
+                    className={styles.linkBtn}
+                    onClick={() => setStep("signup")}
+                  >
+                    Go back
+                  </button>
+                </p>
+              </div>
             </div>
-            <button type="submit" className={styles.signupButton}>
-                Sign Up
-            </button>
-            
-            </form>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
     </>
   );
 };
