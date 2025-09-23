@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { ChevronDown, ChevronUp, Package } from "lucide-react";
+import styles from "./OrderHistory.module.css";
 
 type Order = {
   id: string;
   email: string | null;
-  amount: number | null;
-  currency: string | null;
+  amount: number | null;       // cents
+  currency: string | null;     // e.g., "usd"
   status: string;
   device?: string;
-  shippingAddress: any; // can be string or object
+  shippingAddress: any;        // string or object
   phone: string | null;
   shippingStatus: string;
-  createdAt: string;
+  createdAt: string;           // ISO
 };
 
 export default function OrdersHistory() {
@@ -54,9 +55,7 @@ export default function OrdersHistory() {
           )}`
         );
 
-        if (!res.ok) {
-          throw new Error(`Failed to fetch: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
 
         const data = await res.json();
         setOrders(data.orders || []);
@@ -66,75 +65,86 @@ export default function OrdersHistory() {
         setLoading(false);
       }
     }
-
     fetchOrders();
   }, [userEmail]);
 
-  if (loading) return <p>Loading your orders…</p>;
-  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
-  if (!orders.length) return <p>No orders found for {userEmail}.</p>;
+  const formatAmount = useMemo(() => {
+    return (amount: number | null, currency: string | null) => {
+      if (amount == null || !currency) return "N/A";
+      try {
+        return new Intl.NumberFormat(undefined, {
+          style: "currency",
+          currency: currency.toUpperCase(),
+        }).format(amount / 100);
+      } catch {
+        return `${(amount / 100).toFixed(2)} ${currency.toUpperCase()}`;
+      }
+    };
+  }, []);
+
+  const formatAddress = (shippingAddress: any) => {
+    if (!shippingAddress) return "N/A";
+    if (typeof shippingAddress === "string") return shippingAddress;
+    const parts = [
+      shippingAddress.line1,
+      shippingAddress.city,
+      shippingAddress.state,
+      shippingAddress.postal_code,
+      shippingAddress.country,
+    ]
+      .filter(Boolean)
+      .join(", ");
+    return parts || "N/A";
+  };
+
+  if (loading) return <p style={{ padding: 16 }}>Loading your orders…</p>;
+  if (error) return <p style={{ color: "red", padding: 16 }}>Error: {error}</p>;
+  if (!orders.length) return <p style={{ padding: 16 }}>No orders found for {userEmail}.</p>;
 
   return (
-    <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-      <h2 style={{ marginBottom: "1rem" }}>
-        Order History
-      </h2>
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {orders.map((order) => {
-          let shippingDisplay = "N/A";
-          if (typeof order.shippingAddress === "string") {
-            shippingDisplay = order.shippingAddress;
-          } else if (order.shippingAddress?.line1) {
-            shippingDisplay = `${order.shippingAddress.line1}, ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.postal_code}, ${order.shippingAddress.country}`;
-          }
+    <div className={styles.wrap}>
+      <h2 className={styles.title}>Order History</h2>
 
+      <ul className={styles.list}>
+        {orders.map((order) => {
+          const shippingDisplay = formatAddress(order.shippingAddress);
           const isOpen = expanded === order.id;
 
           return (
-            <li
-              key={order.id}
-              style={{
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                marginBottom: "12px",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-                overflow: "hidden",
-                transition: "all 0.3s ease",
-              }}
-            >
-              <div
-                onClick={() =>
-                  setExpanded(isOpen ? null : order.id)
-                }
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "16px",
-                  cursor: "pointer",
-                  backgroundColor: isOpen ? "#f9f9f9" : "#fff",
-                }}
+            <li key={order.id} className={styles.card}>
+              <button
+                type="button"
+                className={`${styles.headerBtn} ${isOpen ? styles.headerBtnOpen : ""}`}
+                onClick={() => setExpanded(isOpen ? null : order.id)}
+                aria-expanded={isOpen}
+                aria-controls={`order-panel-${order.id}`}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <Package size={24} color="var(--color-main, #2a6df4)" />
-                  <div>
-                    <p style={{ margin: 0, fontWeight: 600 }}>
-                      Order {order.id.slice(-6)} {/* show short ID */}
+                <div className={styles.headerLeft}>
+                  <Package className={styles.pkgIcon} size={24} aria-hidden="true" />
+                  <div className={styles.headerText}>
+                    <p className={styles.orderLabel}>
+                      Order {order.id.slice(-6)}
                     </p>
-                    <p style={{ margin: 0, fontSize: "0.9rem", color: "#555" }}>
-                      {order.amount
-                        ? `${order.amount / 100} ${order.currency?.toUpperCase()}`
-                        : "N/A"}{" "}
-                      • {new Date(order.createdAt).toLocaleDateString()} •{" "}
-                      {order.status}
+                    <p className={styles.meta}>
+                      {formatAmount(order.amount, order.currency)} •{" "}
+                      {new Date(order.createdAt).toLocaleDateString()} •{" "}
+                      <span className={styles.badge}>{order.status}</span>
                     </p>
                   </div>
                 </div>
-                {isOpen ? <ChevronUp /> : <ChevronDown />}
-              </div>
+
+                <span className={styles.chev} aria-hidden="true">
+                  {isOpen ? <ChevronUp /> : <ChevronDown />}
+                </span>
+              </button>
 
               {isOpen && (
-                <div style={{ padding: "16px", background: "#fafafa" }}>
+                <div
+                  id={`order-panel-${order.id}`}
+                  className={styles.details}
+                  role="region"
+                  aria-label={`Order ${order.id.slice(-6)} details`}
+                >
                   <p>
                     <strong>Device:</strong> {order.device || "N/A"}
                   </p>

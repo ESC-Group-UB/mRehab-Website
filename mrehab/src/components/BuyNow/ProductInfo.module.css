@@ -65,35 +65,49 @@
 }
 
 /* ===== Mobile sticky bar ===== */
-.stickyBar {
-  display: none; /* hidden on desktop */
+/* Better spacing: price left, compact button right */
+@media (max-width: 900px) {
+  .stickyBar { display: block; }
+
+  .stickyInner {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;                 /* tighter gap */
+    padding: 0.6rem 1rem;
+  }
+
+  .stickyPrice {
+    margin-right: auto;          /* pushes button to the far right */
+    font-size: clamp(1rem, 0.9rem + 0.6vw, 1.1rem);
+    line-height: 1;
+  }
+
+  /* Stop the button from filling; make it a nice compact pill */
+  .stickyInner :where(button, a) {
+    flex: 0 0 auto;              /* no grow */
+    width: auto;                 /* no 100% */
+    min-width: 140px;            /* compact but readable */
+    padding: 0.7rem 1rem;        /* smaller padding on mobile */
+    border-radius: 16px;
+    font-size: 0.95rem;
+  }
 }
 
-.stickyInner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0.6rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+/* Very small phones: slightly tighter again */
+@media (max-width: 480px) {
+  .stickyInner {
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .stickyInner :where(button, a) {
+    min-width: 120px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.9rem;
+    border-radius: 14px;
+  }
 }
 
-.stickyPrice {
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: var(--text-color);
-}
-
-/* Make the Buy button fill remaining space on small screens */
-.stickyInner :where(button, a) {
-  flex: 1 1 auto;
-  display: inline-flex;
-  justify-content: center;
-  padding: 0.9rem 1rem;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 1rem;
-}
 
 /* ===== Responsive ===== */
 @media (max-width: 900px) {

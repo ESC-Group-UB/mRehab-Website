@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./FiltersBar.module.css";
 
 type Props = {
   filterHand: string;
@@ -22,14 +23,24 @@ export default function FiltersBar({
   setEndDate,
 }: Props) {
   return (
-    <div style={{ margin: "20px 0", display: "flex", flexWrap: "wrap", gap: "10px" }}>
-      <select value={filterHand} onChange={(e) => setFilterHand(e.target.value)} style={{ padding: "8px", flex: "1 1 120px" }}>
+    <div className={styles.wrap}>
+      <select
+        aria-label="Filter by hand"
+        value={filterHand}
+        onChange={(e) => setFilterHand(e.target.value)}
+        className={`${styles.field} ${styles.select}`}
+      >
         <option value="">All Hands</option>
         <option value="Left">Left</option>
         <option value="Right">Right</option>
       </select>
 
-      <select value={filterExercise} onChange={(e) => setFilterExercise(e.target.value)} style={{ padding: "8px", flex: "1 1 180px" }}>
+      <select
+        aria-label="Filter by exercise"
+        value={filterExercise}
+        onChange={(e) => setFilterExercise(e.target.value)}
+        className={`${styles.field} ${styles.select}`}
+      >
         <option value="">All Exercises</option>
         <option value="Vertical Bowl">Vertical Bowl</option>
         <option value="Horizontal Bowl">Horizontal Bowl</option>
@@ -42,8 +53,21 @@ export default function FiltersBar({
         <option value="Quick Tap">Quick Tap</option>
       </select>
 
-      <input type="date" value={filterStartDate} onChange={(e) => setStartDate(e.target.value)} style={{ padding: "8px", flex: "1 1 150px" }} />
-      <input type="date" value={filterEndDate} onChange={(e) => setEndDate(e.target.value)} style={{ padding: "8px", flex: "1 1 150px" }} />
+      <input
+        aria-label="Start date"
+        type="date"
+        value={filterStartDate}
+        onChange={(e) => setStartDate(e.target.value)}
+        className={`${styles.field} ${styles.date}`}
+      />
+
+      <input
+        aria-label="End date"
+        type="date"
+        value={filterEndDate}
+        onChange={(e) => setEndDate(e.target.value)}
+        className={`${styles.field} ${styles.date}`}
+      />
     </div>
   );
 }

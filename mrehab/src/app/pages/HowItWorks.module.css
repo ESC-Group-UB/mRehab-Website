@@ -1,56 +1,91 @@
-/* Hero Section */
+@import url('../../colors.css');
+
+/* ====== Generic section rhythm ====== */
+:root {
+  --section-pad: 4rem;
+  --section-pad-sm: 2rem;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+/* ====== Hero (kept for compatibility if used elsewhere) ====== */
 .hero {
   text-align: center;
   padding: 5rem 2rem;
   background-color: #f9f9f9;
 }
-
 .heroTitle {
-  font-size: 3rem;
+  font-size: clamp(2rem, 1.2rem + 2.5vw, 3rem);
   font-weight: 700;
   margin-bottom: 1rem;
   color: #111;
 }
-
 .heroSubtitle {
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 0.95rem + 0.5vw, 1.25rem);
   color: #444;
   max-width: 720px;
   margin: 0 auto;
   line-height: 1.7;
 }
 
-/* Step Grid Section */
+/* ====== Step Grid Section ====== */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2.5rem;
-  padding: 4rem 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  padding: var(--section-pad) 2rem;
   background-color: #fff;
 }
 
-/* Why It Works Section */
+/* Tighten on tablets/phones */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: var(--section-pad-sm) 1.25rem;
+  }
+}
+
+/* ====== Why It Works Section ====== */
 .whyItWorks {
   background-color: #fcfcfc;
   text-align: center;
-  padding: 4rem 2rem;
+  padding: var(--section-pad) 2rem;
 }
-
 .whyItWorks h2 {
-  font-size: 2.25rem;
+  font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.25rem);
   font-weight: 700;
   margin-bottom: 1rem;
   color: #222;
 }
-
 .whySubtitle {
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 0.95rem + 0.4vw, 1.15rem);
   color: #555;
   max-width: 680px;
-  margin: 0 auto 2rem;
+  margin: 0 auto 1.5rem;
   line-height: 1.7;
 }
 
+/* Responsive demo video */
+.demoVideo {
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 16 / 9;       /* keeps layout stable */
+  height: auto;               /* ignore height attr from HTML */
+  border-radius: 12px;
+  background: #000;           /* pleasant letterbox */
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+  display: block;
+  margin: 0 auto 0.5rem;
+}
+.caption {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* ====== Optional list styling (kept) ====== */
 .benefits {
   list-style: none;
   padding: 0;
@@ -61,13 +96,11 @@
   line-height: 2;
   text-align: left;
 }
-
 .benefits li {
   position: relative;
   padding-left: 1.5rem;
   margin-bottom: 0.5rem;
 }
-
 .benefits li::before {
   content: "✔";
   position: absolute;
@@ -76,48 +109,38 @@
   font-weight: bold;
 }
 
-/* Coach Section */
+/* ====== Coach Section (kept for future) ====== */
 .coachSection {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  padding: 4rem 2rem;
+  padding: var(--section-pad) 2rem;
   background: #f8f8f8;
   gap: 3rem;
 }
-
 .coachText {
-  flex: 1;
-  max-width: 500px;
+  flex: 1 1 360px;
+  max-width: 560px;
 }
-
 .coachText h2 {
-  font-size: 2rem;
+  font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2rem);
   font-weight: 700;
   margin-bottom: 1rem;
 }
-
 .coachText p {
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 0.95rem + 0.4vw, 1.1rem);
   color: #444;
   margin-bottom: 1rem;
   line-height: 1.6;
 }
-
-.coachText ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
+.coachText ul { list-style: none; padding: 0; margin: 0; }
 .coachText li {
   font-size: 1rem;
   line-height: 1.8;
   position: relative;
   padding-left: 1.25rem;
 }
-
 .coachText li::before {
   content: "•";
   position: absolute;
@@ -125,12 +148,10 @@
   color: var(--color-main, #e60583);
   font-weight: bold;
 }
-
 .coachImage {
-  flex: 1;
-  max-width: 400px;
+  flex: 1 1 320px;
+  max-width: 420px;
 }
-
 .coachImage img {
   width: 100%;
   height: auto;
@@ -138,42 +159,74 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Final CTA Section */
+/* Stack cleanly on mobile */
+@media (max-width: 900px) {
+  .coachSection {
+    padding: var(--section-pad-sm) 1.25rem;
+    gap: 1.5rem;
+  }
+  .coachText,
+  .coachImage { max-width: 100%; }
+}
+
+/* ====== Final CTA Section ====== */
 .cta {
   text-align: center;
   background-color: #f1f1f1;
-  padding: 4rem 2rem;
+  padding: var(--section-pad) 2rem;
 }
-
 .cta h2 {
-  font-size: 2.25rem;
+  font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.25rem);
   font-weight: 700;
   color: #111;
   margin-bottom: 1rem;
 }
-
 .ctaSubtitle {
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 0.95rem + 0.4vw, 1.15rem);
   color: #555;
   margin-bottom: 2rem;
-  max-width: 600px;
+  max-width: 680px;
   margin-left: auto;
   margin-right: auto;
   line-height: 1.7;
 }
 
+/* Desktop button */
 .ctaButton {
-  background-color: #000;
+  background: linear-gradient(135deg, var(--color-main), #e60583);
   color: #fff;
   padding: 1rem 2rem;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
-  border-radius: 6px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: transform 120ms ease, box-shadow 160ms ease, background-color 0.2s ease;
+  box-shadow: 0 10px 24px rgba(230, 5, 131, 0.22);
+}
+.ctaButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px rgba(230, 5, 131, 0.28);
 }
 
-.ctaButton:hover {
-  background-color: #333;
+/* Mobile CTA: full-width, comfy tap target */
+@media (max-width: 900px) {
+  .cta {
+    padding: var(--section-pad-sm) 1.25rem;
+  }
+  .ctaButton {
+    width: 100%;
+    max-width: 560px;
+    padding: 0.9rem 1.25rem;
+    font-size: 1rem;
+    margin: 0 auto;
+    display: inline-flex;
+    justify-content: center;
+    border-radius: 16px;
+  }
+}
+
+/* ====== Reduced motion ====== */
+@media (prefers-reduced-motion: reduce) {
+  .ctaButton { transition: none !important; }
 }

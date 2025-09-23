@@ -1,0 +1,43 @@
+@import url('../../colors.css');
+
+.wrap {
+  margin-top: 30px;
+  padding: 0 1rem;                 /* comfy side padding on mobile */
+}
+
+.title {
+  margin: 0 0 12px 0;
+  color: var(--text-color, #111);
+  font-weight: 800;
+  font-size: clamp(1.1rem, 0.95rem + 1vw, 1.6rem);
+  line-height: 1.2;
+}
+
+.patient {
+  color: var(--color-main, #e60583);
+  font-weight: 900;
+}
+
+/* Responsive grid: fills rows with cards, minimum width controls wraps */
+.grid {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* Wider screens: give content a comfortable max width */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Tighten vertical rhythm on small phones */
+@media (max-width: 480px) {
+  .wrap { margin-top: 24px; }
+  .grid { gap: 12px; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
