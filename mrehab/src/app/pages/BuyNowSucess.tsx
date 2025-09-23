@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Navbar } from "../../components/Navbar";
 import { CheckCircle } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
+import styles from "./BuyNowSucess.module.css";
 
 export default function BuyNowSuccess() {
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -14,6 +15,7 @@ export default function BuyNowSuccess() {
     window.location.href = "/login";
   };
 
+  // Decode user + role
   useEffect(() => {
     const idToken = localStorage.getItem("idToken");
     if (!idToken) return handleSignOut();
@@ -35,6 +37,7 @@ export default function BuyNowSuccess() {
     }
   }, []);
 
+  // Read session id from query
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("session_id");
@@ -52,72 +55,55 @@ export default function BuyNowSuccess() {
   return (
     <>
       <Navbar />
-      <div
-        style={{
-          maxWidth: "600px",
-          margin: "60px auto",
-          padding: "2rem",
-          textAlign: "center",
-          border: "1px solid #e0e0e0",
-          borderRadius: "12px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-        }}
-      >
-        <CheckCircle size={64} color="green" style={{ marginBottom: "16px" }} />
+      <main className={styles.page}>
+        <div className={styles.wrap}>
+          <section className={styles.card} aria-labelledby="success-title">
+            <div className={styles.icon} aria-hidden="true">
+              <CheckCircle size={64} />
+            </div>
 
-        <h2 style={{ fontSize: "1.8rem", marginBottom: "12px" }}>
-          Purchase Successful!
-        </h2>
+            <h1 id="success-title" className={styles.title}>
+              Purchase Successful!
+            </h1>
 
-        <p style={{ fontSize: "1rem", marginBottom: "8px" }}>
-          🎉 Thank you for your order {name}. A receipt has been sent to your
-          email.
-        </p>
-        <p style={{ fontSize: "0.95rem", color: "#555", marginBottom: "24px" }}>
-          You can view your order details anytime in your{" "}
-          <a
-            href={role === "provider" ? "/provider-dashboard" : "/patient-dashboard"}
-            style={{ color: "var(--color-main)" }}
-          >
-            dashboard
-          </a>
-          .
-        </p>
+            <p className={styles.lead}>
+              🎉 Thank you for your order{ name ? `, ${name}` : "" }. A receipt has been sent to your email.
+            </p>
+            <p className={styles.sub}>
+              You can view your order details anytime in your{" "}
+              <a
+                className={styles.link}
+                href={role === "provider" ? "/provider-dashboard" : "/patient-dashboard"}
+              >
+                dashboard
+              </a>
+              .
+            </p>
 
-        <div
-          style={{
-            background: "#fafafa",
-            padding: "1rem",
-            borderRadius: "8px",
-            marginBottom: "24px",
-            textAlign: "left",
-          }}
-        >
-          <h3 style={{ marginBottom: "8px" }}>Order Summary</h3>
-          <p>
-            <strong>Order ID:</strong> {sessionId || "Loading..."}
-          </p>
-          <p>
-            <strong>Status:</strong> Paid ✅
-          </p>
+            <div className={styles.summary} role="group" aria-label="Order summary">
+              <h2 className={styles.summaryTitle}>Order Summary</h2>
+              <p className={styles.row}>
+                <strong>Order ID:</strong>{" "}
+                <span aria-live="polite">{sessionId || "Loading…"}</span>
+              </p>
+              <p className={styles.row}>
+                <strong>Status:</strong> Paid ✅
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={redirectDashboard}
+              className={styles.cta}
+            >
+              Go to Dashboard
+            </button>
+
+            {/* Live region for any dynamic status in the future */}
+            <p className={styles.live} aria-live="polite" />
+          </section>
         </div>
-
-        <button
-          onClick={redirectDashboard}
-          style={{
-            backgroundColor: "var(--color-main, #2a6df4)",
-            color: "#fff",
-            padding: "0.9rem 1.8rem",
-            fontSize: "1rem",
-            fontWeight: 600,
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
-        >
-          Go to Dashboard
-        </button>
-      </div>
+      </main>
     </>
   );
 }

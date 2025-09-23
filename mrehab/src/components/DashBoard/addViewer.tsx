@@ -68,7 +68,9 @@ export default function AddViewer() {
         });
         setSearchResults(res.data || []);
         setOpen(true);
-        setActiveIndex((prev) => (res.data && res.data.length ? Math.min(prev, res.data.length - 1) : -1));
+        setActiveIndex((prev) =>
+          res.data && res.data.length ? Math.min(prev, res.data.length - 1) : -1
+        );
       } catch (err: any) {
         if (!axios.isCancel(err)) {
           console.error("❌ Search failed:", err);
@@ -127,8 +129,7 @@ export default function AddViewer() {
       setSearchResults([]);
       setOpen(false);
       setActiveIndex(-1);
-      // keep focus in input for quick subsequent adds
-      inputRef.current?.focus();
+      inputRef.current?.focus(); // quick subsequent adds
     } catch (err: any) {
       console.error("❌ Failed to add viewer:", err);
       setStatusMessage(`❌ Could not add ${email}`);
@@ -167,14 +168,7 @@ export default function AddViewer() {
     <div className={styles.wrap}>
       <h2 className={styles.title}>Add Your Doctor As An Authorized User</h2>
 
-      <div
-        ref={wrapRef}
-        className={styles.inputWrap}
-        role="combobox"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-owns="doctor-results"
-      >
+      <div ref={wrapRef} className={styles.inputWrap}>
         <input
           ref={inputRef}
           type="text"
@@ -187,16 +181,18 @@ export default function AddViewer() {
           onKeyDown={onKeyDown}
           placeholder="Search doctors by name or email"
           className={styles.input}
-          aria-autocomplete="list"
+          /* ✅ ARIA combobox props belong on the INPUT element */
+          role="combobox"
+          aria-haspopup="listbox"
+          aria-expanded={open}
           aria-controls="doctor-results"
+          aria-autocomplete="list"
           aria-activedescendant={
             activeIndex >= 0 && searchResults[activeIndex]
               ? `option-${activeIndex}`
               : undefined
           }
         />
-
-        {/* Helper hint */}
 
         {/* Results popover */}
         {open && (
