@@ -34,7 +34,7 @@ export function cacheRoute(ttlSeconds: number) {
     try {
       const cachedData = await redis.get(key);
       if (cachedData) {
-        console.log(`Cache hit for ${key}`);
+        
         res.json(JSON.parse(cachedData));
         return; // ✅ end early, but don't return a Response
       }
@@ -44,7 +44,7 @@ export function cacheRoute(ttlSeconds: number) {
       const originalJson = res.json.bind(res);
       res.json = (body: any) => {
         redis.set(key, JSON.stringify(body), "EX", ttlSeconds).catch(console.error);
-        console.log(`Cache set for ${key} (TTL: ${ttlSeconds}s)`);
+        
         return originalJson(body);
       };
 

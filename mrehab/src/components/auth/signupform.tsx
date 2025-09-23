@@ -20,7 +20,7 @@ const SignupButton: React.FC = () => {
   const handleSignup = async () => {
     try {
       const response = await axios.post(`${baseURL}api/auth/signup`, formData);
-      console.log("✅ Signup successful:", response.data);
+      
     } catch (err: any) {
       console.error("❌ Signup failed:", err.response?.data || err.message);
     }

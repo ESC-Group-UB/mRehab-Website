@@ -158,7 +158,7 @@ const Signup: React.FC = () => {
           code: verificationCode
         });
           window.location.href = `${home}login`;
-          console.log("✅ Signup successful:", response.data);
+          
     } catch (err: any) {
       console.error("❌ Signup failed:", err.response?.data || err.message);
       setError(err.response?.data?.message || "Signup failed.");
@@ -170,12 +170,12 @@ const Signup: React.FC = () => {
     e.preventDefault();
     setError("");
     try {
-      console.log("Submitting signup with data:", formData);
+      
       const response = await axios.post(`${baseURL}api/auth/signup`, {
         ...formData,
         address: `${formData.street} ${formData.city} ${formData.state} ${formData.zip}`
       });
-      console.log("✅ Signup successful:", response.data);
+      
       setStep("verify");
     } catch (err: any) {
       console.error("❌ Signup failed:", err.response?.data || err.message);

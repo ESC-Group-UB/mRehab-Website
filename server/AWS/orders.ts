@@ -66,7 +66,7 @@ export function buildOrderFromSession(session: Stripe.Checkout.Session): Order {
 }
 
 export const uploadOrder = async (order: Order): Promise<void> => {
-    console.log("Uploading order:", order);
+    
   if (!order?.id) {
     throw new Error("uploadOrder: order.id is required");
   }
@@ -81,7 +81,7 @@ export const uploadOrder = async (order: Order): Promise<void> => {
 
   try {
     await dynamoDB.put(params).promise();
-    console.log(`✅ Order ${order.id} saved to ${"Orders"}`);
+    
   } catch (err: any) {
     // SDK v2 uses err.code; keep name fallback just in case
     const code = err?.code || err?.name;

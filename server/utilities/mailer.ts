@@ -25,5 +25,5 @@
       html,
     });
 
-    console.log("✅ Email sent:", info.messageId);
+    
   }

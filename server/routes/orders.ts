@@ -13,7 +13,7 @@ ordersRouter.get("/byEmail", async (req: Request, res: Response) => {
         return;
     }
 
-    console.log("Fetching orders for email:", email);
+    
     const orders = await ordersByEmail(email);
       res.json({ orders });
     } catch (error) {

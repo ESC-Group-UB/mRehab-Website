@@ -31,7 +31,7 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      console.log("Login successful:", data);
+      
       if (!res.ok) throw new Error(data.message || "Login failed");
       // Store tokens in localStorage
       localStorage.setItem("idToken", data.IdToken);
@@ -48,7 +48,7 @@ export default function Login() {
       // Redirect to propper dashboard based on role
       const decoded: any = jwtDecode(data.IdToken);
       const groups = decoded["cognito:groups"] || [];
-      console.log("User groups:", groups);
+      
       if (groups.includes("Provider") || groups.includes("provider")) {
         navigate("/dashboard");
       } else if (groups.includes("Patient") || groups.includes("patient")) {

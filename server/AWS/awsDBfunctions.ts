@@ -60,7 +60,7 @@ export function getEntriesByUsername(
   };
 
   return dynamoDB.query(params).promise().then((data) => {
-    console.log(`📄 Retrieved ${data.Items?.length || 0} entries for user ${username}`);
+    
     return data.Items as ActivitySessionsEntry[];
   });
 }
@@ -74,7 +74,7 @@ export async function getFilteredEntries(params: {
 }): Promise<ActivitySessionsEntry[]> {
   const { username, exerciseName, hand, start, end } = params;
 
-  console.log("🔍 getFilteredEntries called with params:", params);
+  
 
   const queryInput: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName: "ActivitySessions",
@@ -84,13 +84,13 @@ export async function getFilteredEntries(params: {
     },
   };
 
-  console.log("📦 DynamoDB queryInput:", JSON.stringify(queryInput, null, 2));
+  
 
   try {
     const result = await dynamoDB.query(queryInput).promise();
     let items = (result.Items as ActivitySessionsEntry[]) || [];
 
-    console.log(`✅ DynamoDB returned ${items.length} items`);
+    
 
     // 🔎 Apply optional filters
     if (hand) {
@@ -125,7 +125,7 @@ export async function getFilteredEntries(params: {
       );
     }
 
-    console.log(`🎯 Final result count: ${items.length}`);
+    
     return items;
   } catch (err) {
     console.error("❌ Error querying DynamoDB:", err);

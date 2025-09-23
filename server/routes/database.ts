@@ -16,7 +16,7 @@ const router = express.Router();
 router.get("/filtered", async (req: Request, res: Response) => {
   try {
     const { username, hand, start, end, exerciseName } = req.query;
-    console.log("🔍 Filtered entries request:",  req.query);
+    
 
     // 1) Normalize/clean params for a stable key
     const u = String(username || "").trim().toLowerCase();
@@ -89,23 +89,23 @@ function parseMaybeISO(s: string | undefined) {
 // user settings can be casched in other ways so ill still make this clear the cache
 router.put("/updateActivities", async(req: Request, res: Response) => {
   const { email, activities } = req.body;
-  console.log("Updating activities for:", email, activities);
+  
   try {
     const result = await updateActivities(email, activities);
     const cachedKey = `/api/aws/user-settings?email=${encodeURIComponent(email)}`;
     await cacheDel(cachedKey);
-    console.log(`Cache invalidated for key: ${cachedKey}`);
+    
     res.json(result);
   } catch (err) {
 }})
 
 
 router.get("/user-settings", cacheRoute(3600), async (req: Request, res: Response) => {
-  console.log("Fetching user settings for:", req.query);
+  
   const { email } = req.query;
   try {
     const result = await getUserSettings(email as string);
-    console.log(result);
+    
 
     res.json(result);
   } catch (err) {
@@ -114,7 +114,7 @@ router.get("/user-settings", cacheRoute(3600), async (req: Request, res: Respons
 
 router.post("/interest", async (req: Request, res: Response) => {
   const { name, email, phoneCase, caseLink, device, message, role } = req.body;
-  console.log("Received interest form submission:", req.body);
+  
   const formData: FormData = {
     name,
     email,

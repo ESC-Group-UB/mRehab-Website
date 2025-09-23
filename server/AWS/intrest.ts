@@ -30,7 +30,7 @@ export async function uploadInterestToDynamoDB(data: FormData) {
   };
     try {
         await dynamoDB.put(params).promise();
-        console.log("Interest form data uploaded successfully:", params.Item);
+        
     } catch (error) {
         console.error("Error uploading interest form data:", error);
         throw error;

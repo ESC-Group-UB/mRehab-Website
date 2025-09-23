@@ -33,26 +33,26 @@ export async function AddingAuthorizedUserHandler(
     }
     var result = await checkIfValidEmail(authorizedUser)
     if (!result) {
-        console.log(`❌ ${authorizedUser} is not a valid email`);
+        
         return {"message": `❌ ${authorizedUser} is not a valid email`};
     }
     var isAuth = await checkIfUserIsAuthorized(username, authorizedUser);
     if (isAuth){
-        console.log(`✅ ${authorizedUser} is already authorized for ${username}`);
+        
         return {"message": `✅ ${authorizedUser} is already authorized for ${username}`};
     }
     var result = await addAuthorizedUser(username, authorizedUser);
     if (!result) {
-        console.log(`❌ Failed to add ${authorizedUser} to ${username}'s allowed users`);
+        
         return {"message": `❌ Failed to add ${authorizedUser} to ${username}'s allowed users`};
 
     }
     var result2 = await addUserToYourAllowedToView(username, authorizedUser);
     if (!result2) {
-        console.log(`❌ Failed to add ${username} to ${authorizedUser}'s allowed to view users`);
+        
         return {"message": `❌ Failed to add ${username} to ${authorizedUser}'s allowed to view users`};
     }
-    console.log(`✅ Successfully added ${authorizedUser} to ${username}'s allowed users and ${username} to ${authorizedUser}'s allowed to view users`);
+    
     return {"message": `✅ Successfully added ${authorizedUser} to ${username}'s allowed users and ${username} to ${authorizedUser}'s allowed to view users`};
     
     
@@ -102,7 +102,7 @@ export async function addAuthorizedUser(
   };
   try {
     await dynamoDB.update(params).promise();
-    console.log(`✅ Added ${authorizedUser} to ${username}'s allowed users`);
+    
     return true;
   } catch (err) {
     console.error("❌ Failed to add authorized user:", err);
@@ -125,7 +125,7 @@ export async function addUserToYourAllowedToView(
   };
   try {
     await dynamoDB.update(params).promise();
-    console.log(`✅ Added ${username} to ${authorizedUser}'s allowed to view users`);
+    
     return true;
   } catch (err) {
     console.error("❌ Failed to add user to allowed to view:", err);
@@ -156,7 +156,7 @@ export async function getAllowedToViewUsers(
 export const getAllowedToViewUsersFromCognito = async (username: string): Promise<Array<{ name: string; email: string }>> => {
   const users = await getUsersFromCognito();
   const allowedUsers = await getAllowedToViewUsers(username);
-  console.log(`📄 Retrieved ${allowedUsers.length} allowed to view users for ${username}`); 
-  console.log(allowedUsers)
+   
+  
   return users.filter(user => allowedUsers.includes(user.email));
 };

@@ -22,7 +22,7 @@ const parseCheckoutWebhookData = async (checkoutEvent: Stripe.Checkout.Session) 
         adress,
         name
     }
-    console.log("Parsed Checkout Event Data:", CheckoutEventData);
+    
 
     return CheckoutEventData;
 };
@@ -50,7 +50,7 @@ const handleCustomerEmail = async (CheckoutEventData: CheckoutEventData) => {
 
 // send an email to a team member to produce the order
 const handleInternalCheckoutEmail =  async (CheckoutEventData: CheckoutEventData) => {
-    console.log("Handling internal checkout email...");
+    
     const customerEmail = CheckoutEventData.customerEmail;
     const name = CheckoutEventData.name;
 

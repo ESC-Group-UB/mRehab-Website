@@ -24,7 +24,7 @@ export function ViewOthers({
       })
       .then((res) => {
         setViewers(res.data);
-        console.log("✅ Fetched patients:", res.data);
+        
       })
       .catch((err) => {
         console.error("❌ Failed to fetch patients:", err);

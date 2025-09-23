@@ -14,7 +14,7 @@ const ConfirmUser: React.FC = () => {
         email,
         code,
       });
-      console.log("✅ Confirmation successful:", response.data);
+      
     } catch (err: any) {
       console.error("❌ Confirmation failed:", err.response?.data || err.message);
     }

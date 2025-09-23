@@ -36,7 +36,7 @@ router.get(
   cacheRoute(3600), // ✅ middleware runs first
   async (req, res) => {
     const username = req.query.username as string;
-    console.log(`Fetching allowed to view users for: ${username}`);
+    
     const allowedUsers = await getAllowedToViewUsers(username);
     res.json(allowedUsers);
   }
@@ -58,7 +58,7 @@ router.get("/search", async (req, res) => {
     
     const mockDoctors = await getUsersFromCognito();
 
-    console.log(mockDoctors);
+    
 
     const matches = mockDoctors
         ? mockDoctors.filter(
@@ -77,7 +77,7 @@ router.get("/search/auth", async (req, res) => {
     
     const mockDoctors = await getAllowedToViewUsersFromCognito(email);
 
-    console.log(mockDoctors);
+    
 
     const matches = mockDoctors
         ? mockDoctors.filter(
