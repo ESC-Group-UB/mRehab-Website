@@ -6,8 +6,10 @@ import { dynamoDB } from "./awsConfig";
 import dotenv from "dotenv";
 dotenv.config();
 
-
-
+const AuthorizedUsersTableName = process.env.AuthorizedUsers;
+const ActivitySessionsTableName = process.env.ActivitySessions;
+const OrdersTableName = process.env.Orders;
+const UserSettingsTableName = process.env.UserSettings
 const UserPoolId = process.env.COGNITO_POOL_ID;
 
 
@@ -71,7 +73,7 @@ export async function createUserSettings(email: string, device: string) {
   const now = new Date().toISOString();
 
   const params: AWS.DynamoDB.DocumentClient.PutItemInput = {
-    TableName: "UserSettings",
+    TableName: UserSettingsTableName!,
     Item: {
       // 🔑 Adjust PK name if your table uses a different key
       Username: email.toLowerCase(),

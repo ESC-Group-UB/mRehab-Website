@@ -1,6 +1,11 @@
 import { CognitoISP } from "./awsConfig"; import { awsConfig } from "./awsConfig"; import crypto from "crypto"; import { uploadUserToDynamoDB } from "./AuthorisedUsersFunctions"; import { dynamoDB } from "./awsConfig"; import dotenv from "dotenv"; dotenv.config(); const UserPoolId = process.env.COGNITO_POOL_ID;
 import type Stripe from "stripe";
 
+const AuthorizedUsersTableName = process.env.AuthorizedUsers;
+const ActivitySessionsTableName = process.env.ActivitySessions;
+const OrdersTableName = process.env.Orders;
+const UserSettingsTableName = process.env.UserSettings
+
 export type ShippingStatus =
   | "pending"
   | "processing"
@@ -72,7 +77,7 @@ export const uploadOrder = async (order: Order): Promise<void> => {
   }
 
   const params = {
-    TableName: "Orders",
+    TableName: OrdersTableName!,
     Item: order,
     // Don't overwrite an existing order with the same id
     ConditionExpression: "attribute_not_exists(#id)",
@@ -100,7 +105,7 @@ export async function ordersByEmail(email: string): Promise<Order[]> {
   }
 
   const params = {
-    TableName: "Orders",
+    TableName: OrdersTableName!,
     IndexName: "email-index", // <-- requires a GSI on "email" (see below)
     KeyConditionExpression: "#email = :email",
     ExpressionAttributeNames: {

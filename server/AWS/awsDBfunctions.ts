@@ -1,6 +1,15 @@
 import { dynamoDB } from "./awsConfig";
 import {createUserSettings} from "./authService";
 
+import dotenv from "dotenv";
+dotenv.config();
+
+const AuthorizedUsersTableName = process.env.AuthorizedUsers;
+const ActivitySessionsTableName = process.env.ActivitySessions;
+const OrdersTableName = process.env.Orders;
+const UserSettingsTableName = process.env.UserSettings;
+
+
 
 export interface ActivitySessionsEntry {
   Username: string;
@@ -33,7 +42,7 @@ export async function uploadSessionToDynamoDB(
 ): Promise<void> {
   try {
     const params = {
-      TableName: "ActivitySessions",
+      TableName: ActivitySessionsTableName!,
       Item: entry,
     };
 
@@ -52,7 +61,7 @@ export function getEntriesByUsername(
   username: string
 ): Promise<ActivitySessionsEntry[]> {
   const params = {
-    TableName: "ActivitySessions",
+    TableName: ActivitySessionsTableName!,
     KeyConditionExpression: "Username = :username",
     ExpressionAttributeValues: {
       ":username": username,
@@ -77,7 +86,7 @@ export async function getFilteredEntries(params: {
   
 
   const queryInput: AWS.DynamoDB.DocumentClient.QueryInput = {
-    TableName: "ActivitySessions",
+    TableName: ActivitySessionsTableName!,
     KeyConditionExpression: "Username = :u",
     ExpressionAttributeValues: {
       ":u": username,
@@ -147,7 +156,7 @@ export async function updateActivities(
   const now = new Date().toISOString();
 
   const params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
-    TableName: "UserSettings",
+    TableName: UserSettingsTableName!,
     Key: {
       Username: email.toLowerCase(), // adjust if your PK is named differently
     },
@@ -178,7 +187,7 @@ export async function getUserSettings(email: string) {
   }
 
   const params: AWS.DynamoDB.DocumentClient.GetItemInput = {
-    TableName: "UserSettings",
+    TableName: UserSettingsTableName!,
     Key: {
       Username: email.toLowerCase(), // adjust PK name if different
     },

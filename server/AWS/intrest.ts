@@ -1,6 +1,11 @@
 import { CognitoISP } from "./awsConfig"; import { awsConfig } from "./awsConfig"; import crypto from "crypto"; import { uploadUserToDynamoDB } from "./AuthorisedUsersFunctions"; import { dynamoDB } from "./awsConfig"; import dotenv from "dotenv"; dotenv.config(); const UserPoolId = process.env.COGNITO_POOL_ID;
 
 
+const AuthorizedUsersTableName = process.env.AuthorizedUsers;
+const ActivitySessionsTableName = process.env.ActivitySessions;
+const OrdersTableName = process.env.Orders;
+const UserSettingsTableName = process.env.UserSettings
+
 // server/AWS/intrest.ts
 export type FormData = {
   name: string;
