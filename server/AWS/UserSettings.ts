@@ -7,12 +7,18 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
+const AuthorizedUsersTableName = process.env.AuthorizedUsers;
+const ActivitySessionsTableName = process.env.ActivitySessions;
+const OrdersTableName = process.env.Orders;
+const UserSettingsTableName = process.env.UserSettings
+
+
 const UserPoolId = process.env.COGNITO_POOL_ID;
 
 // get user Device from DynamoDB
 export async function getUserDevice(email: string): Promise<string | null> {
   const params = {
-    TableName: "UserSettings",
+    TableName: UserSettingsTableName!,
     Key: {
       Username: email.toLowerCase(),
     },
