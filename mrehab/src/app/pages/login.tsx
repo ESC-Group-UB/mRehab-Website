@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import styles from "./login.module.css";
 import { Navbar } from "../../components/Navbar";
 import { jwtDecode } from "jwt-decode";
+
+import dotenv from "dotenv";
+dotenv.config();
 export default function Login() {
 
   const baseURL = process.env.REACT_APP_BACKEND_API_URL; 
