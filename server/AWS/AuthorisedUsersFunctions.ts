@@ -2,6 +2,18 @@ import { dynamoDB } from "./awsConfig";
 import {checkIfValidEmail, getUsersFromCognito} from "./authService";
 import { get } from "http";
 
+import dotenv from "dotenv";
+dotenv.config();
+
+const AuthorizedUsersTableName = process.env.AuthorizedUsers;
+const ActivitySessionsTableName = process.env.ActivitySessions;
+const OrdersTableName = process.env.Orders;
+const UserSettingsTableName = process.env.UserSettings;
+
+
+
+
+
 
 export async function uploadUserToDynamoDB(
   username: string,
@@ -13,7 +25,7 @@ export async function uploadUserToDynamoDB(
   };
   try {
     const params = {
-      TableName: "AuthorizedUsers",
+      TableName: AuthorizedUsersTableName!,
       Item: entry,
     };
 
@@ -66,7 +78,7 @@ export async function checkIfUserIsAuthorized(
     authorizedUser: string
 ): Promise<boolean> {
   const params = {
-    TableName: "AuthorizedUsers",
+    TableName: AuthorizedUsersTableName!,
     Key: { Username: username },
     ProjectionExpression: "SharingWith",
   };
@@ -92,7 +104,7 @@ export async function addAuthorizedUser(
   authorizedUser: string
 ): Promise<boolean> {
   const params = {
-    TableName: "AuthorizedUsers",
+    TableName: AuthorizedUsersTableName!,
     Key: { Username: username },
     UpdateExpression: "SET SharingWith = list_append(if_not_exists(SharingWith, :emptyList), :newUser)",
     ExpressionAttributeValues: {
@@ -115,7 +127,7 @@ export async function addUserToYourAllowedToView(
   authorizedUser: string
 ): Promise<boolean> {
   const params = {
-    TableName: "AuthorizedUsers",
+    TableName: AuthorizedUsersTableName!,
     Key: { Username: authorizedUser },
     UpdateExpression: "SET AllowedToView = list_append(if_not_exists(AllowedToView, :emptyList), :newUser)",
     ExpressionAttributeValues: {
@@ -139,7 +151,7 @@ export async function getAllowedToViewUsers(
   username: string
 ):Promise<string[]> {
   const params = {
-    TableName: "AuthorizedUsers",
+    TableName: AuthorizedUsersTableName!,
     Key: { Username: username },
     ProjectionExpression: "AllowedToView",
   };
