@@ -23,7 +23,7 @@ export default function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
+    console.log(`Logging ${baseURL}`); 
     try {
       const res = await fetch(`${baseURL}api/auth/login`, {
         method: "POST",
