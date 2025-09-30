@@ -10,6 +10,10 @@ RUN echo "📦 Installing dependencies..." \
 
 # Copy source and build
 COPY . .
+# Explicitly pass environment variable into build
+ARG REACT_APP_BACKEND_API_URL
+ENV REACT_APP_BACKEND_API_URL=$REACT_APP_BACKEND_API_URL
+
 RUN echo "🚀 Building app..." \
  && npm run build \
  && echo "✅ Build finished"
