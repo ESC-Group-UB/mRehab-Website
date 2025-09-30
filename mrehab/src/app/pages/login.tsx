@@ -7,6 +7,9 @@ import { jwtDecode } from "jwt-decode";
 export default function Login() {
 
   const baseURL = process.env.REACT_APP_BACKEND_API_URL; 
+  if (!baseURL) {
+    throw new Error("❌ Missing REACT_APP_BACKEND_API_URL — did you set it in Coolify?");
+  }
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
