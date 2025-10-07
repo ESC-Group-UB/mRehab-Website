@@ -22,6 +22,8 @@ export default function OrdersHistory() {
   const [error, setError] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const baseURL = process.env.REACT_APP_BACKEND_API_URL;
+
 
   const handleSignOut = () => {
     localStorage.removeItem("idToken");
@@ -50,7 +52,7 @@ export default function OrdersHistory() {
         setError(null);
 
         const res = await fetch(
-          `http://localhost:5000/api/orders/byEmail?email=${encodeURIComponent(
+          `${baseURL}api/orders/byEmail?email=${encodeURIComponent(
             userEmail
           )}`
         );
