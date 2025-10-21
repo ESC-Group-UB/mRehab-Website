@@ -13,6 +13,7 @@ import uploadSessionRoutes from "./routes/uploadSession";
 import stripeRoutes from "./routes/stripe";
 import stripeWebhookRoutes from "./routes/stripeWebhooks";
 import ordersRoutes from "./routes/orders";
+import AIRouter from "./routes/AI";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,6 +26,7 @@ app.use(express.json()); // ✅ This parses incoming JSON requests
 
 
 
+
 // Mount routes
 app.use("/api/auth", authRoutes);
 app.use("/api/aws", awsRoutes);
@@ -32,6 +34,7 @@ app.use("/api/authorizedUsers", AuthorizedUserRotes);
 app.use("/api/uploadSession", uploadSessionRoutes);
 app.use("/api/stripe", stripeRoutes);
 app.use("/api/orders", ordersRoutes);
+app.use("/api/AI", AIRouter);
 
 // Health check
 app.get("/api/hello", (_req, res) => {

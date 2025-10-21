@@ -25,9 +25,6 @@ router.get("/filtered", async (req: Request, res: Response) => {
     const s = String(start || "null").trim();
     const e = String(end || "null").trim();
 
-    // Tip (optional): if u is an email/PHI, prefer a numeric userId or a hash
-    // const uHash = createHash('sha256').update(u).digest('hex')
-
     const key = `filtered:${u}:${h}:${ex}:${s}:${e}`;
 
     // 2) Try cache
@@ -50,7 +47,7 @@ router.get("/filtered", async (req: Request, res: Response) => {
     });
 
     // 4) TTL strategy: long if past-only range, short if includes "today"
-    const ttl = ttlForRange(s, e); // see helper below
+    const ttl = ttlForRange(s, e);
 
     await cacheSet(key, { entries }, ttl);
     res.json({ source: "db", entries });
