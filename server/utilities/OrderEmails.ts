@@ -1,4 +1,4 @@
-import sendEmail from "./mailer";
+import sendEmail from "./BrevoMailer";
 import {Order} from "../AWS/orders"
 
 
@@ -47,14 +47,9 @@ If you have any questions, just reply to this email and we’ll be happy to help
     </div>
   `;
 
-  await sendEmail(
-    "jsmith720847@gmail.com", // must be verified SES identity
-    // customerEmail,            // use real customer email in production
-    "jsmith720847@gmail.com", // must be verified SES identity
-    subject,
-    text,
-    html
-  );
+  
+  await sendEmail("rohin113.rk@gmail.com", subject, html);
+
 }
 
 
@@ -130,12 +125,5 @@ ${JSON.stringify(order.shippingAddressRaw, null, 2)}
       </p>
     </div>
   `;
-
-  await sendEmail(
-    "jsmith720847@gmail.com", // must be a verified SES identity
-    "jsmith720847@gmail.com", // replace with warehouse/fulfillment team email in prod
-    subject,
-    text,
-    html
-  );
+  await sendEmail("rohin113.rk@gmail.com", subject, html);
 }
