@@ -92,7 +92,7 @@ const handleInternalCheckoutEmail =  async (CheckoutEventData: CheckoutEventData
     </div>
     `;
     try {
-        await sendEmail("rohin113.rk@gmail.com", subject, html);
+        await sendEmail("rohin113.rk@gmail.com", subject, html); // replace with warehouse/fulfillment team email in prod
     } catch (error) {
         console.error("❌ Failed to send email:", error);
     }

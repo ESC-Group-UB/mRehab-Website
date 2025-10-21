@@ -47,8 +47,9 @@ If you have any questions, just reply to this email and we’ll be happy to help
     </div>
   `;
 
-  
-  await sendEmail("rohin113.rk@gmail.com", subject, html);
+  console.log(`📧 Sending order confirmation email to ${customerEmail} for order #${orderId}`);
+  await sendEmail(customerEmail, subject, html);
+
 
 }
 
