@@ -1,5 +1,5 @@
 import Stripe from "stripe"
-import sendEmail  from "../utilities/mailer";
+import sendEmail  from "../utilities/BrevoMailer";
 
 
 interface CheckoutEventData {
@@ -22,8 +22,6 @@ const parseCheckoutWebhookData = async (checkoutEvent: Stripe.Checkout.Session) 
         adress,
         name
     }
-    
-
     return CheckoutEventData;
 };
 
@@ -42,7 +40,7 @@ const handleCustomerEmail = async (CheckoutEventData: CheckoutEventData) => {
     const html = `<p>Dear ${name},</p><p>Thank you for your order! We have received your payment and will process your order shortly.</p><p>Best regards,<br/>mRehab Team</p>`;
 
     try {
-        await sendEmail("mRehab Team", customerEmail, subject, text, html);
+        await sendEmail(customerEmail, subject, html);
     } catch (error) {
         console.error("❌ Failed to send email:", error);
     }
@@ -94,7 +92,7 @@ const handleInternalCheckoutEmail =  async (CheckoutEventData: CheckoutEventData
     </div>
     `;
     try {
-        await sendEmail("mRehab Order fullfilment", "mRehabTeam@gmail.com", subject, text, html);
+        await sendEmail("rohin113.rk@gmail.com", subject, html); // replace with warehouse/fulfillment team email in prod
     } catch (error) {
         console.error("❌ Failed to send email:", error);
     }
