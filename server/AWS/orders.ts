@@ -1,10 +1,17 @@
-import { CognitoISP } from "./awsConfig"; import { awsConfig } from "./awsConfig"; import crypto from "crypto"; import { uploadUserToDynamoDB } from "./AuthorisedUsersFunctions"; import { dynamoDB } from "./awsConfig"; import dotenv from "dotenv"; dotenv.config(); const UserPoolId = process.env.COGNITO_POOL_ID;
+import { CognitoISP } from "./awsConfig";
+import { awsConfig } from "./awsConfig";
+import crypto from "crypto";
+import { uploadUserToDynamoDB } from "./AuthorisedUsersFunctions";
+import { dynamoDB } from "./awsConfig";
+import dotenv from "dotenv";
+dotenv.config();
 import type Stripe from "stripe";
 
+const UserPoolId = process.env.COGNITO_POOL_ID;
 const AuthorizedUsersTableName = process.env.AuthorizedUsers;
 const ActivitySessionsTableName = process.env.ActivitySessions;
 const OrdersTableName = process.env.Orders;
-const UserSettingsTableName = process.env.UserSettings
+const UserSettingsTableName = process.env.UserSettings;
 
 export type ShippingStatus =
   | "pending"
@@ -14,18 +21,29 @@ export type ShippingStatus =
   | "canceled"
   | "failed";
 
+/** Each purchased item inside an order */
+export interface OrderItem {
+  description: string;          // product name/description from Stripe
+  quantity: number;             // number of units purchased
+  amount_total: number;         // total price for this line in cents
+  currency: string;             // currency code, e.g. "usd"
+}
+
 export interface Order {
   id: string;
   email: string | null;
-  amount: number | null;                         // amount_total can be null
-  currency: string | null;                       // currency can be null
-  status: Stripe.Checkout.Session.PaymentStatus; // 'paid' | 'unpaid' | 'no_payment_required'
-  device?: string;                               
-  shippingAddress: string | null;                // <-- formatted single-line string
-  shippingAddressRaw?: Stripe.Address | null;    // <-- optional raw object (kept for reference)
+  amount: number | null;                         // total order amount
+  currency: string | null;
+  status: Stripe.Checkout.Session.PaymentStatus;
+  device?: string;
+  shippingAddress: string | null;
+  shippingAddressRaw?: Stripe.Address | null;
   phone: string | null;
   shippingStatus: ShippingStatus;
-  createdAt: string;                             // ISO string
+  createdAt: string;
+
+  /** 🆕 Array of line items (each product purchased) */
+  items?: OrderItem[];
 }
 
 /** Format a Stripe.Address into a single line suitable for DB storage/search. */
@@ -44,51 +62,66 @@ export function formatStripeAddress(addr?: Stripe.Address | null): string | null
     .join(" ");
 
   const parts = [
-    [line1, line2].filter(Boolean).join(", "), // "line1, line2" if both exist
-    cityStatePostal,                           // "City, ST 12345"
-    addr.country?.trim(),                      // "US"
+    [line1, line2].filter(Boolean).join(", "),
+    cityStatePostal,
+    addr.country?.trim(),
   ].filter(Boolean);
 
   const formatted = parts.join(", ");
   return formatted.length ? formatted : null;
 }
 
-export function buildOrderFromSession(session: Stripe.Checkout.Session): Order {
+/**
+ * Build an Order object from a Stripe Checkout Session.
+ * Optionally include detailed line items if provided.
+ */
+export function buildOrderFromSession(
+  session: Stripe.Checkout.Session,
+  lineItems?: Stripe.ApiList<Stripe.LineItem> // optional param
+): Order {
   const rawAddr = session.customer_details?.address ?? null;
-  return {
+
+  const order: Order = {
     id: session.id,
     email: session.customer_email ?? null,
     amount: session.amount_total ?? null,
     currency: session.currency ?? null,
     status: session.payment_status,
     device: session.metadata?.device,
-    shippingAddress: formatStripeAddress(rawAddr), // <-- formatted
-    shippingAddressRaw: rawAddr,                   // <-- optional raw copy
+    shippingAddress: formatStripeAddress(rawAddr),
+    shippingAddressRaw: rawAddr,
     phone: session.customer_details?.phone ?? null,
     shippingStatus: "pending",
     createdAt: new Date().toISOString(),
   };
+
+  // 🧾 Attach detailed items if available
+  if (lineItems?.data?.length) {
+    order.items = lineItems.data.map((li) => ({
+      description: li.description ?? "Unknown Item",
+      quantity: li.quantity ?? 1,
+      amount_total: li.amount_total ?? 0,
+      currency: li.currency ?? session.currency ?? "usd",
+    }));
+  }
+
+  return order;
 }
 
+/** Upload an order record to DynamoDB */
 export const uploadOrder = async (order: Order): Promise<void> => {
-    
-  if (!order?.id) {
-    throw new Error("uploadOrder: order.id is required");
-  }
+  if (!order?.id) throw new Error("uploadOrder: order.id is required");
 
   const params = {
     TableName: OrdersTableName!,
     Item: order,
-    // Don't overwrite an existing order with the same id
     ConditionExpression: "attribute_not_exists(#id)",
     ExpressionAttributeNames: { "#id": "id" },
   };
 
   try {
     await dynamoDB.put(params).promise();
-    
   } catch (err: any) {
-    // SDK v2 uses err.code; keep name fallback just in case
     const code = err?.code || err?.name;
     if (code === "ConditionalCheckFailedException") {
       console.warn(`ℹ️ Order ${order.id} already exists — skipping insert.`);
@@ -99,21 +132,16 @@ export const uploadOrder = async (order: Order): Promise<void> => {
   }
 };
 
+/** Query orders by email (requires GSI on 'email') */
 export async function ordersByEmail(email: string): Promise<Order[]> {
-  if (!email) {
-    throw new Error("ordersByEmail: email is required");
-  }
+  if (!email) throw new Error("ordersByEmail: email is required");
 
   const params = {
     TableName: OrdersTableName!,
-    IndexName: "email-index", // <-- requires a GSI on "email" (see below)
+    IndexName: "email-index",
     KeyConditionExpression: "#email = :email",
-    ExpressionAttributeNames: {
-      "#email": "email",
-    },
-    ExpressionAttributeValues: {
-      ":email": email,
-    },
+    ExpressionAttributeNames: { "#email": "email" },
+    ExpressionAttributeValues: { ":email": email },
   };
 
   try {

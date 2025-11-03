@@ -17,7 +17,7 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
 webhookRouter.post(
   "/webhook",
   express.raw({ type: "application/json" }),
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const sig = req.headers["stripe-signature"] as string;
 
     let event: Stripe.Event;
@@ -33,16 +33,18 @@ webhookRouter.post(
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
       // 
+      const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+
+      const order:Order = buildOrderFromSession(session, lineItems);
       
 
-      const order:Order = buildOrderFromSession(session);
       
 
       // TODO: save order to DB (DynamoDB, etc.)
-        uploadOrder(order);
+        await uploadOrder(order);
       // TODO: send confirmation email to customer
-        sendOrderReceivedEmail(order.email ?? "jsmith720847@gmail.com", order.id);
-        sendInternalOrderNotification(
+        await sendOrderReceivedEmail(order.email ?? "jsmith720847@gmail.com", order.id);
+        await sendInternalOrderNotification(
           order
         );
     }

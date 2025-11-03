@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 
 type UserSettingsResponse = { Device?: string };
 
-// Helper: JWT payload (base64url) safe decode
+// Decode JWT payload safely
 function decodeJwtPayload(idToken: string): any | null {
   try {
     const payload = idToken.split(".")[1];
@@ -15,20 +15,38 @@ function decodeJwtPayload(idToken: string): any | null {
   }
 }
 
+const PRODUCTS = [
+  { id: "key", label: "Key" },
+  { id: "mug", label: "Mug" },
+  { id: "bowl", label: "Bowl" },
+];
+
 export function BuyNowButton() {
   const [processingCheckout, setProcessingCheckout] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const apiBase = useMemo(() => {
     const raw = process.env.REACT_APP_BACKEND_API_URL || "";
     return raw.endsWith("/") ? raw : raw ? `${raw}/` : "";
   }, []);
 
+  const toggleItem = (id: string) => {
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
   const handleCheckout = useCallback(async () => {
-    if (processingCheckout) return; // guard against rapid taps
+    if (processingCheckout) return;
     setError(null);
 
-    // 1) Check login
+    if (selectedItems.length === 0) {
+      setError("Please select at least one item to purchase.");
+      return;
+    }
+
+    // 1️⃣ Ensure user is logged in
     const idToken = localStorage.getItem("idToken");
     if (!idToken) {
       localStorage.setItem("redirectAfterLogin", window.location.pathname);
@@ -36,7 +54,7 @@ export function BuyNowButton() {
       return;
     }
 
-    // 2) Decode user
+    // 2️⃣ Decode user info
     const user = decodeJwtPayload(idToken);
     if (!user) {
       localStorage.setItem("redirectAfterLogin", window.location.pathname);
@@ -45,8 +63,6 @@ export function BuyNowButton() {
     }
 
     const userEmail: string = user.email || "";
-    const device: string = user.Device || "";
-
     if (!userEmail) {
       setError("User email is missing. Please re-login.");
       return;
@@ -55,11 +71,13 @@ export function BuyNowButton() {
     setProcessingCheckout(true);
 
     try {
-      // 3) Optionally fetch device info from backend
-      let finalDevice = device;
+      // 3️⃣ Try to fetch device info from backend
+      let finalDevice = user.Device || "";
       if (!finalDevice) {
         try {
-          const res = await fetch(`${apiBase}api/aws/user-settings?email=${encodeURIComponent(userEmail)}`);
+          const res = await fetch(
+            `${apiBase}api/aws/user-settings?email=${encodeURIComponent(userEmail)}`
+          );
           if (res.ok) {
             const data: UserSettingsResponse = await res.json();
             finalDevice = data?.Device ?? "No device on file";
@@ -69,11 +87,14 @@ export function BuyNowButton() {
         }
       }
 
-      // 4) Create Stripe checkout session
+      // 4️⃣ Build the items payload dynamically from selected checkboxes
+      const items = selectedItems.map((id) => ({ id, quantity: 1 }));
+
+      // 5️⃣ Create Stripe checkout session
       const res = await fetch(`${apiBase}api/stripe/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: userEmail, device: finalDevice }),
+        body: JSON.stringify({ email: userEmail, device: finalDevice, items }),
       });
 
       if (!res.ok) throw new Error(`Checkout failed with status ${res.status}`);
@@ -82,7 +103,7 @@ export function BuyNowButton() {
       if (data?.url) {
         window.location.assign(data.url);
       } else {
-        throw new Error("No URL returned from backend");
+        throw new Error("No checkout URL returned from backend");
       }
     } catch (err: any) {
       console.error("Error initiating checkout:", err);
@@ -90,10 +111,25 @@ export function BuyNowButton() {
     } finally {
       setProcessingCheckout(false);
     }
-  }, [apiBase, processingCheckout]);
+  }, [apiBase, processingCheckout, selectedItems]);
 
   return (
-    <>
+    <div className={styles.buyNowWrapper}>
+      {/* ✅ Checkbox selection */}
+      <div className={styles.checkboxGroup}>
+        {PRODUCTS.map((product) => (
+          <label key={product.id}>
+            <input
+              type="checkbox"
+              checked={selectedItems.includes(product.id)}
+              onChange={() => toggleItem(product.id)}
+            />
+            {product.label}
+          </label>
+        ))}
+      </div>
+
+      {/* 🛒 Buy Now button */}
       <button
         className={styles.buyBtn}
         onClick={handleCheckout}
@@ -101,9 +137,14 @@ export function BuyNowButton() {
         aria-busy={processingCheckout}
         aria-live="polite"
       >
-        {processingCheckout ? "Processing…" : "Buy Now"}
+        {processingCheckout
+          ? "Processing…"
+          : selectedItems.length > 0
+          ? `Buy ${selectedItems.join(", ")}`
+          : "Buy Now"}
       </button>
+
       {error && <p className={styles.errorMsg}>{error}</p>}
-    </>
+    </div>
   );
 }
