@@ -31,6 +31,7 @@ export default function Dashboard() {
   const [filterEndDate, setEndDate] = useState("");
   const [name, setName] = useState("");
   const [selectedPatient, setSelectedPatient] = useState("");
+  const [datakey, setDataKey] = useState("Accuracy");
 
   const handleSignOut = () => {
     localStorage.removeItem("idToken");
@@ -108,10 +109,12 @@ export default function Dashboard() {
               filterExercise={filterExercise}
               filterStartDate={filterStartDate}
               filterEndDate={filterEndDate}
+              dataKey={datakey}
               setFilterHand={setFilterHand}
               setFilterExercise={setFilterExercise}
               setStartDate={setStartDate}
               setEndDate={setEndDate}
+              setDataKey={setDataKey}
             />
 
             {error && (
@@ -120,7 +123,7 @@ export default function Dashboard() {
               </p>
             )}
 
-            {entries.length > 0 && <AccuracyGraph data={entries} />}
+            {entries.length > 0 && <AccuracyGraph data={entries} dataKey={datakey} />}
 
             {entries.length > 0 ? (
               <ResultsSection entries={entries} selectedPatient={selectedPatient} />
@@ -137,3 +140,4 @@ export default function Dashboard() {
     </div>
   );
 }
+ 

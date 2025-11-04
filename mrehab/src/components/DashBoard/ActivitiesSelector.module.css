@@ -41,6 +41,12 @@
   gap: 0.8rem;
 }
 
+.activities__sets {
+  width: 54px;
+  padding: 4px;
+  text-align: center;
+}
+
 .activities__search {
   flex: 1;
   min-width: 250px;

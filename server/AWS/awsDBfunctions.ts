@@ -179,7 +179,7 @@ export async function updateActivities(
     console.error("❌ Failed to update activities:", err);
     throw err;
   }
-}
+} 
 
 export async function getUserSettings(email: string) {
   if (!email) {

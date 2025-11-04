@@ -30,7 +30,7 @@ stripeRouter.post(
     try {
       console.log("Create checkout session request body:", req.body);
       const items: CartItem[] = req.body.items;
-      const { email, device } = req.body;
+      const { email, device, caseLink} = req.body;
 
       if (!items || items.length === 0) {
         res.status(400).json({ error: "No items in cart." });
@@ -57,7 +57,7 @@ stripeRouter.post(
         billing_address_collection: "required",
         shipping_address_collection: { allowed_countries: ["US", "CA"] },
         phone_number_collection: { enabled: true },
-        metadata: { userEmail: email, device },
+        metadata: { userEmail: email, device, caseLink },
         success_url: `${process.env.FRONTEND_URL}/buy-now/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.FRONTEND_URL}/buy-now`,
       });

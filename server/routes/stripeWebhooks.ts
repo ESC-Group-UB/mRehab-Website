@@ -36,6 +36,7 @@ webhookRouter.post(
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
 
       const order:Order = buildOrderFromSession(session, lineItems);
+      console.log("✅ New order received:", order);
       
 
       

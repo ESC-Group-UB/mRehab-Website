@@ -19,6 +19,7 @@ export default function PatientDashboard() {
   const [userEmail, setUserEmail] = useState("");
   const [name, setName] = useState("");
   const [hover, setHover] = useState(false);
+  const [datakey, setDataKey] = useState("");
 
   const handleSignOut = () => {
     localStorage.removeItem("idToken");
@@ -86,15 +87,17 @@ export default function PatientDashboard() {
           filterExercise={filterExercise}
           filterStartDate={filterStartDate}
           filterEndDate={filterEndDate}
+          dataKey={datakey}
           setFilterHand={setFilterHand}
           setFilterExercise={setFilterExercise}
           setStartDate={setStartDate}
           setEndDate={setEndDate}
+          setDataKey={setDataKey}
         />
 
         {error && <p style={{ color: "red", marginBottom: "20px" }}>⚠️ {error}</p>}
 
-        {entries.length > 0 && <AccuracyGraph data={entries} />}
+        {entries.length > 0 && <AccuracyGraph data={entries} dataKey={datakey} />}
 
         {entries.length > 0 ? (
           <ResultsSection entries={entries} selectedPatient={userEmail} />

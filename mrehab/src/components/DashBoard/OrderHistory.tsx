@@ -13,14 +13,15 @@ type OrderItem = {
 type Order = {
   id: string;
   email: string | null;
-  amount: number | null; // cents
-  currency: string | null; // e.g., "usd"
+  amount: number | null;
+  currency: string | null;
   status: string;
   device?: string;
+  caseLink?: string;
   shippingAddress: any;
   phone: string | null;
   shippingStatus: string;
-  createdAt: string; // ISO
+  createdAt: string;
   items?: OrderItem[];
 };
 
@@ -30,16 +31,17 @@ export default function OrdersHistory() {
   const [error, setError] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
+
   const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
-  // ✅ Sign out utility
+  // Logout safety
   const handleSignOut = () => {
     localStorage.removeItem("idToken");
     localStorage.removeItem("accessToken");
     window.location.href = "/login";
   };
 
-  // ✅ Decode user email
+  // Decode user
   useEffect(() => {
     const idToken = localStorage.getItem("idToken");
     if (!idToken) return handleSignOut();
@@ -47,29 +49,34 @@ export default function OrdersHistory() {
     try {
       const decoded: any = jwtDecode(idToken);
       setUserEmail(decoded.email || "");
-    } catch (err) {
-      console.error("❌ Error decoding token", err);
+    } catch {
       handleSignOut();
     }
   }, []);
 
-  // ✅ Fetch user orders
+  // Fetch orders
   useEffect(() => {
     async function fetchOrders() {
       if (!userEmail) return;
       try {
         setLoading(true);
-        setError(null);
-
         const res = await fetch(
           `${baseURL}api/orders/byEmail?email=${encodeURIComponent(userEmail)}`
         );
-        if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+        if (!res.ok) throw new Error(`Failed with ${res.status}`);
 
         const data = await res.json();
-        setOrders(data.orders || []);
+
+        // ✅ Sort newest → oldest
+        const sorted = (data.orders || []).sort(
+          (a: Order, b: Order) =>
+            new Date(b.createdAt).getTime() -
+            new Date(a.createdAt).getTime()
+        );
+
+        setOrders(sorted);
       } catch (err: any) {
-        setError(err.message || "Unknown error");
+        setError(err.message || "Unexpected error");
       } finally {
         setLoading(false);
       }
@@ -78,7 +85,6 @@ export default function OrdersHistory() {
     fetchOrders();
   }, [userEmail, baseURL]);
 
-  // ✅ Formatting utilities
   const formatAmount = useMemo(() => {
     return (amount: number | null, currency: string | null) => {
       if (amount == null || !currency) return "N/A";
@@ -96,7 +102,8 @@ export default function OrdersHistory() {
   const formatAddress = (shippingAddress: any) => {
     if (!shippingAddress) return "N/A";
     if (typeof shippingAddress === "string") return shippingAddress;
-    const parts = [
+
+    return [
       shippingAddress.line1,
       shippingAddress.city,
       shippingAddress.state,
@@ -104,15 +111,13 @@ export default function OrdersHistory() {
       shippingAddress.country,
     ]
       .filter(Boolean)
-      .join(", ");
-    return parts || "N/A";
+      .join(", ") || "N/A";
   };
 
-  // ✅ UI states
-  if (loading) return <p style={{ padding: 16 }}>Loading your orders…</p>;
-  if (error) return <p style={{ color: "red", padding: 16 }}>Error: {error}</p>;
+  if (loading) return <p className={styles.loading}>Loading your orders…</p>;
+  if (error) return <p className={styles.error}>Error: {error}</p>;
   if (!orders.length)
-    return <p style={{ padding: 16 }}>No orders found for {userEmail}.</p>;
+    return <p className={styles.empty}>No orders found for {userEmail}.</p>;
 
   return (
     <div className={styles.wrap}>
@@ -120,7 +125,6 @@ export default function OrdersHistory() {
 
       <ul className={styles.list}>
         {orders.map((order) => {
-          const shippingDisplay = formatAddress(order.shippingAddress);
           const isOpen = expanded === order.id;
 
           return (
@@ -132,12 +136,13 @@ export default function OrdersHistory() {
                 }`}
                 onClick={() => setExpanded(isOpen ? null : order.id)}
                 aria-expanded={isOpen}
-                aria-controls={`order-panel-${order.id}`}
               >
                 <div className={styles.headerLeft}>
-                  <Package className={styles.pkgIcon} size={24} aria-hidden="true" />
-                  <div className={styles.headerText}>
-                    <p className={styles.orderLabel}>Order {order.id.slice(-6)}</p>
+                  <Package className={styles.pkgIcon} size={22} aria-hidden />
+                  <div>
+                    <p className={styles.orderLabel}>
+                      Order #{order.id.slice(-6)}
+                    </p>
                     <p className={styles.meta}>
                       {formatAmount(order.amount, order.currency)} •{" "}
                       {new Date(order.createdAt).toLocaleDateString()} •{" "}
@@ -146,54 +151,71 @@ export default function OrdersHistory() {
                   </div>
                 </div>
 
-                <span className={styles.chev} aria-hidden="true">
+                <span className={styles.chev}>
                   {isOpen ? <ChevronUp /> : <ChevronDown />}
                 </span>
               </button>
 
-              {/* ✅ Expanded Order Details */}
               {isOpen && (
-                <div
-                  id={`order-panel-${order.id}`}
-                  className={styles.details}
-                  role="region"
-                  aria-label={`Order ${order.id.slice(-6)} details`}
-                >
+                <div className={styles.details}>
                   <p>
                     <strong>Device:</strong> {order.device || "N/A"}
                   </p>
+
                   <p>
-                    <strong>Shipping:</strong> {shippingDisplay}
+                    <strong>Case:</strong>{" "}
+                    {order.caseLink ? (
+                      <a
+                        href={order.caseLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.link}
+                      >
+                        View Case Link
+                      </a>
+                    ) : (
+                      "No case on file"
+                    )}
                   </p>
+
+                  <p>
+                    <strong>Shipping Address:</strong>{" "}
+                    {formatAddress(order.shippingAddress)}
+                  </p>
+
                   <p>
                     <strong>Phone:</strong> {order.phone || "N/A"}
                   </p>
+
                   <p>
                     <strong>Shipping Status:</strong> {order.shippingStatus}
                   </p>
+
                   <p>
                     <strong>Created At:</strong>{" "}
                     {new Date(order.createdAt).toLocaleString()}
                   </p>
 
-                  {/* 🧾 Line Items Section */}
                   {order.items?.length ? (
                     <div className={styles.itemsSection}>
-                      <h4 className={styles.itemsTitle}>Items Purchased</h4>
+                      <h4 className={styles.itemsTitle}>Items</h4>
                       <ul className={styles.itemList}>
-                        {order.items.map((item, index) => (
-                          <li key={index} className={styles.itemRow}>
-                            <span className={styles.itemDesc}>{item.description}</span>
-                            <span className={styles.itemQty}>×{item.quantity}</span>
-                            <span className={styles.itemPrice}>
-                              {formatAmount(item.amount_total, item.currency)}
+                        {order.items.map((item, idx) => (
+                          <li key={idx} className={styles.itemRow}>
+                            <span>{item.description}</span>
+                            <span>×{item.quantity}</span>
+                            <span>
+                              {formatAmount(
+                                item.amount_total,
+                                item.currency
+                              )}
                             </span>
                           </li>
                         ))}
                       </ul>
                     </div>
                   ) : (
-                    <p>No item details available.</p>
+                    <p>No item data available.</p>
                   )}
                 </div>
               )}

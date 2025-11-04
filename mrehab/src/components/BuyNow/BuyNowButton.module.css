@@ -1,76 +1,108 @@
-@import url('../../colors.css');
+.buyNowWrapper {
+  width: 100%;
+}
 
+.checkboxGroup {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* BUY BUTTON */
 .buyBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-
-  /* Size & spacing */
-  width: 100%;                 /* parent can override to 100% (sticky bar) */
+  width: 100%;
   min-width: 180px;
   padding: 0.9rem 1.5rem;
   border-radius: 999px;
-
-  /* Typography */
   font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.2px;
-
-  /* Brand visuals */
+  font-weight: 700;
   color: #fff;
-  background: linear-gradient(135deg, var(--color-main), #e60583);
+  background:#FF007A;
   border: none;
-  box-shadow: 0 10px 24px rgba(230, 5, 131, 0.28);
   cursor: pointer;
-
-  transition:
-    transform 120ms ease,
-    box-shadow 160ms ease,
-    opacity 120ms ease,
-    filter 120ms ease;
 }
 
-.buyBtn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 16px 32px rgba(230, 5, 131, 0.35);
+.buyBtn:hover:not([disabled]) {
+  opacity: 0.95;
 }
 
-.buyBtn:active {
-  transform: translateY(0);
-}
-
-.buyBtn:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 3px var(--color-main), 0 12px 28px rgba(230, 5, 131, 0.32);
-}
-
-/* Disabled / processing */
-.buyBtn[disabled],
-.buyBtn[aria-busy="true"] {
-  opacity: 0.8;
-  cursor: not-allowed;
-  filter: saturate(0.9);
-}
-
-/* Error text (consistent spacing & color) */
 .errorMsg {
   color: #c62828;
   margin-top: 8px;
-  font-size: 0.92rem;
 }
 
-/* Mobile sizing tweaks */
-@media (max-width: 900px) {
-  .buyBtn {
-    max-width: 50%;
-    padding: 0.95rem 1rem;
-    font-size: 1rem;
-  }
+/* ✅ Modal Styling */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
 }
 
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .buyBtn { transition: none !important; }
+.modal {
+  background: #fff;
+  width: 90%;
+  max-width: 420px;
+  padding: 20px;
+  border-radius: 14px;
+}
+
+.input {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.modalActions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cancelBtn {
+  padding: 8px 14px;
+  background: #e6e6e6;
+}
+
+.confirmBtn {
+  padding: 8px 14px;
+  background:  #FF007A;
+  color: #fff;
+}
+
+.caseInputGroup {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.caseLabel {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.caseInput {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 0.95rem;
+}
+
+.caseInput:focus-visible {
+  outline: 2px solid var(--color-main);
+  border-color: var(--color-main);
+}
+
+.caseHelpText {
+  font-size: 0.82rem;
+  color: #666;
+  margin-top: -2px;
 }

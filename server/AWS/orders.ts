@@ -36,6 +36,7 @@ export interface Order {
   currency: string | null;
   status: Stripe.Checkout.Session.PaymentStatus;
   device?: string;
+  caseLink?: string;
   shippingAddress: string | null;
   shippingAddressRaw?: Stripe.Address | null;
   phone: string | null;
@@ -80,6 +81,7 @@ export function buildOrderFromSession(
   lineItems?: Stripe.ApiList<Stripe.LineItem> // optional param
 ): Order {
   const rawAddr = session.customer_details?.address ?? null;
+  console.log("BUILDING ORDER SESSION", session.metadata);
 
   const order: Order = {
     id: session.id,
@@ -91,6 +93,7 @@ export function buildOrderFromSession(
     shippingAddress: formatStripeAddress(rawAddr),
     shippingAddressRaw: rawAddr,
     phone: session.customer_details?.phone ?? null,
+    caseLink: session.metadata?.caseLink,
     shippingStatus: "pending",
     createdAt: new Date().toISOString(),
   };

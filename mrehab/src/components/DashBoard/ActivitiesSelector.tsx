@@ -4,6 +4,7 @@ import styles from "./ActivitiesSelector.module.css";
 interface ActivityConfig {
   enabled: boolean;
   SuggestedReps?: number;
+  SuggestedSets?: number;
 }
 
 interface ActivitiesMap {
@@ -35,10 +36,11 @@ export default function ActivitiesSelector({
   const toggleCollapse = (groupName: string) =>
     setCollapsedGroups((prev) => ({ ...prev, [groupName]: !prev[groupName] }));
 
-  // Fetch user settings if not provided
+  // Fetch initial settings if not provided
   useEffect(() => {
     if (initialActivities) return;
     let cancelled = false;
+
     (async () => {
       try {
         setLoading(true);
@@ -60,20 +62,24 @@ export default function ActivitiesSelector({
         }
       }
     })();
+
     return () => {
       cancelled = true;
     };
   }, [patientEmail, initialActivities]);
 
-  // Debounced autosave
+  // Debounced auto-save
   useEffect(() => {
     if (loading || Object.keys(activities).length === 0) return;
+
     const changed =
       !lastSentRef.current ||
       JSON.stringify(lastSentRef.current) !== JSON.stringify(activities);
+
     if (!changed) return;
 
     if (debounceRef.current) window.clearTimeout(debounceRef.current);
+
     setSaveState("saving");
 
     debounceRef.current = window.setTimeout(async () => {
@@ -87,20 +93,24 @@ export default function ActivitiesSelector({
           },
           body: JSON.stringify({
             email: patientEmail,
-            activities, // send the full object
+            activities,
           }),
         });
+
         if (!res.ok) throw new Error(`Save failed: ${res.status}`);
         lastSentRef.current = activities;
         setSaveState("saved");
         setTimeout(() => setSaveState("idle"), 1200);
+
       } catch {
         setSaveState("error");
       }
     }, 700);
+
   }, [activities, loading, patientEmail]);
 
   const allKeys = useMemo(() => Object.keys(activities), [activities]);
+
   const filteredKeys = useMemo(() => {
     const q = filter.trim().toLowerCase();
     return q ? allKeys.filter((k) => k.toLowerCase().includes(q)) : allKeys;
@@ -108,6 +118,7 @@ export default function ActivitiesSelector({
 
   const grouped = useMemo(() => {
     if (!categories) return { All: filteredKeys };
+
     const r: Record<string, string[]> = {};
     for (const [cat, keys] of Object.entries(categories)) {
       r[cat] = keys.filter((k) => filteredKeys.includes(k));
@@ -115,6 +126,7 @@ export default function ActivitiesSelector({
     const inAny = new Set(Object.values(categories).flat());
     const leftovers = filteredKeys.filter((k) => !inAny.has(k));
     if (leftovers.length) r["Other"] = leftovers;
+
     return r;
   }, [categories, filteredKeys]);
 
@@ -125,6 +137,7 @@ export default function ActivitiesSelector({
         ...prev[key],
         enabled: !prev[key]?.enabled,
         SuggestedReps: prev[key]?.SuggestedReps ?? 10,
+        SuggestedSets: prev[key]?.SuggestedSets ?? 3,
       },
     }));
   };
@@ -136,6 +149,13 @@ export default function ActivitiesSelector({
     }));
   };
 
+  const updateSets = (key: string, sets: number) => {
+    setActivities((prev) => ({
+      ...prev,
+      [key]: { ...prev[key], SuggestedSets: sets },
+    }));
+  };
+
   const setMany = (keys: string[], value: boolean) => {
     setActivities((prev) => {
       const next = { ...prev };
@@ -143,6 +163,7 @@ export default function ActivitiesSelector({
         next[k] = {
           enabled: value,
           SuggestedReps: prev[k]?.SuggestedReps ?? 10,
+          SuggestedSets: prev[k]?.SuggestedSets ?? 3,
         };
       });
       return next;
@@ -168,20 +189,19 @@ export default function ActivitiesSelector({
           onChange={(e) => setFilter(e.target.value)}
         />
         <div className={styles.activities__bulk}>
-          <button className={styles.btn} onClick={enableAll}>
-            Enable all
-          </button>
+          <button className={styles.btn} onClick={enableAll}>Enable all</button>
           <button className={`${styles.btn} ${styles["btn--secondary"]}`} onClick={disableAll}>
             Disable all
           </button>
         </div>
       </div>
 
-      {/* Activity Groups */}
+      {/* Groups */}
       <div className={styles.activities__groups}>
         {Object.entries(grouped).map(([cat, keys]) => {
           if (keys.length === 0) return null;
           const isCollapsed = !!collapsedGroups[cat];
+
           return (
             <section key={cat} className={styles.activities__group}>
               <div
@@ -199,7 +219,12 @@ export default function ActivitiesSelector({
               {!isCollapsed && (
                 <ul className={styles.activities__list}>
                   {keys.map((k) => {
-                    const cfg = activities[k] || { enabled: false, SuggestedReps: 10 };
+                    const cfg = activities[k] || {
+                      enabled: false,
+                      SuggestedReps: 10,
+                      SuggestedSets: 3,
+                    };
+
                     return (
                       <li key={k} className={styles.activities__item}>
                         <label className={styles.activities__label}>
@@ -214,12 +239,21 @@ export default function ActivitiesSelector({
                         <div className={styles.activities__repsWrapper}>
                           <input
                             type="number"
-                            min={0}
-                            value={cfg.SuggestedReps ?? 0}
+                            min={1}
+                            value={cfg.SuggestedReps ?? 10}
                             onChange={(e) => updateReps(k, Number(e.target.value))}
                             className={styles.activities__reps}
                           />
-                          <span className={styles.activities__repsLabel}>reps</span>
+                          <span className={styles.activities__repsLabel}>reps ×</span>
+
+                          <input
+                            type="number"
+                            min={1}
+                            value={cfg.SuggestedSets ?? 3}
+                            onChange={(e) => updateSets(k, Number(e.target.value))}
+                            className={styles.activities__reps}
+                          />
+                          <span className={styles.activities__repsLabel}>sets</span>
                         </div>
                       </li>
                     );
@@ -230,9 +264,8 @@ export default function ActivitiesSelector({
           );
         })}
 
-        <div
-          className={`${styles.activities__savestate} ${styles[`activities__savestate--${saveState}`]}`}
-        >
+        {/* Save state indicator */}
+        <div className={`${styles.activities__savestate} ${styles[`activities__savestate--${saveState}`]}`}>
           {saveState === "saving" && "Saving…"}
           {saveState === "saved" && "Saved"}
           {saveState === "error" && "Save failed. Retrying on next change."}
