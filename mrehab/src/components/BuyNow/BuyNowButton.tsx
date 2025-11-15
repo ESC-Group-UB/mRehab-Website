@@ -1,7 +1,6 @@
 import styles from "./BuyNowButton.module.css";
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
-type UserSettingsResponse = { Device?: string };
 
 // ✅ Same structure used in Signup — shortened list for now
 const deviceOptions: Record<string, string[]> = {
