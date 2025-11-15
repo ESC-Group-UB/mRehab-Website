@@ -19,7 +19,9 @@
     "ioredis": "^5.7.0",
     "nodemailer": "^7.0.3",
     "sib-api-v3-sdk": "^8.5.0",
-    "stripe": "^18.2.1"
+    "stripe": "^18.2.1",
+    "typescript": "^5.8.3"
+
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
