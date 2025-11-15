@@ -4,9 +4,9 @@
   position: relative;
   background-image: url('/public/temp-banner.png');
   background-size: cover;
-  background-position: center;
+  background-position: center; /* default center on desktop */
   background-repeat: no-repeat;
-  min-height: 100vh; /* Ensure at least full screen height */
+  min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -21,7 +21,7 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Dark overlay for contrast */
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
 }
 
@@ -66,4 +66,84 @@
   border-radius: 8px;
   font-weight: 600;
   text-decoration: none;
+}
+
+/* =========================
+   RESPONSIVE STYLES
+   ========================= */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+  .hero-content p {
+    font-size: 1.1rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero-section.fullscreen-hero {
+    justify-content: center;
+    text-align: center;
+    padding: 0 1.5rem;
+
+    /* ✨ EDIT THIS to push the subject (person) left on mobile */
+    /* Options:
+       - background-position: left center;
+       - background-position: 15% center;  (fine-tune horizontally)
+       - background-size: 110% auto;       (optional: zoom slightly on mobile)
+    */
+    /* background-position: left center; */
+    background-position: 75% center;
+    /* background-size: 110% auto; */
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
+  .hero-content h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .btn.primary,
+  .btn.secondary {
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
+  }
+}
+
+/* Extra small (phones <480px) */
+@media (max-width: 480px) {
+  /* ✨ If needed, nudge even more left on very small phones */
+  /* background-position: 12% center; */
+
+  .hero-content h1 {
+    font-size: 1.6rem;
+  }
+
+  .hero-content p {
+    font-size: 0.95rem;
+  }
+
+  .btn.primary,
+  .btn.secondary {
+    padding: 0.65rem 1.2rem;
+    font-size: 0.9rem;
+  }
 }

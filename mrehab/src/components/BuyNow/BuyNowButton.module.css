@@ -1,0 +1,108 @@
+.buyNowWrapper {
+  width: 100%;
+}
+
+.checkboxGroup {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* BUY BUTTON */
+.buyBtn {
+  width: 100%;
+  min-width: 180px;
+  padding: 0.9rem 1.5rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background:#FF007A;
+  border: none;
+  cursor: pointer;
+}
+
+.buyBtn:hover:not([disabled]) {
+  opacity: 0.95;
+}
+
+.errorMsg {
+  color: #c62828;
+  margin-top: 8px;
+}
+
+/* ✅ Modal Styling */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal {
+  background: #fff;
+  width: 90%;
+  max-width: 420px;
+  padding: 20px;
+  border-radius: 14px;
+}
+
+.input {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.modalActions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cancelBtn {
+  padding: 8px 14px;
+  background: #e6e6e6;
+}
+
+.confirmBtn {
+  padding: 8px 14px;
+  background:  #FF007A;
+  color: #fff;
+}
+
+.caseInputGroup {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.caseLabel {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.caseInput {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 0.95rem;
+}
+
+.caseInput:focus-visible {
+  outline: 2px solid var(--color-main);
+  border-color: var(--color-main);
+}
+
+.caseHelpText {
+  font-size: 0.82rem;
+  color: #666;
+  margin-top: -2px;
+}

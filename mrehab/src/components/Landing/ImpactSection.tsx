@@ -2,9 +2,14 @@ import React from "react";
 import "./ImpactSection.css";
 
 const stats = [
-  { value: "+30%", label: "Improvement in motor control" },
-  { value: "10x", label: "More affordable than clinic-based rehab" },
-  { value: "98%", label: "Say mRehab keeps them motivated and on track" },
+  // { value: "30%+", label: "Gain in hand and arm control after 6 weeks" },
+  // { value: "10x", label: "Cheaper than traditional clinic-based rehab" },
+  // { value: "98%", label: "Users say daily reminders keep them motivated" },
+  {value: "", label: "Simulated Daily Life Activity Exercises"},
+  {value: "", label: "Low-cost & Personalized Rehab Device"},
+  {value: "", label: "Real-time Feedback"},
+
+
 ];
 
 export default function ImpactSection() {
@@ -13,14 +18,14 @@ export default function ImpactSection() {
       <div className="impact-heading">
         <h2>Why People Love mRehab</h2>
         <p>
-          Recovering from a stroke or injury is hard — but it doesn’t have to be confusing or overwhelming. With mRehab, you get tools that are easy to use, motivating, and designed to fit into your everyday life.
+          Recovering from a stroke or injury is hard, but it doesn’t have to be confusing or overwhelming. With mRehab, you get tools that are easy to use, motivating, and designed to fit into your everyday life.
         </p>
       </div>
       <div className="impact-stats">
         {stats.map((item, index) => (
           <div className="stat-card" key={index}>
-            <h3>{item.value}</h3>
-            <p>{item.label}</p>
+            {/* <h3>{item.value}</h3> */}
+            <h4>{item.label}</h4>
           </div>
         ))}
       </div>

@@ -1,0 +1,99 @@
+.container {
+  width: 100%;
+  color: white;
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, var(--color-main), #e60583);
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 3rem; /* large desktop */
+  font-weight: 800;
+  margin-bottom: 1.25rem;
+  line-height: 1.2;
+}
+
+.description {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+  max-width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.button {
+  display: inline-block;
+  background-color: white;
+  color: var(--color-main);
+  font-weight: 600;
+  padding: 1rem 2rem;
+  font-size: 1.05rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+/* =========================
+   RESPONSIVE STYLES
+   ========================= */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .title {
+    font-size: 2.5rem;
+  }
+  .description {
+    font-size: 1.1rem;
+  }
+  .button {
+    padding: 0.9rem 1.8rem;
+    font-size: 1rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .container {
+    padding: 3rem 1.5rem;
+  }
+  .title {
+    font-size: 2rem;
+    line-height: 1.3;
+  }
+  .description {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .button {
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+    padding: 0.85rem 1.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .container {
+    padding: 2.5rem 1rem;
+  }
+  .title {
+    font-size: 1.6rem;
+  }
+  .description {
+    font-size: 0.95rem;
+  }
+  .button {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}

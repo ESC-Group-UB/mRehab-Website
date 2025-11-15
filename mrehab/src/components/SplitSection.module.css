@@ -1,0 +1,152 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  padding: 3rem 2rem;
+  flex-wrap: wrap;          /* allows natural wrapping on mid widths */
+  max-width: 1200px;        /* keeps content readable on very wide screens */
+  margin: 0 auto;
+}
+
+/* If you use .reverse, keep desktop row-reverse */
+.reverse {
+  flex-direction: row-reverse;
+}
+
+.imageWrapper {
+  flex: 1 1 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 300px;
+  max-width: 600px;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;         /* keep natural aspect ratio */
+  max-height: 500px;    /* desktop safety cap */
+  border-radius: 12px;
+  object-fit: contain;  /* harmless with height:auto */
+}
+
+.textContent {
+  flex: 1;
+  min-width: 300px;
+  max-width: 600px;
+}
+
+.title {
+  /* fluid type that scales down on smaller screens */
+  font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.4rem);
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.description {
+  font-size: clamp(0.95rem, 0.9rem + 0.3vw, 1rem);
+  color: #444;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.primary {
+  padding: 0.75rem 1.5rem;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.secondary {
+  padding: 0.75rem 1.5rem;
+  background-color: transparent;
+  color: black;
+  border: 1px solid black;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+/* ===================== Responsive ===================== */
+
+/* Tablet & small laptop: tighten spacing a bit */
+@media (max-width: 1024px) {
+  .container {
+    gap: 2.5rem;
+    padding: 2.5rem 1.5rem;
+  }
+  .image {
+    max-height: 420px;
+  }
+}
+
+/* Phones: stack vertically, make everything full width */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;     /* stack image over text */
+    gap: 1.5rem;
+    padding: 1.5rem 1rem;
+  }
+
+  /* If .reverse is applied, make mobile stack in reverse order */
+  .reverse {
+    flex-direction: column-reverse;
+  }
+
+  .imageWrapper,
+  .textContent {
+    min-width: 0;               /* remove 300px floor on mobile */
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .image {
+    max-height: 360px;          /* smaller cap on mobile */
+  }
+
+  /* Buttons: keep side-by-side if room, otherwise wrap */
+  .buttons {
+    gap: 0.75rem;
+  }
+  .primary,
+  .secondary {
+    padding: 0.7rem 1.1rem;
+    border-radius: 10px;
+  }
+}
+
+/* Very small phones: full-width buttons for easier taps */
+@media (max-width: 480px) {
+  .container {
+    gap: 1.25rem;
+    padding: 1.25rem 0.9rem;
+  }
+
+  .image {
+    max-height: 300px;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+  .primary,
+  .secondary {
+    width: 100%;                /* full-width tap targets */
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+  }
+}
+
+/* Reduced motion respect (optional polish) */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

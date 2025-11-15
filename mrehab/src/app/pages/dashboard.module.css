@@ -1,0 +1,41 @@
+.dashLayout {
+  display: grid;
+  grid-template-columns: 280px 1fr; /* Sidebar width | Content grows */
+  height: 100vh;                    /* Full viewport */
+  overflow: hidden;                 /* Prevent page scroll */
+  background: #fff;
+}
+
+.dashSidebar {
+  overflow-y: hidden;                 /* Sidebar gets its own scroll */
+}
+
+.dashContent {
+  overflow-y: auto;                  /* Enable scroll */
+  scrollbar-width: none;             /* Hide scrollbar in Firefox */
+  -ms-overflow-style: none;           /* Hide scrollbar in IE/Edge */
+  width: 85%;
+  max-width: 85%;                     /* Limit content width */
+  margin: 0 auto;                     /* Center horizontally */
+  padding: 1rem;
+}
+
+/* Hide scrollbar in WebKit browsers */
+.dashContent::-webkit-scrollbar {
+  display: none;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 800px) {
+  .dashLayout {
+    grid-template-columns: 1fr;
+  }
+  .dashSidebar {
+    grid-row: 1;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+  }
+  .dashContent {
+    grid-row: 2;
+  }
+}

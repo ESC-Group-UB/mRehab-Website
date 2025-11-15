@@ -1,28 +1,30 @@
 import React from 'react';
 import './landing.css';
-import { Link } from 'react-router-dom';
 import {Navbar} from '../../components/Navbar';
 import { Hero1 } from '../../components/Landing/Hero1';
 import { Features } from '../../components/Landing/Features';
-import { Testimonials } from '../../components/Landing/Testimonials';
 import { ApproachSection } from '../../components/Landing/ApproachSection';
 import ImpactSection from '../../components/Landing/ImpactSection';
+import GradientCTA from '../../components/GradientCTA';
 const Landing: React.FC = () => {
   return (
     <>
       <Navbar />
       <Hero1/>
       <Features/>
-      <Testimonials/>
+      {/* <Testimonials/>
+      Removed for demo accuracy */}
       <ApproachSection/>
       <ImpactSection/>
-      <section className="cta-section">
-        <h2>Start Your Recovery Journey</h2>
-        <p>Discover how mRehab brings hospital-grade therapy into your living room.</p>
-        <Link to="/contact" className="cta-button">Get In Touch</Link>
-      </section>
+      <GradientCTA
+        title="Start Your Recovery Journey"
+        description="Discover how mRehab brings clincal-grade therapy into your living room."
+        buttonText="Buy Now"
+        buttonLink="/buy-now"
+      />
     </>
   );
 };
 
 export default Landing;
+

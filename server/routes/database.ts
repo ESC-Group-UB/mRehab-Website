@@ -1,0 +1,132 @@
+// server/routes/aws.ts
+import express, { Request, Response } from "express";
+import {
+  uploadSessionToDynamoDB,
+  ActivitySessionsEntry,
+  getFilteredEntries,
+  updateActivities,
+  getUserSettings
+} from "../AWS/awsDBfunctions";
+import { cacheGet, cacheSet, cacheDel, cacheRoute } from "../cache"; // <- your cache.ts
+import { FormData, uploadInterestToDynamoDB } from "../AWS/intrest";
+
+
+const router = express.Router();
+
+router.get("/filtered", async (req: Request, res: Response) => {
+  try {
+    const { username, hand, start, end, exerciseName } = req.query;
+    
+
+    // 1) Normalize/clean params for a stable key
+    const u = String(username || "").trim().toLowerCase();
+    const h = String(hand || "any").trim().toLowerCase();
+    const ex = String(exerciseName || "any").trim().toLowerCase();
+    const s = String(start || "null").trim();
+    const e = String(end || "null").trim();
+
+    const key = `filtered:${u}:${h}:${ex}:${s}:${e}`;
+
+    // 2) Try cache
+    const cached = await cacheGet<{ entries: any[] }>(key);
+    if (cached) {
+      res.setHeader("X-Cache", "HIT");
+
+      res.json({ source: "cache", ...cached });
+    }
+    res.setHeader("X-Cache", "MISS");
+
+
+    // 3) Fetch fresh
+    const entries = await getFilteredEntries({
+      username: username as string,
+      hand: h === "any" ? undefined : h,
+      start: s === "null" ? undefined : s,
+      end: e === "null" ? undefined : e,
+      exerciseName: ex === "any" ? undefined : ex,
+    });
+
+    // 4) TTL strategy: long if past-only range, short if includes "today"
+    const ttl = ttlForRange(s, e);
+
+    await cacheSet(key, { entries }, ttl);
+    res.json({ source: "db", entries });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch filtered entries" });
+  }
+});
+
+// Helper: choose TTL based on whether the range includes today
+function ttlForRange(startISO: string, endISO: string) {
+  const now = new Date();
+  const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const start = parseMaybeISO(startISO);
+  const end = parseMaybeISO(endISO);
+
+  // If either date is invalid/missing, assume it might be "live": short TTL
+  if (!start || !end) return 120; // 2 min
+
+  // If end < today => historical => long TTL
+  if (end.getTime() < today.getTime()) return 86400; // 24h
+
+  // If range touches today or the future => short TTL
+  return 120; // 2 min
+}
+
+function parseMaybeISO(s: string | undefined) {
+  if (!s || s === "null") return null;
+  const d = new Date(s);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+
+// NOTE FOR CACHING, this function is the one that displays the check boxes for the activities on the 
+// doctor dashboard, since it gets called when the doctor clicks on the patient, it kinda will always
+// invalidate the user settings cache. This probably cant be casched as is, but
+// user settings can be casched in other ways so ill still make this clear the cache
+router.put("/updateActivities", async(req: Request, res: Response) => {
+  const { email, activities } = req.body;
+  
+  try {
+    const result = await updateActivities(email, activities);
+    const cachedKey = `/api/aws/user-settings?email=${encodeURIComponent(email)}`;
+    await cacheDel(cachedKey);
+    
+    res.json(result);
+  } catch (err) {
+}})
+
+
+router.get("/user-settings", cacheRoute(3600), async (req: Request, res: Response) => {
+  
+  const { email } = req.query;
+  try {
+    const result = await getUserSettings(email as string);
+    
+
+    res.json(result);
+  } catch (err) {
+  }
+})
+
+router.post("/interest", async (req: Request, res: Response) => {
+  const { name, email, phoneCase, caseLink, device, message, role } = req.body;
+  
+  const formData: FormData = {
+    name,
+    email,
+    device,
+    phone_case: phoneCase,
+    phone_case_link: caseLink,
+    role,
+    message,
+  };
+  try {
+    await uploadInterestToDynamoDB(formData);
+    res.status(200).json({ message: "Interest form submitted successfully." });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to submit interest form." });
+  }
+});
+
+export default router;

@@ -1,0 +1,127 @@
+import sendEmail from "./BrevoMailer";
+import {Order} from "../AWS/orders"
+
+
+/**
+ * Send an "order received" confirmation email to a customer.
+ * @param customerEmail - Email address of the customer
+ * @param orderId - Unique order ID
+ */
+export async function sendOrderReceivedEmail(
+  customerEmail: string,
+  orderId: string
+): Promise<void> {
+  const subject = `✅ Order Confirmation #${orderId}`;
+  const text = `Hello,
+
+Thank you for your purchase! 🎉
+We’ve received your order (#${orderId}) and it’s now being processed.
+
+You’ll get another email once your order has shipped.
+
+If you have any questions, just reply to this email and we’ll be happy to help.
+
+- The mRehab Team
+`;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; line-height:1.6; color:#333;">
+      <h2 style="color:#2a6df4;">Thank you for your order! 🎉</h2>
+      <p>We’ve received your order <strong>#${orderId}</strong> and it is now being processed.</p>
+      <p>You’ll receive another email once your order has shipped.</p>
+      
+      <div style="margin:20px 0; padding:12px; background:#f9f9f9; border-radius:6px;">
+        <p style="margin:0; font-size:14px; color:#555;">
+          <strong>Order ID:</strong> ${orderId}<br/>
+          <strong>Status:</strong> Processing
+        </p>
+      </div>
+
+      <p>If you have any questions, just reply to this email and we’ll be happy to help.</p>
+      <p style="margin-top:24px;">— The <strong>mRehab</strong> Team</p>
+
+      <hr />
+      <p style="font-size:12px; color:#777;">
+        This is a confirmation that we received your order. You’ll be notified again when it ships.
+      </p>
+    </div>
+  `;
+  console.log(`📧 Sending order confirmation email to ${customerEmail} for order #${orderId}`);
+  await sendEmail(customerEmail, subject, html);
+}
+
+
+export async function sendInternalOrderNotification(order: Order): Promise<void> {
+  const subject = `📦 [${process.env.NODE_ENV?.toUpperCase() || "DEV"}] New Order #${order.id}`;
+
+  const amountDisplay = order.amount
+    ? `${(order.amount / 100).toFixed(2)} ${order.currency?.toUpperCase() || ""}`
+    : "N/A";
+
+  const environment = process.env.NODE_ENV || "development";
+  const systemTag = `mRehab • ${environment.toUpperCase()} • ${new Date().toLocaleString()}`;
+
+  const itemsTable = order.items
+    ? `
+      <h3 style="margin-top:24px; margin-bottom:6px;">Order Items</h3>
+      <table style="width:100%; border-collapse:collapse; border:1px solid #ddd; font-size:14px;">
+        <thead>
+          <tr style="background:#f3f4f6;">
+            <th align="left" style="padding:8px; border:1px solid #ddd;">Item</th>
+            <th align="center" style="padding:8px; border:1px solid #ddd;">Qty</th>
+            <th align="right" style="padding:8px; border:1px solid #ddd;">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${order.items
+            .map(
+              (i) => `
+              <tr>
+                <td style="padding:8px; border:1px solid #ddd;">${i.description}</td>
+                <td align="center" style="padding:8px; border:1px solid #ddd;">${i.quantity}</td>
+                <td align="right" style="padding:8px; border:1px solid #ddd;">${(
+                  i.amount_total / 100
+                ).toFixed(2)} ${i.currency?.toUpperCase() || ""}</td>
+              </tr>`
+            )
+            .join("")}
+        </tbody>
+      </table>`
+    : "";
+
+  const html = `
+    <div style="font-family:'Segoe UI', Roboto, Arial, sans-serif; color:#1f2937; background:#ffffff; padding:20px;">
+      <h2 style="color:#2563eb;">📦 New Order Received</h2>
+      <p>A new customer order has been placed. Please review and fulfill the shipment.</p>
+
+      <table style="margin-top:16px; border-collapse:collapse; width:100%; font-size:14px;">
+        <tr><td><strong>Order ID:</strong></td><td>${order.id}</td></tr>
+        <tr><td><strong>Created:</strong></td><td>${new Date(order.createdAt).toLocaleString()}</td></tr>
+        <tr><td><strong>Payment:</strong></td><td>${order.status} (${amountDisplay})</td></tr>
+        <tr><td><strong>Shipping Status:</strong></td><td>${order.shippingStatus}</td></tr>
+      </table>
+
+      ${itemsTable}
+
+      <h3 style="margin-top:24px;">Customer Info</h3>
+      <p style="font-size:14px; line-height:1.4;">
+        <strong>Email:</strong> ${order.email || "N/A"}<br/>
+        <strong>Phone:</strong> ${order.phone || "N/A"}<br/>
+        <strong>Device:</strong> ${order.device || "N/A"}
+      </p>
+
+      <h3 style="margin-top:24px;">Shipping Address</h3>
+      <div style="background:#f9fafb; padding:10px; border-radius:6px; border:1px solid #e5e7eb;">
+        ${order.shippingAddress || "N/A"}
+      </div>
+
+      <hr style="margin:24px 0; border:none; border-top:1px solid #e5e7eb;">
+      <p style="font-size:12px; color:#6b7280;">
+        ${systemTag}<br/>
+        This automated message was generated by the mRehab backend. Do not reply directly.
+      </p>
+    </div>
+  `;
+
+  await sendEmail("rohin113.rk@gmail.com", subject, html);
+}

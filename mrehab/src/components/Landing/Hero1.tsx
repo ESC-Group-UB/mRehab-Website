@@ -14,10 +14,10 @@ export function Hero1() {
           from the comfort of your home.
         </p>
         <div className="hero-buttons">
-          <Link to="/enroll" className="btn primary">
+          <Link to="/buy-now" className="btn primary">
             Get the mRehab Starter Kit
           </Link>
-          <Link to="/enroll" className="btn secondary">
+          <Link to="/how-it-works" className="btn secondary">
             Learn More
           </Link>
         </div>

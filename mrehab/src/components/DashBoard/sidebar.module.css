@@ -1,0 +1,154 @@
+@import url('../../colors.css');
+
+/* Make sure padding/border don't blow up widths */
+:global(*), :global(*::before), :global(*::after) {
+  box-sizing: border-box;
+}
+
+/* =======================
+   Sidebar Container
+   ======================= */
+.sidebar {
+  position: relative;
+  height: 100vh;
+  background: #fff;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.expanded {
+  width: 260px;
+  min-width: 260px;
+}
+
+.collapsed {
+  width: 50px;
+  min-width: 50px;
+}
+
+/* Toggle Button */
+.toggle {
+  position: absolute;
+  top: 1rem;
+  right: -0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  background: var(--color-main);
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 1.5rem;
+  text-align: center;
+  transition: background 0.2s;
+}
+.toggle:hover {
+  background: var(--color-main-hover);
+}
+
+/* =======================
+   Search Box
+   ======================= */
+.searchContainer {
+  padding: 1rem;
+}
+.searchInput {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border 0.2s;
+}
+.searchInput:focus {
+  border-color: var(--color-main);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(171, 0, 96, 0.2);
+}
+
+/* =======================
+   Patients Section
+   ======================= */
+.section {
+  flex: 1;
+  overflow: hidden;
+}
+.sectionHeader {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sectionHeader:hover {
+  background: var(--color-gray-light);
+}
+.chevron {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Collapsible list */
+.list {
+  max-height: 0;
+  overflow-y: auto;
+  transition: max-height 0.4s ease;
+}
+.list.open {
+  /* Enough to show ~8 items; adjust as needed */
+  max-height: calc(100vh - 200px);
+}
+.item {
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.2s;
+}
+.item:hover {
+  background: var(--color-gray-light);
+}
+.active {
+  background: var(--color-main);
+  color: #fff;
+}
+
+/* =======================
+   Footer Actions
+   ======================= */
+.footer {
+  padding: 1rem;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.footerItem {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  color: var(--color-text-dark);
+  transition: color 0.2s;
+}
+.footerItem:hover {
+  color: var(--color-main);
+}
