@@ -12,29 +12,53 @@ jobs:
 
     defaults:
       run:
-        working-directory: server  # 👈 run all commands from /server
+        working-directory: server
 
     env:
-      # Node env
       NODE_ENV: test
 
-      # AWS / Dynamo env – make sure these names match your .env
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # --- Stripe ---
+      PUBLISHABLE_KEY: ${{ vars.PUBLISHABLE_KEY }}
+      STRIPE_SECRET_KEY: ${{ vars.STRIPE_SECRET_KEY }}
+      STRIPE_WEBHOOK_SECRET: ${{ vars.STRIPE_WEBHOOK_SECRET }}
 
-      # Dynamo table names, etc.
-      ActivitySessions: ${{ secrets.ACTIVITY_SESSIONS_TABLE }}
-      # add other tables if needed, e.g.:
-      # AuthorizedUsers: ${{ secrets.AUTHORIZED_USERS_TABLE }}
+      # --- Server / frontend ---
+      PORT: ${{ vars.PORT }}
+      FRONTEND_URL: ${{ vars.FRONTEND_URL }}
 
-      # Redis / cache config (if your cache module reads these)
-      REDIS_URL: ${{ secrets.REDIS_URL }}
-      REDIS_TOKEN: ${{ secrets.REDIS_TOKEN }}
+      # --- Cognito ---
+      COGNITO_CLIENT_ID: ${{ vars.COGNITO_CLIENT_ID }}
+      COGNITO_CLIENT_SECRET: ${{ vars.COGNITO_CLIENT_SECRET }}
+      COGNITO_POOL_ID: ${{ vars.COGNITO_POOL_ID }}
 
-      # Any other env your backend needs (Brevo, Stripe, etc.)
-      BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
-      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+      # --- AWS / Dynamo / S3 ---
+      # If you also set AWS_REGION as a variable, wire it here:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ vars.ACCESSKEYID }}
+      AWS_SECRET_ACCESS_KEY: ${{ vars.SECRETACCESSKEY }}
+
+      # Your custom env names used in awsConfig.ts:
+      ACCESSKEYID: ${{ vars.ACCESSKEYID }}
+      SECRETACCESSKEY: ${{ vars.SECRETACCESSKEY }}
+      S3BUCKET: ${{ vars.S3BUCKET }}
+
+      # DynamoDB table names (match your .env keys exactly)
+      ActivitySessions: ${{ vars.ACTIVITYSESSIONS }}
+      AuthorizedUsers: ${{ vars.AUTHORIZEDUSERS }}
+      Orders: ${{ vars.ORDERS }}
+      UserSettings: ${{ vars.USERSETTINGS }}
+      IntentClassifierLogs: ${{ vars.INTENTCLASSIFIERLOGS }}
+
+      # --- Redis / cache ---
+      REDIS_URL: ${{ vars.REDIS_URL }}
+
+      # --- SES / SMTP ---
+      IAM_USER_NAME: ${{ vars.IAM_USER_NAME }}
+      SMTP_USER_NAME: ${{ vars.SMTP_USER_NAME }}
+      SMTP_PASSWORD: ${{ vars.SMTP_PASSWORD }}
+
+      # --- Brevo ---
+      BREVO_API_KEY: ${{ vars.BREVO_API_KEY }}
 
     steps:
       - name: Checkout repo
@@ -50,10 +74,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      # If you compile TS first:
-      # - name: Build TypeScript
-      #   run: npm run build
 
       - name: Run Jest tests
         run: npm test
