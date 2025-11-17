@@ -53,8 +53,141 @@ export async function uploadSessionToDynamoDB(
   }
 }
 
+export async function DeleteUpload(username: string, SessionID: string) {
+  const params = {
+    TableName: ActivitySessionsTableName!,
+    Key: {
+      Username: username.toLowerCase(),
+      SessionID,
+    },
+  };
 
-  
+  try {
+    await dynamoDB.delete(params).promise();
+    return true;
+  } catch (err) {
+    console.error("❌ Failed to delete session:", err);
+    throw err;
+  }
+}
+
+export async function VerifyUpload(username: String, SessionID: String) {
+  const params = {
+    TableName: ActivitySessionsTableName!,
+    Key: {
+      Username: username.toLowerCase(),
+      SessionID
+    },
+  };
+  try {
+    const result = await dynamoDB.get(params).promise();
+    if (result.Item) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (err) {
+    console.error("❌ Failed to get session:", err);
+    throw err;
+  }
+}
+
+export async function VerifyUploadParms(
+  expected: ActivitySessionsEntry
+): Promise<boolean> {
+  const params = {
+    TableName: ActivitySessionsTableName!,
+    Key: {
+      Username: expected.Username.toLowerCase(), // matches how you write
+      SessionID: expected.SessionID,
+    },
+  };
+
+  try {
+    const result = await dynamoDB.get(params).promise();
+
+    if (!result.Item) {
+      return false; // nothing in DB for that key
+    }
+
+    const item = result.Item as ActivitySessionsEntry;
+
+    // 1) Compare scalar fields directly
+    const scalarKeys: (keyof ActivitySessionsEntry)[] = [
+      "Username",
+      "Timestamp",
+      "ExerciseName",
+      "Accuracy",
+      "Reps",
+      "Duration",
+      "Hand",
+      "SessionID",
+      "Year",
+      "Month",
+      "DayOfMonth",
+      "HourOfDay",
+      "Minute",
+      "Second",
+    ];
+
+    for (const key of scalarKeys) {
+      if (String(item[key]).toLowerCase() !== String(expected[key]).toLowerCase()) {
+        console.error(`Mismatch on ${String(key)}:`, {
+          expected: expected[key],
+          actual: item[key],
+        });
+        return false;
+      }
+    }
+
+    // 2) Compare DeviceInfo field-by-field (object)
+    const deviceOk =
+      item.DeviceInfo.manufacturer === expected.DeviceInfo.manufacturer &&
+      item.DeviceInfo.modelName === expected.DeviceInfo.modelName &&
+      item.DeviceInfo.osName === expected.DeviceInfo.osName &&
+      item.DeviceInfo.osVersion === expected.DeviceInfo.osVersion &&
+      item.DeviceInfo.totalMemory === expected.DeviceInfo.totalMemory &&
+      item.DeviceInfo.AppVersion === expected.DeviceInfo.AppVersion;
+
+    if (!deviceOk) {
+      console.error("Mismatch in DeviceInfo:", {
+        expected: expected.DeviceInfo,
+        actual: item.DeviceInfo,
+      });
+      return false;
+    }
+
+    // 3) Compare Scores (array)
+    if (!Array.isArray(item.Scores) || !Array.isArray(expected.Scores)) {
+      console.error("Scores are not arrays in one of the values");
+      return false;
+    }
+
+    if (item.Scores.length !== expected.Scores.length) {
+      console.error("Scores length mismatch:", {
+        expected: expected.Scores.length,
+        actual: item.Scores.length,
+      });
+      return false;
+    }
+
+    for (let i = 0; i < expected.Scores.length; i++) {
+      if (item.Scores[i] !== expected.Scores[i]) {
+        console.error(`Scores mismatch at index ${i}:`, {
+          expected: expected.Scores[i],
+          actual: item.Scores[i],
+        });
+        return false;
+      }
+    }
+
+    // If we got here, everything matches
+    return true;
+  } catch (err) {
+    console.error("❌ VerifyUploadParms error:", err);
+    return false;
+  }
+}
 
 
 export function getEntriesByUsername(
@@ -83,65 +216,70 @@ export async function getFilteredEntries(params: {
 }): Promise<ActivitySessionsEntry[]> {
   const { username, exerciseName, hand, start, end } = params;
 
-  
+  const normalizedUsername = username.toLowerCase();
 
   const queryInput: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName: ActivitySessionsTableName!,
     KeyConditionExpression: "Username = :u",
     ExpressionAttributeValues: {
-      ":u": username,
+      ":u": normalizedUsername,
     },
   };
-
-  
 
   try {
     const result = await dynamoDB.query(queryInput).promise();
     let items = (result.Items as ActivitySessionsEntry[]) || [];
 
-    
-
-    // 🔎 Apply optional filters
+    // 🔎 Hand filter (case-insensitive)
     if (hand) {
-      const before = items.length;
-      items = items.filter(entry => entry.Hand === hand);
-      console.log(
-        `✋ Hand filter applied (${hand}) → ${before} → ${items.length}`
-      );
-    }
-
-    if (exerciseName) {
+      const handLower = hand.toLowerCase();
       const before = items.length;
       items = items.filter(
         entry =>
-          entry.ExerciseName?.toLowerCase() === exerciseName.toLowerCase()
+          typeof entry.Hand === "string" &&
+          entry.Hand.toLowerCase() === handLower
       );
       console.log(
-        `🏋️ ExerciseName filter applied (${exerciseName}) → ${before} → ${items.length}`
+        `✋ Hand filter applied (${handLower}) → ${before} → ${items.length}`
       );
     }
 
+    // 🔎 ExerciseName filter (case-insensitive)
+    if (exerciseName) {
+      const exLower = exerciseName.toLowerCase();
+      const before = items.length;
+      items = items.filter(
+        entry =>
+          typeof entry.ExerciseName === "string" &&
+          entry.ExerciseName.toLowerCase() === exLower
+      );
+      console.log(
+        `🏋️ ExerciseName filter applied (${exLower}) → ${before} → ${items.length}`
+      );
+    }
+
+    // 🔎 Date range filter (same as before)
     if (start && end) {
       const startTime = new Date(start).getTime();
       const endTime = new Date(end).getTime();
       const before = items.length;
+
       items = items.filter(entry => {
         const ts = new Date(entry.Timestamp).getTime();
         return ts >= startTime && ts <= endTime;
       });
+
       console.log(
         `⏰ Date filter applied (${start} → ${end}) → ${before} → ${items.length}`
       );
     }
 
-    
     return items;
   } catch (err) {
     console.error("❌ Error querying DynamoDB:", err);
     throw err;
   }
 }
-
 
 
 /**
@@ -208,4 +346,6 @@ export async function getUserSettings(email: string) {
     }
     return result.Item; // full settings object
   }
+
+
 }

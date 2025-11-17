@@ -15,16 +15,17 @@ function toISOIfPossible(ts: string): string {
 }
 
 router.post("/upload", async (req: Request, res: Response) => {
+  console.log("POST /api/uploadSession/upload  called")
   try {
     const body = req.body as Partial<ActivitySessionsEntry>;
     
 
-    // --- Minimal validation ---
     if (!body?.Username || !body?.Timestamp || !body?.ExerciseName) {
       res.status(400).json({
         ok: false,
         error: "Missing required fields: Username, Timestamp, ExerciseName",
       });
+      return;
     }
 
     // --- Normalize at the boundary (prevents future cache misses) ---
