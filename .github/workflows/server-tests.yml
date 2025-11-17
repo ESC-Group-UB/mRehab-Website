@@ -23,36 +23,36 @@ jobs:
       STRIPE_WEBHOOK_SECRET: "whsec_dummy_for_ci"
 
       # --- Server / frontend ---
-      PORT: ${{ vars.PORT }}
-      FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+      PORT: ${{ secrets.PORT }}
+      FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
 
       # --- Cognito ---
-      COGNITO_CLIENT_ID: ${{ vars.COGNITO_CLIENT_ID }}
-      COGNITO_CLIENT_SECRET: ${{ vars.COGNITO_CLIENT_SECRET }}
-      COGNITO_POOL_ID: ${{ vars.COGNITO_POOL_ID }}
+      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+      COGNITO_CLIENT_SECRET: ${{ secrets.COGNITO_CLIENT_SECRET }}
+      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
 
       # --- AWS / Dynamo / S3 ---
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      AWS_ACCESS_KEY_ID: ${{ vars.ACCESSKEYID }}
-      AWS_SECRET_ACCESS_KEY: ${{ vars.SECRETACCESSKEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.ACCESSKEYID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRETACCESSKEY }}
 
-      ACCESSKEYID: ${{ vars.ACCESSKEYID }}
-      SECRETACCESSKEY: ${{ vars.SECRETACCESSKEY }}
-      S3BUCKET: ${{ vars.S3BUCKET }}
+      ACCESSKEYID: ${{ secrets.ACCESSKEYID }}
+      SECRETACCESSKEY: ${{ secrets.SECRETACCESSKEY }}
+      S3BUCKET: ${{ secrets.S3BUCKET }}
 
-      ActivitySessions: ${{ vars.ACTIVITYSESSIONS }}
-      AuthorizedUsers: ${{ vars.AUTHORIZEDUSERS }}
-      Orders: ${{ vars.ORDERS }}
-      UserSettings: ${{ vars.USERSETTINGS }}
-      IntentClassifierLogs: ${{ vars.INTENTCLASSIFIERLOGS }}
+      ActivitySessions: ${{ secrets.ACTIVITYSESSIONS }}
+      AuthorizedUsers: ${{ secrets.AUTHORIZEDUSERS }}
+      Orders: ${{ secrets.ORDERS }}
+      UserSettings: ${{ secrets.USERSETTINGS }}
+      IntentClassifierLogs: ${{ secrets.INTENTCLASSIFIERLOGS }}
 
-      REDIS_URL: ${{ vars.REDIS_URL }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
 
-      IAM_USER_NAME: ${{ vars.IAM_USER_NAME }}
-      SMTP_USER_NAME: ${{ vars.SMTP_USER_NAME }}
-      SMTP_PASSWORD: ${{ vars.SMTP_PASSWORD }}
+      IAM_USER_NAME: ${{ secrets.IAM_USER_NAME }}
+      SMTP_USER_NAME: ${{ secrets.SMTP_USER_NAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
 
-      BREVO_API_KEY: ${{ vars.BREVO_API_KEY }}
+      BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
 
     steps:
       - name: Checkout repo
