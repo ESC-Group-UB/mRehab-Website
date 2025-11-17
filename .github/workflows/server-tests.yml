@@ -18,9 +18,9 @@ jobs:
       NODE_ENV: test
 
       # --- Stripe ---
-      PUBLISHABLE_KEY: ${{ vars.PUBLISHABLE_KEY }}
-      STRIPE_SECRET_KEY: ${{ vars.STRIPE_SECRET_KEY }}
-      STRIPE_WEBHOOK_SECRET: ${{ vars.STRIPE_WEBHOOK_SECRET }}
+      PUBLISHABLE_KEY: "pk_test_dummy_for_ci"
+      STRIPE_SECRET_KEY: "sk_test_dummy_for_ci"
+      STRIPE_WEBHOOK_SECRET: "whsec_dummy_for_ci"
 
       # --- Server / frontend ---
       PORT: ${{ vars.PORT }}
@@ -32,32 +32,26 @@ jobs:
       COGNITO_POOL_ID: ${{ vars.COGNITO_POOL_ID }}
 
       # --- AWS / Dynamo / S3 ---
-      # If you also set AWS_REGION as a variable, wire it here:
       AWS_REGION: ${{ vars.AWS_REGION }}
       AWS_ACCESS_KEY_ID: ${{ vars.ACCESSKEYID }}
       AWS_SECRET_ACCESS_KEY: ${{ vars.SECRETACCESSKEY }}
 
-      # Your custom env names used in awsConfig.ts:
       ACCESSKEYID: ${{ vars.ACCESSKEYID }}
       SECRETACCESSKEY: ${{ vars.SECRETACCESSKEY }}
       S3BUCKET: ${{ vars.S3BUCKET }}
 
-      # DynamoDB table names (match your .env keys exactly)
       ActivitySessions: ${{ vars.ACTIVITYSESSIONS }}
       AuthorizedUsers: ${{ vars.AUTHORIZEDUSERS }}
       Orders: ${{ vars.ORDERS }}
       UserSettings: ${{ vars.USERSETTINGS }}
       IntentClassifierLogs: ${{ vars.INTENTCLASSIFIERLOGS }}
 
-      # --- Redis / cache ---
       REDIS_URL: ${{ vars.REDIS_URL }}
 
-      # --- SES / SMTP ---
       IAM_USER_NAME: ${{ vars.IAM_USER_NAME }}
       SMTP_USER_NAME: ${{ vars.SMTP_USER_NAME }}
       SMTP_PASSWORD: ${{ vars.SMTP_PASSWORD }}
 
-      # --- Brevo ---
       BREVO_API_KEY: ${{ vars.BREVO_API_KEY }}
 
     steps:
