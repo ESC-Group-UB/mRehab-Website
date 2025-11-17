@@ -1,0 +1,59 @@
+name: Server Test Suite
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  test-server:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: server  # 👈 run all commands from /server
+
+    env:
+      # Node env
+      NODE_ENV: test
+
+      # AWS / Dynamo env – make sure these names match your .env
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      # Dynamo table names, etc.
+      ActivitySessions: ${{ secrets.ACTIVITY_SESSIONS_TABLE }}
+      # add other tables if needed, e.g.:
+      # AuthorizedUsers: ${{ secrets.AUTHORIZED_USERS_TABLE }}
+
+      # Redis / cache config (if your cache module reads these)
+      REDIS_URL: ${{ secrets.REDIS_URL }}
+      REDIS_TOKEN: ${{ secrets.REDIS_TOKEN }}
+
+      # Any other env your backend needs (Brevo, Stripe, etc.)
+      BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: |
+            server/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # If you compile TS first:
+      # - name: Build TypeScript
+      #   run: npm run build
+
+      - name: Run Jest tests
+        run: npm test
