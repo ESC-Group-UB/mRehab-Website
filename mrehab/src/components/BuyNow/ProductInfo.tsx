@@ -10,6 +10,7 @@ interface Props {
 
 const ProductInfo: FC<Props> = ({ product }) => {
   const [color, setColor] = useState<string>("Default");
+  const [Weight, setWeight] = useState<string>("Default");
   const [quantity, setQuantity] = useState<number>(1);
 
   const increaseQty = () => setQuantity((q) => q + 1);
@@ -45,6 +46,19 @@ const ProductInfo: FC<Props> = ({ product }) => {
             <option value="Black">Black</option>
             <option value="Color 2">Color 2</option>
             <option value="Color 3">Color 3</option>
+          </select>
+        </div>
+
+        <div className={styles.selectorBlock}>
+          <label className={styles.selectorLabel}>Weight</label>
+          <select
+            className={styles.dropdown}
+            value={Weight}
+            onChange={(e) => setWeight(e.target.value)}
+          >
+            <option value="Light">Light</option>
+            <option value="Medium">Medium</option>
+            <option value="Heavy">Heavy</option>
           </select>
         </div>
 

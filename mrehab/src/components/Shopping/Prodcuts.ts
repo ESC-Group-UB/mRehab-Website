@@ -29,9 +29,9 @@ export const products: Product[] = [
     price: 19.99,
     image_paths: ["/images/product/mrehabmug.png"],
     description:
-      "An ergonomic mug attachment designed to improve grip strength, stability, and wrist mobility.",
+      "An ergonomic mug attachment designed to support hand coordination and controlled movement practice..",
     details:
-      "3D-printed for comfort and designed to pair with guided grip and rotation exercises inside the mRehab app.",
+      "Light Weight 3D-printed design optimized for use alongside the mRehab app.",
   },
 
   {
@@ -42,7 +42,7 @@ export const products: Product[] = [
     description:
       "A stability-focused bowl used to support hand coordination and controlled movement practice.",
     details:
-      "Lightweight 3D-printed design optimized for coordination exercises and functional daily movement training.",
+      "Light Weight 3D-printed design optimized for use alongside the mRehab app.",
   },
 
   {
@@ -53,6 +53,6 @@ export const products: Product[] = [
     description:
       "A precision rehab key tool perfect for practicing controlled rotation and fine-motor grip motion.",
     details:
-      "Ideal for restoring finger dexterity, controlled twisting motions, and everyday functional movement accuracy.",
+      "Light Weight 3D-printed design optimized for use alongside the mRehab app.",
   },
 ];
