@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Navbar } from "../../components/Navbar";
 import ImageGallery from "../../components/BuyNow/ImageGallery";
-import ProductInfo from "../../components/BuyNow/ProductInfo";
+// import ProductInfo from "../../components/BuyNow/ProductInfo";
 import styles from "./BuyNow.module.css";
 
 const images = [
@@ -10,7 +10,7 @@ const images = [
   "/images/product/mrehabmug.png",
   "/images/product/mrehabVideo.mp4",
 ];
-
+ 
 export function BuyNow() {
   const [selectedImage, setSelectedImage] = useState(images[0]);
 
@@ -23,7 +23,7 @@ export function BuyNow() {
           selectedImage={selectedImage}
           setSelectedImage={setSelectedImage}
         />
-        <ProductInfo />
+        {/* <ProductInfo /> */}
       </main>
     </>
   );
