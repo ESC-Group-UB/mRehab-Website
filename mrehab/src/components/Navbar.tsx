@@ -180,8 +180,8 @@ export function Navbar() {
         <a role="menuitem" tabIndex={-1} href="/for-providers" onClick={onMenuLinkClick}>
           For Providers
         </a>
-        <a role="menuitem" tabIndex={-1} href="/buy-now" onClick={onMenuLinkClick}>
-          Buy Now
+        <a role="menuitem" tabIndex={-1} href="/shopping" onClick={onMenuLinkClick}>
+          Shop
         </a>
         {/* Intentionally no Login/Dashboard here; avatar handles auth */}
       </div>
