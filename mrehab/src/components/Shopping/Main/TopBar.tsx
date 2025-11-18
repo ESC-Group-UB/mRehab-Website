@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { FiSearch, FiShoppingCart } from "react-icons/fi";
+import { FiShoppingCart } from "react-icons/fi";
 
 export const ShoppingTopBar: FC = () => {
   return (
@@ -16,7 +16,7 @@ export const ShoppingTopBar: FC = () => {
       {/* RIGHT SIDE */}
       <div style={styles.right}>
 
-        {/* SEARCH BAR */}
+        {/* SEARCH BAR
         <div style={styles.searchWrapper}>
           <input
             type="text"
@@ -27,7 +27,7 @@ export const ShoppingTopBar: FC = () => {
           <span style={styles.searchIcon}>
             {FiSearch({})}
           </span>
-        </div>
+        </div> */}
 
         {/* CART ICON */}
         <span style={styles.cartIcon}>
