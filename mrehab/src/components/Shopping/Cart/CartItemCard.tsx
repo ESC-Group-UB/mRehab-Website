@@ -1,38 +1,41 @@
 import React, { FC, useState } from "react";
 import { CartItem } from "../../BuyNow/ProductInfo";
+import {FiEdit3  } from "react-icons/fi";
+
+import DeviceSelectionModal, {
+  DeviceSelectionResult,
+} from "../DeviceSelectionModal";
 import styles from "./CartItemCard.module.css";
 
 interface CartItemCardProps {
   item: CartItem;
   onUpdate: (updates: Partial<CartItem>) => void;
   onRemove: () => void;
+
 }
 
-const CartItemCard: FC<CartItemCardProps> = ({ item, onUpdate, onRemove } ) => {
-  // Local editing state for the "device" line (currently item.weight)
-  const [isEditingDevice, setIsEditingDevice] = useState(false);
-  const [deviceDraft, setDeviceDraft] = useState(item.weight);
+const CodepenIcon = FiEdit3  as unknown as React.FC;
+
+
+const CartItemCard: FC<CartItemCardProps> = ({ item, onUpdate, onRemove }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleQuantityChange = (delta: number) => {
     const newQty = item.quantity + delta;
     if (newQty <= 0) {
-      onRemove();
+      return;
     } else {
       onUpdate({ quantity: newQty });
     }
   };
 
-  const handleDeviceSave = () => {
-    onUpdate({ weight: deviceDraft }); // treat weight as device for now
-    setIsEditingDevice(false);
+  const handleDeviceConfirm = (result: DeviceSelectionResult) => {
+    const deviceLabel = `${result.brand} ${result.deviceModel}`;
+    // still storing device in `weight` for now
+    onUpdate({ weight: deviceLabel });
+    setIsModalOpen(false);
   };
 
-  const handleDeviceCancel = () => {
-    setDeviceDraft(item.weight);
-    setIsEditingDevice(false);
-  };
-
-  // Try to infer an image field; adjust this to your Product type
   const imageSrc =
     (item.product as any).imageUrl ||
     (item.product as any).image ||
@@ -40,102 +43,101 @@ const CartItemCard: FC<CartItemCardProps> = ({ item, onUpdate, onRemove } ) => {
     "";
 
   return (
-    <article className={styles.card}>
-      <div className={styles.left}>
-        <h3 className={styles.title}>{item.product.name}</h3>
+    <>
+      <article className={styles.card}>
+        <div className={styles.left}>
+          {/* Title */}
+          <h3 className={styles.title}>{item.product.name}</h3>
 
-        <div className={styles.meta}>
-          {/* Device row */}
-          <div className={styles.row}>
-            <span className={styles.label}>Device:</span>
-            {isEditingDevice ? (
-              <div className={styles.deviceEdit}>
-                <input
-                  className={styles.deviceInput}
-                  value={deviceDraft}
-                  onChange={(e) => setDeviceDraft(e.target.value)}
-                />
-                <button
-                  type="button"
-                  className={styles.deviceAction}
-                  onClick={handleDeviceSave}
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  className={styles.deviceActionSecondary}
-                  onClick={handleDeviceCancel}
-                >
-                  Cancel
-                </button>
-              </div>
-            ) : (
+          {/* Meta info */}
+          <div className={styles.meta}>
+            {/* Device row */}
+            <div className={styles.row}>
+              <span className={styles.label}>Device:</span>
               <div className={styles.deviceDisplay}>
-                <span className={styles.value}>{item.weight}</span>
+                <span className={styles.value}>
+                  {item.device || "Not set"}
+                </span>
                 <button
                   type="button"
                   className={styles.editIconButton}
-                  onClick={() => setIsEditingDevice(true)}
+                  onClick={() => setIsModalOpen(true)}
                   aria-label="Edit device"
                 >
-                  ✏️
+                  <CodepenIcon />
                 </button>
               </div>
-            )}
-          </div>
+            </div>
 
-          {/* Quantity row */}
-          <div className={styles.row}>
-            <span className={styles.label}>Quantity:</span>
-            <div className={styles.qtyControls}>
-              <button
-                type="button"
-                className={styles.qtyButton}
-                onClick={() => handleQuantityChange(-1)}
-              >
-                –
-              </button>
-              <span className={styles.qtyValue}>{item.quantity}</span>
-              <button
-                type="button"
-                className={styles.qtyButton}
-                onClick={() => handleQuantityChange(1)}
-              >
-                +
-              </button>
+            {/* Color row (optional) */}
+            <div className={styles.row}>
+              <span className={styles.label}>Color:</span>
+              <span className={styles.value}>{item.color || "—"}</span>
+            </div>
+            {/* Color row (optional) */}
+            <div className={styles.row}>
+              <span className={styles.label}>Weight:</span>
+              <span className={styles.value}>{item.weight || "—"}</span>
+            </div>
+
+            {/* Quantity row */}
+            <div className={styles.row}>
+              <span className={styles.label}>Quantity:</span>
+              <div className={styles.qtyControls}>
+                <button
+                  type="button"
+                  className={styles.qtyButton}
+                  onClick={() => handleQuantityChange(-1)}
+                >
+                  –
+                </button>
+                <span className={styles.qtyValue}>{item.quantity}</span>
+                <button
+                  type="button"
+                  className={styles.qtyButton}
+                  onClick={() => handleQuantityChange(1)}
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Optional: color */}
-          {/* <div className={styles.row}>
-            <span className={styles.label}>Color:</span>
-            <span className={styles.value}>{item.color}</span>
-          </div> */}
+          {/* Remove button */}
+          <button
+            type="button"
+            className={styles.removeButton}
+            onClick={onRemove}
+          >
+            Remove
+          </button>
         </div>
 
-        <button
-          type="button"
-          className={styles.removeButton}
-          onClick={onRemove}
-        >
-          Remove
-        </button>
-      </div>
-
-      <div className={styles.right}>
-        <div className={styles.price}>${item.product.price.toFixed(2)}</div>
-        {imageSrc && (
-          <div className={styles.imageWrapper}>
-            <img
-              src={imageSrc}
-              alt={item.product.name}
-              className={styles.image}
-            />
+        {/* Right side: price + image */}
+        <div className={styles.right}>
+          <div className={styles.price}>
+            ${item.product.price.toFixed(2)}
           </div>
-        )}
-      </div>
-    </article>
+
+          {imageSrc && (
+            <div className={styles.imageWrapper}>
+              <img
+                src={imageSrc}
+                alt={item.product.name}
+                className={styles.image}
+              />
+            </div>
+          )}
+        </div>
+      </article>
+
+      {/* Device selection modal */}
+      <DeviceSelectionModal
+        isOpen={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onConfirm={handleDeviceConfirm}
+      />
+    </>
   );
 };
 

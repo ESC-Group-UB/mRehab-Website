@@ -13,6 +13,7 @@ export interface CartItem {
   color: string;
   weight: string;
   quantity: number;
+  device?: string;
 }
 
 const CART_KEY = "mrehab_cart";

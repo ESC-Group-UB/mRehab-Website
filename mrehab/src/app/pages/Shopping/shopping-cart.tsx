@@ -3,6 +3,7 @@ import { CartItem } from "../../../components/BuyNow/ProductInfo";
 import CartItemCard from "../../../components/Shopping/Cart/CartItemCard";
 import pageStyles from "./shopping-cart.module.css";
 import { Navbar } from "../../../components/Navbar";
+import DeviceSelectionModal from "../../../components/Shopping/DeviceSelectionModal";
 
 const CART_KEY = "mrehab_cart";
 
