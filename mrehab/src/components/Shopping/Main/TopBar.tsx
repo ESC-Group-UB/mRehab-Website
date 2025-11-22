@@ -31,7 +31,7 @@ export const ShoppingTopBar: FC = () => {
 
         {/* CART ICON */}
         <span style={styles.cartIcon}>
-          {FiShoppingCart({})}
+          {FiShoppingCart({onClick: () => {window.location.href = "/shopping/cart"},})}
         </span>
 
       </div>

@@ -1,0 +1,162 @@
+.card {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  margin-bottom: 1rem;
+}
+
+.left {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.right {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  min-width: 72px;
+}
+
+.value {
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+.deviceDisplay {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.deviceEdit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.deviceInput {
+  border-radius: 8px;
+  border: 1px solid #cbd5f5;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.deviceAction {
+  border-radius: 999px;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+}
+
+.deviceActionSecondary {
+  border-radius: 999px;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.editIconButton {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.qtyControls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.qtyButton {
+  border-radius: 999px;
+  border: 1px solid #cbd5f5;
+  padding: 0.15rem 0.6rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background: #f9fafb;
+}
+
+.qtyValue {
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+.removeButton {
+  align-self: flex-start;
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.price {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.imageWrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 800px) {
+  .card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .right {
+    align-items: flex-start;
+  }
+}
