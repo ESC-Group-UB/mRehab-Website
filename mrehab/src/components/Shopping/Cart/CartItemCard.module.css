@@ -30,6 +30,11 @@
   margin: 0;
 }
 
+.title:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .meta {
   display: flex;
   flex-direction: column;

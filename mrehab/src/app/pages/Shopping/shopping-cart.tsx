@@ -6,9 +6,12 @@ import { Navbar } from "../../../components/Navbar";
 import DeviceSelectionModal from "../../../components/Shopping/DeviceSelectionModal";
 
 const CART_KEY = "mrehab_cart";
+const API_URL = `${process.env.REACT_APP_BACKEND_API_URL}api/stripe/create-checkout-session`;
+
+
 
 function getCartFromLocalStorage(): CartItem[] {
-  if (typeof window === "undefined") return [];
+  if (typeof window === "undefined") return []; 
 
   const raw = window.localStorage.getItem(CART_KEY);
   if (!raw) return [];
@@ -20,6 +23,20 @@ function getCartFromLocalStorage(): CartItem[] {
   }
 }
 
+// ✅ JWT Decoder remains unchanged
+function decodeJwtPayload(idToken: string): any | null {
+  try {
+    const payload = idToken.split(".")[1];
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const pad = base64.length % 4 === 0 ? "" : "=".repeat(4 - (base64.length % 4));
+    return JSON.parse(atob(base64 + pad));
+  } catch {
+    return null;
+  }
+}
+
+
+
 function saveCartToLocalStorage(cart: CartItem[]) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(CART_KEY, JSON.stringify(cart));
@@ -27,6 +44,30 @@ function saveCartToLocalStorage(cart: CartItem[]) {
 
 export default function ShoppingCartPage() {
   const [items, setItems] = useState<CartItem[]>([]);
+
+  const checkoutClick = async () => {
+    console.log("Checkout clicked");
+    console.log("Items:", items);
+    try {
+      const idToken = localStorage.getItem("idToken")!;
+      const user = decodeJwtPayload(idToken);
+
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items
+        })
+      });
+
+      const data = await res.json();
+      if (data?.url) window.location.assign(data.url);
+      else throw new Error();
+    } catch {
+      console.error("Checkout failed. Try again.");
+    }
+  }
 
   useEffect(() => {
     setItems(getCartFromLocalStorage());
@@ -87,6 +128,7 @@ export default function ShoppingCartPage() {
             type="button"
             className={pageStyles.checkoutButton}
             disabled={items.length === 0}
+            onClick={checkoutClick}
           >
             Proceed to Checkout
           </button>

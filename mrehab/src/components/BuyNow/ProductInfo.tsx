@@ -4,6 +4,8 @@ import styles from "./ProductInfo.module.css";
 // import { BuyNowButton } from "../BuyNow/BuyNowButton";
 import { Product } from "../Shopping/Prodcuts";
 
+
+
 interface Props {
   product: Product;
 }

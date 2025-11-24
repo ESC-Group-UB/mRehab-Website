@@ -17,7 +17,7 @@ interface CartItemCardProps {
 const CodepenIcon = FiEdit3  as unknown as React.FC;
 
 
-const CartItemCard: FC<CartItemCardProps> = ({ item, onUpdate, onRemove }) => {
+const   CartItemCard: FC<CartItemCardProps> = ({ item, onUpdate, onRemove }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleQuantityChange = (delta: number) => {
@@ -32,7 +32,7 @@ const CartItemCard: FC<CartItemCardProps> = ({ item, onUpdate, onRemove }) => {
   const handleDeviceConfirm = (result: DeviceSelectionResult) => {
     const deviceLabel = `${result.brand} ${result.deviceModel}`;
     // still storing device in `weight` for now
-    onUpdate({ weight: deviceLabel });
+    onUpdate({ device: deviceLabel });
     setIsModalOpen(false);
   };
 
@@ -47,7 +47,8 @@ const CartItemCard: FC<CartItemCardProps> = ({ item, onUpdate, onRemove }) => {
       <article className={styles.card}>
         <div className={styles.left}>
           {/* Title */}
-          <h3 className={styles.title}>{item.product.name}</h3>
+          
+          <h3 onClick={() => { window.location.href = `/shopping/info?id=${item.product.id}`; }} className={styles.title}>{item.product.name}</h3>
 
           {/* Meta info */}
           <div className={styles.meta}>

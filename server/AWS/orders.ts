@@ -6,6 +6,7 @@ import { dynamoDB } from "./awsConfig";
 import dotenv from "dotenv";
 dotenv.config();
 import type Stripe from "stripe";
+import { CartItem, Product } from "../routes/stripe";
 
 const UserPoolId = process.env.COGNITO_POOL_ID;
 const AuthorizedUsersTableName = process.env.AuthorizedUsers;
@@ -23,10 +24,19 @@ export type ShippingStatus =
 
 /** Each purchased item inside an order */
 export interface OrderItem {
-  description: string;          // product name/description from Stripe
-  quantity: number;             // number of units purchased
-  amount_total: number;         // total price for this line in cents
-  currency: string;             // currency code, e.g. "usd"
+  // Stripe-level info
+  description: string;      // product name/description from Stripe
+  quantity: number;         // number of units purchased
+  amount_total: number;     // total price for this line in cents
+  currency: string;         // currency code, e.g. "usd"
+
+  // Snapshot of our app's product/cart data at time of purchase
+  productId?: string;
+  productName?: string;
+  unit_price?: number;      // price per unit in your Product model
+  color?: string;
+  weight?: string;
+  device?: string;
 }
 
 export interface Order {
@@ -43,12 +53,14 @@ export interface Order {
   shippingStatus: ShippingStatus;
   createdAt: string;
 
-  /** 🆕 Array of line items (each product purchased) */
+  /** Array of line items (each product purchased) */
   items?: OrderItem[];
 }
 
 /** Format a Stripe.Address into a single line suitable for DB storage/search. */
-export function formatStripeAddress(addr?: Stripe.Address | null): string | null {
+export function formatStripeAddress(
+  addr?: Stripe.Address | null
+): string | null {
   if (!addr) return null;
 
   const line1 = addr.line1?.trim();
@@ -75,6 +87,9 @@ export function formatStripeAddress(addr?: Stripe.Address | null): string | null
 /**
  * Build an Order object from a Stripe Checkout Session.
  * Optionally include detailed line items if provided.
+ *
+ * Assumes the frontend stored the cart in:
+ *   session.metadata.cart = JSON.stringify(CartItem[])
  */
 export function buildOrderFromSession(
   session: Stripe.Checkout.Session,
@@ -82,6 +97,17 @@ export function buildOrderFromSession(
 ): Order {
   const rawAddr = session.customer_details?.address ?? null;
   console.log("BUILDING ORDER SESSION", session.metadata);
+
+  // 🔍 Try to parse cart from metadata.cart (if present)
+  let cartItems: CartItem[] | undefined;
+  const rawCart = session.metadata?.cartData;
+  if (rawCart) {
+    try {
+      cartItems = JSON.parse(rawCart) as CartItem[];
+    } catch (err) {
+      console.warn("⚠️ Failed to parse session.metadata.cart:", err);
+    }
+  }
 
   const order: Order = {
     id: session.id,
@@ -100,12 +126,25 @@ export function buildOrderFromSession(
 
   // 🧾 Attach detailed items if available
   if (lineItems?.data?.length) {
-    order.items = lineItems.data.map((li) => ({
-      description: li.description ?? "Unknown Item",
-      quantity: li.quantity ?? 1,
-      amount_total: li.amount_total ?? 0,
-      currency: li.currency ?? session.currency ?? "usd",
-    }));
+    order.items = lineItems.data.map((li, idx) => {
+      const cartItem = cartItems?.[idx]; // assumes same order as line_items
+
+      return {
+        // Stripe info
+        description: li.description ?? cartItem?.product.name ?? "Unknown Item",
+        quantity: li.quantity ?? cartItem?.quantity ?? 1,
+        amount_total: li.amount_total ?? 0,
+        currency: li.currency ?? session.currency ?? "usd",
+
+        // Our product/cart snapshot
+        productId: cartItem?.product.id,
+        productName: cartItem?.product.name,
+        unit_price: cartItem?.product.price,
+        color: cartItem?.color,
+        weight: cartItem?.weight,
+        device: cartItem?.device ?? session.metadata?.device,
+      } as OrderItem;
+    });
   }
 
   return order;

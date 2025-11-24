@@ -34,13 +34,12 @@ webhookRouter.post(
       const session = event.data.object as Stripe.Checkout.Session;
       // 
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+      console.log("Line items from session:", lineItems);
+      console.log("metadata from session:", session.metadata);
 
       const order:Order = buildOrderFromSession(session, lineItems);
       console.log("✅ New order received:", order);
       
-
-      
-
       // TODO: save order to DB (DynamoDB, etc.)
         await uploadOrder(order);
       // TODO: send confirmation email to customer
