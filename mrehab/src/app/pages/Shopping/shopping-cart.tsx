@@ -3,7 +3,6 @@ import { CartItem } from "../../../components/BuyNow/ProductInfo";
 import CartItemCard from "../../../components/Shopping/Cart/CartItemCard";
 import pageStyles from "./shopping-cart.module.css";
 import { Navbar } from "../../../components/Navbar";
-import DeviceSelectionModal from "../../../components/Shopping/DeviceSelectionModal";
 
 
 
@@ -50,6 +49,28 @@ export default function ShoppingCartPage() {
   const checkoutClick = async () => {
     console.log("Checkout clicked");
     console.log("Items:", items);
+    // check to ensure user is logged in
+    const idToken = localStorage.getItem("idToken");
+    if (!idToken) {
+      alert("Please log in to proceed to checkout.");
+      return;
+    }
+
+    // check to ensure cart is not empty
+    if (items.length === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
+
+    // check to ensure every item has a selected device
+    for (const item of items) {
+      console.log("Checking item:", item);
+      if (item.device === null || item.device === undefined) {
+        alert(`Please select a device for the product: ${item.product.name}`);
+        return;
+      }
+    }
+
     try {
       const idToken = localStorage.getItem("idToken")!;
       const user = decodeJwtPayload(idToken);

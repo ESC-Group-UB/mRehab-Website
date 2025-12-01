@@ -59,7 +59,7 @@ stripeRouter.post(
         success_url: `${process.env.FRONTEND_URL}/buy-now/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process. env.FRONTEND_URL}/buy-now`,
       });
-      console.log("Checkout session created:", session.url);
+      console.log("Checkout session created:");
       res.json({ url: session.url });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);

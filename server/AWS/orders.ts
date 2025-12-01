@@ -225,3 +225,13 @@ export async function getCart(cartId: string, Username: string): Promise<CartIte
     .promise();
   return (res.Item as { items?: CartItem[] } | undefined)?.items ?? null;
 }
+
+export async function deleteCart(cartId: string, Username: string): Promise<void> {
+  await dynamoDB
+    .delete({
+      TableName: UserCartsTableName!,
+      Key: { id: cartId, Username: Username },
+    })
+    .promise();
+  console.log("Cart deleted successfully.");
+}

@@ -52,6 +52,11 @@ export default function BuyNowSuccess() {
     }
   };
 
+  // clear cart on sucessful purchase
+  useEffect(() => {
+    localStorage.removeItem("mrehab_cart");
+  }, []);
+
   return (
     <>
       <Navbar />

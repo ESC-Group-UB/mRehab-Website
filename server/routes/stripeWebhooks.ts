@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 import Stripe from "stripe";
 import {buildOrderFromSession, Order, uploadOrder} from "../AWS/orders";
 import {sendOrderReceivedEmail, sendInternalOrderNotification} from "../utilities/OrderEmails";
-import { getCart } from "../AWS/orders";
+import { getCart, deleteCart } from "../AWS/orders";
 
 
 const webhookRouter = express.Router();
@@ -52,6 +52,8 @@ webhookRouter.post(
         await sendInternalOrderNotification(
           order
         );
+      // Remove user's cart after successful order
+      await deleteCart(cartId, session.metadata?.userEmail as string);
     }
 
     res.sendStatus(200);

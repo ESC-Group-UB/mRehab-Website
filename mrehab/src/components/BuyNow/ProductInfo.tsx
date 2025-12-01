@@ -83,6 +83,7 @@ const ProductInfo: FC<Props> = ({ product }) => {
 
     // Optional: feedback
     // toast / snackbar / console.log
+    alert("Added to cart!");
     console.log("Added to cart:", newCartItem);
   };
 
