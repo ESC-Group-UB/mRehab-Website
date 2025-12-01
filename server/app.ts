@@ -41,8 +41,6 @@ app.use("/api/AI", AIRouter);
 app.use("/api/uploadCsv", uploadCsvRoutes);
 
 
-
-
 // Health check
 app.get("/api/hello", (_req, res) => {
   res.send({ message: "Hello from backend" });
