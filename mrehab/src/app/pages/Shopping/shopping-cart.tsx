@@ -4,12 +4,8 @@ import CartItemCard from "../../../components/Shopping/Cart/CartItemCard";
 import pageStyles from "./shopping-cart.module.css";
 import { Navbar } from "../../../components/Navbar";
 
-
-
 const CART_KEY = "mrehab_cart";
 const API_URL = `${process.env.REACT_APP_BACKEND_API_URL}api/stripe/create-checkout-session`;
-
-
 
 function getCartFromLocalStorage(): CartItem[] {
   if (typeof window === "undefined") return []; 
@@ -91,7 +87,7 @@ export default function ShoppingCartPage() {
     } catch {
       console.error("Checkout failed. Try again.");
     }
-  }
+  };
 
   useEffect(() => {
     setItems(getCartFromLocalStorage());
