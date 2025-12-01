@@ -38,7 +38,8 @@ webhookRouter.post(
       console.log("Line items from session:", lineItems);
       console.log("metadata from session:", session.metadata);
       const cartId = session.metadata?.cartId as string;
-      const cartItems = (await getCart(cartId)) ?? [];
+      const cartItems = (await getCart(cartId, session.metadata?.userEmail as string)) ?? [];
+      console.log("Cart items retrieved");
 
 
       const order:Order = buildOrderFromSession(session, cartItems);

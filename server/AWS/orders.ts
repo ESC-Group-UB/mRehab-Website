@@ -216,13 +216,12 @@ export async function uploadCart(
   return cartId;
 }
 
-export async function getCart(cartId: string): Promise<CartItem[] | null> {
+export async function getCart(cartId: string, Username: string): Promise<CartItem[] | null> {
   const res = await dynamoDB
     .get({
       TableName: UserCartsTableName!,
-      Key: { id: cartId },
+      Key: { id: cartId, Username: Username },
     })
     .promise();
-
   return (res.Item as { items?: CartItem[] } | undefined)?.items ?? null;
 }
