@@ -1,198 +1,218 @@
-/* ActivitiesSelector.module.css */
-
-/* Theme hooks (fallbacks included) */
 :root {
-  --surface: var(--color-surface, #ffffff);
-  --surface-2: var(--color-surface-2, #f7f7f9);
-  --text: var(--color-text, #1f2937);
-  --muted: var(--color-muted, #6b7280);
-  --border: var(--color-border, #e5e7eb);
-  --accent: var(--color-main, #4f46e5);
-  --accent-contrast: var(--color-on-main, #ffffff);
-  --success: #2e7d32;
-  --error: #c62828;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --surface: #ffffff;
+  --surface-2: #f9fafb;
+  --surface-3: #f3f4f6;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --accent: #ab0060;
+  --accent-hover: #e60583;
+  --success: #16a34a;
+  --error: #dc2626;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Container */
+
 .activities {
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   background: var(--surface);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow);
   color: var(--text);
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-/* Top toolbar */
+.activities h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Toolbar */
 .activities__toolbar {
-  display: grid;
-  gap: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
+  gap: 0.8rem;
 }
 
-@media (min-width: 800px) {
-  .activities__toolbar {
-    grid-template-columns: 1fr auto;
-    gap: 1rem;
-  }
+.activities__sets {
+  width: 54px;
+  padding: 4px;
+  text-align: center;
 }
 
-/* Search input */
 .activities__search {
-  width: 90%;
-  padding: 0.6rem 0.8rem;
+  flex: 1;
+  min-width: 250px;
+  padding: 0.55rem 0.9rem;
   border: 1px solid var(--border);
-  border-radius: 0.6rem;
+  border-radius: 0.5rem;
   background: var(--surface);
+  font-size: 0.95rem;
   color: var(--text);
-  outline: none;
-  transition: border-color 120ms ease, box-shadow 120ms ease;
 }
 
-.activities__search::placeholder {
-  color: var(--muted);
-}
-
-.activities__search:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 20%, transparent);
-}
-
-/* Bulk actions */
 .activities__bulk {
   display: flex;
   gap: 0.5rem;
-  justify-self: start;
 }
 
-@media (min-width: 800px) {
-  .activities__bulk {
-    justify-self: end;
-  }
-}
-
-/* Buttons */
 .btn {
-  padding: 0.55rem 0.9rem;
-  border-radius: 0.6rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.5rem;
   border: 1px solid var(--accent);
   background: var(--accent);
-  color: var(--accent-contrast);
-  font-weight: 600;
+  color: #fff;
+  font-weight: 500;
   cursor: pointer;
-  transition: filter 120ms ease, transform 60ms ease;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
 }
 
-.btn:hover { filter: brightness(1.05); }
-.btn:active { transform: translateY(1px); }
+.btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
 
 .btn--secondary {
   background: transparent;
   color: var(--accent);
 }
 
-/* Groups wrapper */
+/* Groups */
 .activities__groups {
   display: grid;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
-/* Single group card */
 .activities__group {
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
-  padding: 0.9rem;
   box-shadow: var(--shadow);
+  overflow: hidden;
 }
 
-/* Group header with master checkbox */
 .activities__groupHeader {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.5rem;
+  justify-content: space-between;
+  background: var(--surface-3);
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
 }
 
-.activities__groupTitle {
-  font-weight: 700;
-  letter-spacing: 0.2px;
+.activities__collapseIcon {
+  font-size: 0.9rem;
+  margin-right: 0.4rem;
 }
 
-/* List of items */
+/* Activity list */
 .activities__list {
   list-style: none;
   margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.35rem;
+  padding: 0.75rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
+/* Activity row */
 .activities__item {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  transition: all 0.2s ease;
+  gap: 1rem;
 }
 
-/* Checkbox row */
+.activities__item:hover {
+  background: var(--surface-3);
+  border-color: var(--accent);
+}
+
+/* Label & name */
 .activities__label {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  padding: 0.5rem 0.6rem;
-  border-radius: 0.5rem;
-  transition: background-color 120ms ease;
-}
-
-.activities__label:hover {
-  background: color-mix(in oklab, var(--accent) 6%, transparent);
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .activities__name {
-  line-height: 1.2;
+  color: var(--text);
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Loading & error states */
-.activities__loading,
-.activities__error {
-  padding: 0.8rem 1rem;
-  border-radius: 0.6rem;
+/* Reps aligned to right column */
+.activities__repsWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  min-width: 120px;
+}
+
+.activities__reps {
+  width: 60px;
+  text-align: center;
+  padding: 0.35rem 0.5rem;
   border: 1px solid var(--border);
-  background: var(--surface-2);
-}
-
-.activities__error {
-  border-color: color-mix(in oklab, var(--error) 40%, var(--border));
-  color: var(--error);
-}
-
-/* Save state badge */
-.activities__savestate {
-  justify-self: end;
+  border-radius: 0.5rem;
   font-size: 0.9rem;
-  color: var(--muted);
+  background: var(--surface);
+  transition: all 0.15s ease;
 }
 
-.activities__collapseIcon {
-  font-size: 0.8rem;
-  margin-right: 0.25rem;
-  user-select: none;
+.activities__reps:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+.activities__repsLabel {
+  width: 40px;
+  text-align: right;
+  font-size: 0.85rem;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* Save state */
+.activities__savestate {
+  text-align: right;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin-top: 0.5rem;
 }
 
 .activities__savestate--saving {
-  opacity: 0.9;
+  color: var(--accent);
 }
 
 .activities__savestate--saved {
   color: var(--success);
-  animation: fadehold 1.8s ease;
 }
 
 .activities__savestate--error {
   color: var(--error);
-}
-
-/* Small animation for "Saved" */
-@keyframes fadehold {
-  0% { opacity: 0; }
-  15% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { opacity: 0.7; }
 }

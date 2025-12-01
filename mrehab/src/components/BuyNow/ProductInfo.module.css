@@ -44,6 +44,10 @@
   margin: 0.75rem 0 0.5rem 0;
 }
 
+.stickyBar {
+  display: none;
+}
+
 /* Optional: style the internal button generically via container selector */
 .inlineBuy :where(button, a) {
   width: auto;
@@ -143,4 +147,83 @@
   .stickyInner :where(button, a) {
     padding: 0.85rem 1rem;
   }
+}
+
+
+.selectorBlock {
+  margin: 20px 0;
+  text-align: left;
+}
+
+.selectorLabel {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.dropdown {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background: #fff;
+}
+
+/* Quantity selector */
+.qtyWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.qtyButton {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  background: #f4f4f4;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.qtyValue {
+  font-size: 20px;
+  font-weight: 600;
+  width: 40px;
+  text-align: center;
+}
+
+/* Row for color + quantity */
+.selectorRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 80px;
+  margin: 10px 0 20px 0;
+}
+
+/* Make each selector take half width */
+.selectorRow .selectorBlock {
+  flex: 1;
+}
+
+/* Mobile: stack them again */
+@media (max-width: 700px) {
+  .selectorRow {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+
+.buyButtonWrapper :where(button, a) {
+  width: 260px;         /* elegant fixed width */
+  padding: 14px 0;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 600;
 }

@@ -6,10 +6,12 @@ type Props = {
   filterExercise: string;
   filterStartDate: string;
   filterEndDate: string;
+  dataKey: string;
   setFilterHand: (val: string) => void;
   setFilterExercise: (val: string) => void;
   setStartDate: (val: string) => void;
   setEndDate: (val: string) => void;
+  setDataKey: (val: string) => void; 
 };
 
 export default function FiltersBar({
@@ -17,10 +19,12 @@ export default function FiltersBar({
   filterExercise,
   filterStartDate,
   filterEndDate,
+  dataKey,
   setFilterHand,
   setFilterExercise,
   setStartDate,
   setEndDate,
+  setDataKey
 }: Props) {
   return (
     <div className={styles.wrap}>
@@ -33,6 +37,17 @@ export default function FiltersBar({
         <option value="">All Hands</option>
         <option value="Left">Left</option>
         <option value="Right">Right</option>
+      </select>
+
+      <select
+        aria-label="Filter by Metric"
+        value={dataKey}
+        onChange={(e) => setDataKey(e.target.value)}
+        className={`${styles.field} ${styles.select}`}
+      >
+        <option value="Accuracy">Accuracy</option>
+        <option value="Reps">Reps</option>
+        <option value="Duration">Duration</option>
       </select>
 
       <select
@@ -68,6 +83,8 @@ export default function FiltersBar({
         onChange={(e) => setEndDate(e.target.value)}
         className={`${styles.field} ${styles.date}`}
       />
+
+      
     </div>
   );
 }

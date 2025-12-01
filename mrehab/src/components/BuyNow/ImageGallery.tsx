@@ -8,7 +8,7 @@ type Props = {
 };
 
 const isVideo = (src: string) => /\.(mp4|webm|ogg)(\?|#|$)/i.test(src);
-
+ 
 export default function ImageGallery({
   images,
   selectedImage,

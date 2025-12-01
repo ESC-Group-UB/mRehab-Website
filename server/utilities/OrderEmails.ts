@@ -1,6 +1,5 @@
 import sendEmail from "./BrevoMailer";
-import {Order} from "../AWS/orders"
-
+import { Order, CartItem } from "../AWS/orders";
 
 /**
  * Send an "order received" confirmation email to a customer.
@@ -49,82 +48,103 @@ If you have any questions, just reply to this email and we’ll be happy to help
 
   console.log(`📧 Sending order confirmation email to ${customerEmail} for order #${orderId}`);
   await sendEmail(customerEmail, subject, html);
-
-
 }
 
-
 /**
- * Send an internal notification email to the fulfillment team with full order details.
- * @param order - The order object
+ * Internal notification to you when a new order is created.
+ * Uses the new Order + CartItem + Product interfaces.
  */
 export async function sendInternalOrderNotification(order: Order): Promise<void> {
-  const subject = `📦 New Order Received - #${order.id}`;
+  const subject = `📦 [${process.env.NODE_ENV?.toUpperCase() || "DEV"}] New Order #${order.id}`;
 
   const amountDisplay = order.amount
     ? `${(order.amount / 100).toFixed(2)} ${order.currency?.toUpperCase() || ""}`
     : "N/A";
 
-  const text = `Team,
+  const environment = process.env.NODE_ENV || "development";
+  const systemTag = `mRehab • ${environment.toUpperCase()} • ${new Date().toLocaleString()}`;
 
-A new order has been placed and requires fulfillment.
+  // Build items table from CartItem[]
+  const itemsTable: string =
+    order.items && order.items.length > 0
+      ? `
+      <h3 style="margin-top:24px; margin-bottom:6px;">Order Items</h3>
+      <table style="width:100%; border-collapse:collapse; border:1px solid #ddd; font-size:14px;">
+        <thead>
+          <tr style="background:#f3f4f6;">
+            <th align="left" style="padding:8px; border:1px solid #ddd;">Item</th>
+            <th align="center" style="padding:8px; border:1px solid #ddd;">Qty</th>
+            <th align="right" style="padding:8px; border:1px solid #ddd;">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${order.items
+            .map((item: CartItem) => {
+              const name = item.product?.name ?? "Unknown item";
+              const colorPart = item.color ? ` • Color: ${item.color}` : "";
+              const weightPart = item.weight ? ` • Weight: ${item.weight}` : "";
+              const devicePart = item.device ? ` • Device: ${item.device}` : "";
 
-Order ID: ${order.id}
-Customer Email: ${order.email || "N/A"}
-Phone: ${order.phone || "N/A"}
-Device: ${order.device || "N/A"}
-Amount: ${amountDisplay}
-Payment Status: ${order.status}
-Shipping Status: ${order.shippingStatus}
-Created At: ${order.createdAt}
+              // ASSUMPTION: product.price is stored in cents (Stripe-style).
+              const lineAmountCents = (item.product?.price ?? 0) * item.quantity;
+              const lineAmountDisplay = `${(lineAmountCents / 100).toFixed(2)} ${
+                order.currency?.toUpperCase() || ""
+              }`;
 
-Shipping Address:
-${order.shippingAddress || "N/A"}
-
-Please prepare the package and arrange shipping.
-
-- Automated Notification (mRehab System)`;
+              return `
+              <tr>
+                <td style="padding:8px; border:1px solid #ddd;">
+                  ${name}
+                  <div style="font-size:12px; color:#6b7280;">
+                    ${colorPart}${weightPart}${devicePart}
+                  </div>
+                </td>
+                <td align="center" style="padding:8px; border:1px solid #ddd;">
+                  ${item.quantity}
+                </td>
+                <td align="right" style="padding:8px; border:1px solid #ddd;">
+                  ${lineAmountDisplay}
+                </td>
+              </tr>`;
+            })
+            .join("")}
+        </tbody>
+      </table>`
+      : "";
 
   const html = `
-    <div style="font-family: Arial, sans-serif; line-height:1.6; color:#333;">
-      <h2 style="color:#2a6df4;">📦 New Order Alert</h2>
-      <p>A new order has been placed and requires fulfillment. Below are the details:</p>
+    <div style="font-family:'Segoe UI', Roboto, Arial, sans-serif; color:#1f2937; background:#ffffff; padding:20px;">
+      <h2 style="color:#2563eb;">📦 New Order Received</h2>
+      <p>A new customer order has been placed. Please review and fulfill the shipment.</p>
 
-      <div style="margin:20px 0; padding:16px; background:#f9f9f9; border-radius:8px;">
-        <p style="margin:0; font-size:14px; color:#333;">
-          <strong>Order ID:</strong> ${order.id}<br/>
-          <strong>Created At:</strong> ${new Date(order.createdAt).toLocaleString()}<br/>
-          <strong>Amount:</strong> ${amountDisplay}<br/>
-          <strong>Payment Status:</strong> ${order.status}<br/>
-          <strong>Shipping Status:</strong> ${order.shippingStatus}
-        </p>
+      <table style="margin-top:16px; border-collapse:collapse; width:100%; font-size:14px;">
+        <tr><td><strong>Order ID:</strong></td><td>${order.id}</td></tr>
+        <tr><td><strong>Created:</strong></td><td>${new Date(order.createdAt).toLocaleString()}</td></tr>
+        <tr><td><strong>Payment:</strong></td><td>${order.status} (${amountDisplay})</td></tr>
+        <tr><td><strong>Shipping Status:</strong></td><td>${order.shippingStatus}</td></tr>
+      </table>
+
+      ${itemsTable}
+
+      <h3 style="margin-top:24px;">Customer Info</h3>
+      <p style="font-size:14px; line-height:1.4;">
+        <strong>Email:</strong> ${order.email || "N/A"}<br/>
+        <strong>Phone:</strong> ${order.phone || "N/A"}<br/>
+        <strong>Device:</strong> ${order.device || "N/A"}
+      </p>
+
+      <h3 style="margin-top:24px;">Shipping Address</h3>
+      <div style="background:#f9fafb; padding:10px; border-radius:6px; border:1px solid #e5e7eb;">
+        ${order.shippingAddress || "N/A"}
       </div>
 
-      <h3>Customer Information</h3>
-      <p style="margin:0; font-size:14px; color:#555;">
-        <strong>Name / Email:</strong> ${order.email || "N/A"}<br/>
-        <strong>Phone:</strong> ${order.phone || "N/A"}<br/>
-        <strong>Device Ordered:</strong> ${order.device || "N/A"}
-      </p>
-
-      <h3 style="margin-top:20px;">Shipping Address</h3>
-      <p style="margin:0; font-size:14px; color:#555;">
-        ${order.shippingAddress || "N/A"}
-      </p>
-
-      ${
-        order.shippingAddressRaw
-          ? `<pre style="font-size:12px; background:#f4f4f4; padding:10px; border-radius:6px; overflow-x:auto;">
-${JSON.stringify(order.shippingAddressRaw, null, 2)}
-</pre>`
-          : ""
-      }
-
-      <hr />
-      <p style="font-size:12px; color:#777;">
-        This email was automatically generated by the mRehab system. Fulfillment can proceed based on the above details.
+      <hr style="margin:24px 0; border:none; border-top:1px solid #e5e7eb;">
+      <p style="font-size:12px; color:#6b7280;">
+        ${systemTag}<br/>
+        This automated message was generated by the mRehab backend. Do not reply directly.
       </p>
     </div>
   `;
+
   await sendEmail("rohin113.rk@gmail.com", subject, html);
 }

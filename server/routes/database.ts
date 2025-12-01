@@ -9,7 +9,7 @@ import {
 } from "../AWS/awsDBfunctions";
 import { cacheGet, cacheSet, cacheDel, cacheRoute } from "../cache"; // <- your cache.ts
 import { FormData, uploadInterestToDynamoDB } from "../AWS/intrest";
-
+ 
 
 const router = express.Router();
 
@@ -27,14 +27,17 @@ router.get("/filtered", async (req: Request, res: Response) => {
 
     const key = `filtered:${u}:${h}:${ex}:${s}:${e}`;
 
-    // 2) Try cache
+     // 2) Try cache
     const cached = await cacheGet<{ entries: any[] }>(key);
     if (cached) {
       res.setHeader("X-Cache", "HIT");
-
       res.json({ source: "cache", ...cached });
+      return;
+      //          ^^^^^^^
+      // important: stop here so we don't send a second response
     }
-    res.setHeader("X-Cache", "MISS");
+
+    // No cache → MISS
 
 
     // 3) Fetch fresh

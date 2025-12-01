@@ -1,0 +1,74 @@
+name: Server Test Suite
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  test-server:
+    runs-on: ubuntu-latest
+    environment: Production
+
+    defaults:
+      run:
+        working-directory: server
+
+    env:
+      NODE_ENV: test
+
+      # --- Stripe ---
+      PUBLISHABLE_KEY: "pk_test_dummy_for_ci"
+      STRIPE_SECRET_KEY: "sk_test_dummy_for_ci"
+      STRIPE_WEBHOOK_SECRET: "whsec_dummy_for_ci"
+
+      # --- Server / frontend ---
+      PORT: ${{ secrets.PORT }}
+      FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+
+      # --- Cognito ---
+      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+      COGNITO_CLIENT_SECRET: ${{ secrets.COGNITO_CLIENT_SECRET }}
+      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
+
+      # --- AWS / Dynamo / S3 ---
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.ACCESSKEYID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRETACCESSKEY }}
+
+      ACCESSKEYID: ${{ secrets.ACCESSKEYID }}
+      SECRETACCESSKEY: ${{ secrets.SECRETACCESSKEY }}
+      S3BUCKET: ${{ secrets.S3BUCKET }}
+
+      ActivitySessions: ${{ secrets.ACTIVITYSESSIONS }}
+      AuthorizedUsers: ${{ secrets.AUTHORIZEDUSERS }}
+      Orders: ${{ secrets.ORDERS }}
+      UserSettings: ${{ secrets.USERSETTINGS }}
+      IntentClassifierLogs: ${{ secrets.INTENTCLASSIFIERLOGS }}
+
+      REDIS_URL: ${{ secrets.REDIS_URL }}
+
+      IAM_USER_NAME: ${{ secrets.IAM_USER_NAME }}
+      SMTP_USER_NAME: ${{ secrets.SMTP_USER_NAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+
+      BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: |
+            server/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Jest tests
+        run: npm test

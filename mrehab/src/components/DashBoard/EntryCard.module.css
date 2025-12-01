@@ -1,0 +1,80 @@
+.card {
+  border: 1px solid #e2e2e2;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.timestamp {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* Content */
+.section p {
+  margin: 4px 0;
+  font-size: 0.92rem;
+  color: #333;
+}
+
+/* Device info container */
+.deviceBox {
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.deviceLabel {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.deviceText {
+  margin: 2px 0 0 0;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+/* Status tags */
+.tagRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.tagReviewed {
+  background: #e0f4e6;
+  color: #0e5e39;
+}
+
+.tagWarning {
+  background: #f9d6d6;
+  color: #7f0000;
+}

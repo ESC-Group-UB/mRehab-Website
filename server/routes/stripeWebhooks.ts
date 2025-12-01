@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import Stripe from "stripe";
 import {buildOrderFromSession, Order, uploadOrder} from "../AWS/orders";
 import {sendOrderReceivedEmail, sendInternalOrderNotification} from "../utilities/OrderEmails";
+import { getCart, deleteCart } from "../AWS/orders";
 
 
 const webhookRouter = express.Router();
@@ -17,7 +18,7 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
 webhookRouter.post(
   "/webhook",
   express.raw({ type: "application/json" }),
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const sig = req.headers["stripe-signature"] as string;
 
     let event: Stripe.Event;
@@ -33,18 +34,26 @@ webhookRouter.post(
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
       // 
-      
+      const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+      console.log("Line items from session:", lineItems);
+      console.log("metadata from session:", session.metadata);
+      const cartId = session.metadata?.cartId as string;
+      const cartItems = (await getCart(cartId, session.metadata?.userEmail as string)) ?? [];
+      console.log("Cart items retrieved");
 
-      const order:Order = buildOrderFromSession(session);
-      
 
+      const order:Order = buildOrderFromSession(session, cartItems);
+      console.log("✅ New order received:", order);
+      
       // TODO: save order to DB (DynamoDB, etc.)
-        uploadOrder(order);
+        await uploadOrder(order);
       // TODO: send confirmation email to customer
-        sendOrderReceivedEmail(order.email ?? "jsmith720847@gmail.com", order.id);
-        sendInternalOrderNotification(
+        await sendOrderReceivedEmail(order.email ?? "jsmith720847@gmail.com", order.id);
+        await sendInternalOrderNotification(
           order
         );
+      // Remove user's cart after successful order
+      await deleteCart(cartId, session.metadata?.userEmail as string);
     }
 
     res.sendStatus(200);

@@ -3,17 +3,45 @@ import { jwtDecode } from "jwt-decode";
 import { ChevronDown, ChevronUp, Package } from "lucide-react";
 import styles from "./OrderHistory.module.css";
 
+// ---- Types mirrored from backend ----
+type Product = {
+  id: string;
+  name: string;
+  price: number; // dollars, e.g. 24.99
+  image_paths: string[];
+  description: string;
+  details: string;
+};
+
+type CartItem = {
+  product: Product;
+  color: string;
+  weight: string;
+  quantity: number;
+  device?: string;
+};
+
+type ShippingStatus =
+  | "pending"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "canceled"
+  | "failed"
+  | string;
+
 type Order = {
   id: string;
   email: string | null;
-  amount: number | null;       // cents
-  currency: string | null;     // e.g., "usd"
-  status: string;
-  device?: string;
-  shippingAddress: any;        // string or object
+  amount: number | null;       // total in cents
+  currency: string | null;
+  status: string;              // Stripe.Checkout.Session.PaymentStatus
+  shippingAddress: string | null;
+  shippingAddressRaw?: any;
   phone: string | null;
-  shippingStatus: string;
-  createdAt: string;           // ISO
+  shippingStatus: ShippingStatus;
+  createdAt: string;
+  items?: CartItem[];
 };
 
 export default function OrdersHistory() {
@@ -22,15 +50,17 @@ export default function OrdersHistory() {
   const [error, setError] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
+
   const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
-
+  // Logout safety
   const handleSignOut = () => {
     localStorage.removeItem("idToken");
     localStorage.removeItem("accessToken");
     window.location.href = "/login";
   };
 
+  // Decode user email from Cognito idToken
   useEffect(() => {
     const idToken = localStorage.getItem("idToken");
     if (!idToken) return handleSignOut();
@@ -38,70 +68,67 @@ export default function OrdersHistory() {
     try {
       const decoded: any = jwtDecode(idToken);
       setUserEmail(decoded.email || "");
-    } catch (err) {
-      console.error("❌ Error decoding token", err);
+    } catch {
       handleSignOut();
     }
   }, []);
 
+  // Fetch orders for this user
   useEffect(() => {
     async function fetchOrders() {
       if (!userEmail) return;
       try {
         setLoading(true);
-        setError(null);
 
         const res = await fetch(
-          `${baseURL}api/orders/byEmail?email=${encodeURIComponent(
-            userEmail
-          )}`
+          `${baseURL}api/orders/byEmail?email=${encodeURIComponent(userEmail)}`
         );
-
-        if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+        if (!res.ok) throw new Error(`Failed with ${res.status}`);
 
         const data = await res.json();
-        setOrders(data.orders || []);
+
+        const sorted = (data.orders || []).sort(
+          (a: Order, b: Order) =>
+            new Date(b.createdAt).getTime() -
+            new Date(a.createdAt).getTime()
+        );
+
+        setOrders(sorted);
       } catch (err: any) {
-        setError(err.message || "Unknown error");
+        setError(err.message || "Unexpected error");
       } finally {
         setLoading(false);
       }
     }
+
     fetchOrders();
-  }, [userEmail]);
+  }, [userEmail, baseURL]);
 
-  const formatAmount = useMemo(() => {
-    return (amount: number | null, currency: string | null) => {
-      if (amount == null || !currency) return "N/A";
-      try {
-        return new Intl.NumberFormat(undefined, {
-          style: "currency",
-          currency: currency.toUpperCase(),
-        }).format(amount / 100);
-      } catch {
-        return `${(amount / 100).toFixed(2)} ${currency.toUpperCase()}`;
-      }
-    };
-  }, []);
+  const formatAmount = useMemo(
+    () =>
+      (amountCents: number | null, currency: string | null) => {
+        if (amountCents == null || !currency) return "N/A";
+        try {
+          return new Intl.NumberFormat(undefined, {
+            style: "currency",
+            currency: currency.toUpperCase(),
+          }).format(amountCents / 100);
+        } catch {
+          return `${(amountCents / 100).toFixed(2)} ${currency.toUpperCase()}`;
+        }
+      },
+    []
+  );
 
-  const formatAddress = (shippingAddress: any) => {
+  const formatAddress = (shippingAddress: string | null) => {
     if (!shippingAddress) return "N/A";
-    if (typeof shippingAddress === "string") return shippingAddress;
-    const parts = [
-      shippingAddress.line1,
-      shippingAddress.city,
-      shippingAddress.state,
-      shippingAddress.postal_code,
-      shippingAddress.country,
-    ]
-      .filter(Boolean)
-      .join(", ");
-    return parts || "N/A";
+    return shippingAddress;
   };
 
-  if (loading) return <p style={{ padding: 16 }}>Loading your orders…</p>;
-  if (error) return <p style={{ color: "red", padding: 16 }}>Error: {error}</p>;
-  if (!orders.length) return <p style={{ padding: 16 }}>No orders found for {userEmail}.</p>;
+  if (loading) return <p className={styles.loading}>Loading your orders…</p>;
+  if (error) return <p className={styles.error}>Error: {error}</p>;
+  if (!orders.length)
+    return <p className={styles.empty}>No orders found for {userEmail}.</p>;
 
   return (
     <div className={styles.wrap}>
@@ -109,23 +136,24 @@ export default function OrdersHistory() {
 
       <ul className={styles.list}>
         {orders.map((order) => {
-          const shippingDisplay = formatAddress(order.shippingAddress);
           const isOpen = expanded === order.id;
 
           return (
             <li key={order.id} className={styles.card}>
+              {/* HEADER */}
               <button
                 type="button"
-                className={`${styles.headerBtn} ${isOpen ? styles.headerBtnOpen : ""}`}
+                className={`${styles.headerBtn} ${
+                  isOpen ? styles.headerBtnOpen : ""
+                }`}
                 onClick={() => setExpanded(isOpen ? null : order.id)}
                 aria-expanded={isOpen}
-                aria-controls={`order-panel-${order.id}`}
               >
                 <div className={styles.headerLeft}>
-                  <Package className={styles.pkgIcon} size={24} aria-hidden="true" />
-                  <div className={styles.headerText}>
+                  <Package className={styles.pkgIcon} size={22} aria-hidden />
+                  <div>
                     <p className={styles.orderLabel}>
-                      Order {order.id.slice(-6)}
+                      Order #{order.id.slice(-6)}
                     </p>
                     <p className={styles.meta}>
                       {formatAmount(order.amount, order.currency)} •{" "}
@@ -135,23 +163,17 @@ export default function OrdersHistory() {
                   </div>
                 </div>
 
-                <span className={styles.chev} aria-hidden="true">
+                <span className={styles.chev}>
                   {isOpen ? <ChevronUp /> : <ChevronDown />}
                 </span>
               </button>
 
+              {/* DETAILS */}
               {isOpen && (
-                <div
-                  id={`order-panel-${order.id}`}
-                  className={styles.details}
-                  role="region"
-                  aria-label={`Order ${order.id.slice(-6)} details`}
-                >
+                <div className={styles.details}>
                   <p>
-                    <strong>Device:</strong> {order.device || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Shipping:</strong> {shippingDisplay}
+                    <strong>Shipping Address:</strong>{" "}
+                    {formatAddress(order.shippingAddress)}
                   </p>
                   <p>
                     <strong>Phone:</strong> {order.phone || "N/A"}
@@ -163,6 +185,57 @@ export default function OrdersHistory() {
                     <strong>Created At:</strong>{" "}
                     {new Date(order.createdAt).toLocaleString()}
                   </p>
+
+                  {/* ITEMS */}
+                  <div className={styles.itemsSection}>
+                    <h4 className={styles.itemsTitle}>Items</h4>
+
+                    {order.items?.length ? (
+                      <ul className={styles.itemList}>
+                        {order.items.map((item, idx) => {
+                          // Defensive: if data is weird, skip gracefully
+                          if (!item || !item.product) return null;
+
+                          const unitPrice = item.product.price ?? 0; // dollars
+                          const lineTotalCents = Math.round(
+                            unitPrice * 100 * item.quantity
+                          );
+
+                          return (
+                            <li key={idx} className={styles.itemRow}>
+                              <div className={styles.itemInfo}>
+                                <span className={styles.itemName}>
+                                  {item.product.name}
+                                </span>
+                                <span className={styles.itemVariant}>
+                                  Device: {item.device || "N/A"} • Color:{" "}
+                                  {item.color} • Weight: {item.weight}
+                                </span>
+                              </div>
+
+                              <div className={styles.itemMeta}>
+                                <span className={styles.itemQty}>
+                                  ×{item.quantity}
+                                </span>
+                                <span className={styles.itemPrice}>
+                                  {order.currency
+                                    ? formatAmount(
+                                        lineTotalCents,
+                                        order.currency
+                                      )
+                                    : `$${(unitPrice * item.quantity).toFixed(
+                                        2
+                                      )}`}
+                                </span>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    ) : (
+                      <p>No items on record for this order.</p>
+                    )}
+                  </div>
                 </div>
               )}
             </li>
