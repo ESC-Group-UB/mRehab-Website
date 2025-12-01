@@ -6,7 +6,6 @@ import { dynamoDB } from "./awsConfig";
 import dotenv from "dotenv";
 dotenv.config();
 import type Stripe from "stripe";
-import { CartItem, Product } from "../routes/stripe";
 
 const UserPoolId = process.env.COGNITO_POOL_ID;
 const AuthorizedUsersTableName = process.env.AuthorizedUsers;
@@ -21,6 +20,24 @@ export type ShippingStatus =
   | "delivered"
   | "canceled"
   | "failed";
+
+
+ export interface Product {
+  id: string;
+  name: string;
+  price: number;  
+  image_paths: string[];
+  description: string;
+  details: string;
+}
+
+ export interface CartItem {
+  product: Product;
+  color: string;
+  weight: string;
+  quantity: number;
+  device?: string;
+}
 
 /** Each purchased item inside an order */
 export interface OrderItem {
@@ -54,7 +71,7 @@ export interface Order {
   createdAt: string;
 
   /** Array of line items (each product purchased) */
-  items?: OrderItem[];
+  items?: CartItem[];
 }
 
 /** Format a Stripe.Address into a single line suitable for DB storage/search. */
@@ -93,13 +110,12 @@ export function formatStripeAddress(
  */
 export function buildOrderFromSession(
   session: Stripe.Checkout.Session,
-  lineItems?: Stripe.ApiList<Stripe.LineItem> // optional param
+  cartItems: CartItem[],
 ): Order {
   const rawAddr = session.customer_details?.address ?? null;
   console.log("BUILDING ORDER SESSION", session.metadata);
 
   // 🔍 Try to parse cart from metadata.cart (if present)
-  let cartItems: CartItem[] | undefined;
   const rawCart = session.metadata?.cartData;
   if (rawCart) {
     try {
@@ -122,31 +138,8 @@ export function buildOrderFromSession(
     caseLink: session.metadata?.caseLink,
     shippingStatus: "pending",
     createdAt: new Date().toISOString(),
+    items: cartItems,
   };
-
-  // 🧾 Attach detailed items if available
-  if (lineItems?.data?.length) {
-    order.items = lineItems.data.map((li, idx) => {
-      const cartItem = cartItems?.[idx]; // assumes same order as line_items
-
-      return {
-        // Stripe info
-        description: li.description ?? cartItem?.product.name ?? "Unknown Item",
-        quantity: li.quantity ?? cartItem?.quantity ?? 1,
-        amount_total: li.amount_total ?? 0,
-        currency: li.currency ?? session.currency ?? "usd",
-
-        // Our product/cart snapshot
-        productId: cartItem?.product.id,
-        productName: cartItem?.product.name,
-        unit_price: cartItem?.product.price,
-        color: cartItem?.color,
-        weight: cartItem?.weight,
-        device: cartItem?.device ?? session.metadata?.device,
-      } as OrderItem;
-    });
-  }
-
   return order;
 }
 
@@ -193,4 +186,43 @@ export async function ordersByEmail(email: string): Promise<Order[]> {
     console.error("❌ Failed to fetch orders by email:", err);
     throw err;
   }
+}
+
+const UserCartsTableName = process.env.UserCarts;
+
+
+// take in a cart and upload it to dynamoDB,
+// associated with a user and a unique cartId
+export async function uploadCart(
+  cart: CartItem[],
+  userId: string = "anonymous"
+): Promise<string> {
+  const cartId =
+    (crypto as any).randomUUID?.() ??
+    crypto.randomBytes(16).toString("hex");
+  const now = new Date().toISOString();
+
+  await dynamoDB
+    .put({
+      TableName: UserCartsTableName!,
+      Item: {
+        id: cartId,
+        Username: userId,
+        items: cart,
+      },
+    })
+    .promise();
+  console.log("Cart uploaded successfully.");
+  return cartId;
+}
+
+export async function getCart(cartId: string): Promise<CartItem[] | null> {
+  const res = await dynamoDB
+    .get({
+      TableName: UserCartsTableName!,
+      Key: { id: cartId },
+    })
+    .promise();
+
+  return (res.Item as { items?: CartItem[] } | undefined)?.items ?? null;
 }

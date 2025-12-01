@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import Stripe from "stripe";
 import {buildOrderFromSession, Order, uploadOrder} from "../AWS/orders";
 import {sendOrderReceivedEmail, sendInternalOrderNotification} from "../utilities/OrderEmails";
+import { getCart } from "../AWS/orders";
 
 
 const webhookRouter = express.Router();
@@ -36,8 +37,11 @@ webhookRouter.post(
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
       console.log("Line items from session:", lineItems);
       console.log("metadata from session:", session.metadata);
+      const cartId = session.metadata?.cartId as string;
+      const cartItems = (await getCart(cartId)) ?? [];
 
-      const order:Order = buildOrderFromSession(session, lineItems);
+
+      const order:Order = buildOrderFromSession(session, cartItems);
       console.log("✅ New order received:", order);
       
       // TODO: save order to DB (DynamoDB, etc.)

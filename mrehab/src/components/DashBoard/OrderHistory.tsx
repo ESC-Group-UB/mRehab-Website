@@ -3,26 +3,45 @@ import { jwtDecode } from "jwt-decode";
 import { ChevronDown, ChevronUp, Package } from "lucide-react";
 import styles from "./OrderHistory.module.css";
 
-type OrderItem = {
+// ---- Types mirrored from backend ----
+type Product = {
+  id: string;
+  name: string;
+  price: number; // dollars, e.g. 24.99
+  image_paths: string[];
   description: string;
-  quantity: number;
-  amount_total: number;
-  currency: string;
+  details: string;
 };
+
+type CartItem = {
+  product: Product;
+  color: string;
+  weight: string;
+  quantity: number;
+  device?: string;
+};
+
+type ShippingStatus =
+  | "pending"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "canceled"
+  | "failed"
+  | string;
 
 type Order = {
   id: string;
   email: string | null;
-  amount: number | null;
+  amount: number | null;       // total in cents
   currency: string | null;
-  status: string;
-  device?: string;
-  caseLink?: string;
-  shippingAddress: any;
+  status: string;              // Stripe.Checkout.Session.PaymentStatus
+  shippingAddress: string | null;
+  shippingAddressRaw?: any;
   phone: string | null;
-  shippingStatus: string;
+  shippingStatus: ShippingStatus;
   createdAt: string;
-  items?: OrderItem[];
+  items?: CartItem[];
 };
 
 export default function OrdersHistory() {
@@ -41,7 +60,7 @@ export default function OrdersHistory() {
     window.location.href = "/login";
   };
 
-  // Decode user
+  // Decode user email from Cognito idToken
   useEffect(() => {
     const idToken = localStorage.getItem("idToken");
     if (!idToken) return handleSignOut();
@@ -54,12 +73,13 @@ export default function OrdersHistory() {
     }
   }, []);
 
-  // Fetch orders
+  // Fetch orders for this user
   useEffect(() => {
     async function fetchOrders() {
       if (!userEmail) return;
       try {
         setLoading(true);
+
         const res = await fetch(
           `${baseURL}api/orders/byEmail?email=${encodeURIComponent(userEmail)}`
         );
@@ -67,7 +87,6 @@ export default function OrdersHistory() {
 
         const data = await res.json();
 
-        // ✅ Sort newest → oldest
         const sorted = (data.orders || []).sort(
           (a: Order, b: Order) =>
             new Date(b.createdAt).getTime() -
@@ -85,33 +104,25 @@ export default function OrdersHistory() {
     fetchOrders();
   }, [userEmail, baseURL]);
 
-  const formatAmount = useMemo(() => {
-    return (amount: number | null, currency: string | null) => {
-      if (amount == null || !currency) return "N/A";
-      try {
-        return new Intl.NumberFormat(undefined, {
-          style: "currency",
-          currency: currency.toUpperCase(),
-        }).format(amount / 100);
-      } catch {
-        return `${(amount / 100).toFixed(2)} ${currency.toUpperCase()}`;
-      }
-    };
-  }, []);
+  const formatAmount = useMemo(
+    () =>
+      (amountCents: number | null, currency: string | null) => {
+        if (amountCents == null || !currency) return "N/A";
+        try {
+          return new Intl.NumberFormat(undefined, {
+            style: "currency",
+            currency: currency.toUpperCase(),
+          }).format(amountCents / 100);
+        } catch {
+          return `${(amountCents / 100).toFixed(2)} ${currency.toUpperCase()}`;
+        }
+      },
+    []
+  );
 
-  const formatAddress = (shippingAddress: any) => {
+  const formatAddress = (shippingAddress: string | null) => {
     if (!shippingAddress) return "N/A";
-    if (typeof shippingAddress === "string") return shippingAddress;
-
-    return [
-      shippingAddress.line1,
-      shippingAddress.city,
-      shippingAddress.state,
-      shippingAddress.postal_code,
-      shippingAddress.country,
-    ]
-      .filter(Boolean)
-      .join(", ") || "N/A";
+    return shippingAddress;
   };
 
   if (loading) return <p className={styles.loading}>Loading your orders…</p>;
@@ -129,6 +140,7 @@ export default function OrdersHistory() {
 
           return (
             <li key={order.id} className={styles.card}>
+              {/* HEADER */}
               <button
                 type="button"
                 className={`${styles.headerBtn} ${
@@ -156,67 +168,74 @@ export default function OrdersHistory() {
                 </span>
               </button>
 
+              {/* DETAILS */}
               {isOpen && (
                 <div className={styles.details}>
-                  <p>
-                    <strong>Device:</strong> {order.device || "N/A"}
-                  </p>
-
-                  <p>
-                    <strong>Case:</strong>{" "}
-                    {order.caseLink ? (
-                      <a
-                        href={order.caseLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.link}
-                      >
-                        View Case Link
-                      </a>
-                    ) : (
-                      "No case on file"
-                    )}
-                  </p>
-
                   <p>
                     <strong>Shipping Address:</strong>{" "}
                     {formatAddress(order.shippingAddress)}
                   </p>
-
                   <p>
                     <strong>Phone:</strong> {order.phone || "N/A"}
                   </p>
-
                   <p>
                     <strong>Shipping Status:</strong> {order.shippingStatus}
                   </p>
-
                   <p>
                     <strong>Created At:</strong>{" "}
                     {new Date(order.createdAt).toLocaleString()}
                   </p>
 
-                  {order.items?.length ? (
-                    <div className={styles.itemsSection}>
-                      <h4 className={styles.itemsTitle}>Items</h4>
+                  {/* ITEMS */}
+                  <div className={styles.itemsSection}>
+                    <h4 className={styles.itemsTitle}>Items</h4>
+
+                    {order.items?.length ? (
                       <ul className={styles.itemList}>
-                        {order.items.map((item, idx) => (
-                          <li key={idx} className={styles.itemRow}>
-                            <span>{item.description}</span>
-                            <span>×{item.quantity}</span>
-                            <span>
-                              {formatAmount(
-                                item.amount_total,
-                                item.currency
-                              )}
-                            </span>
-                          </li>
-                        ))}
+                        {order.items.map((item, idx) => {
+                          // Defensive: if data is weird, skip gracefully
+                          if (!item || !item.product) return null;
+
+                          const unitPrice = item.product.price ?? 0; // dollars
+                          const lineTotalCents = Math.round(
+                            unitPrice * 100 * item.quantity
+                          );
+
+                          return (
+                            <li key={idx} className={styles.itemRow}>
+                              <div className={styles.itemInfo}>
+                                <span className={styles.itemName}>
+                                  {item.product.name}
+                                </span>
+                                <span className={styles.itemVariant}>
+                                  Device: {item.device || "N/A"} • Color:{" "}
+                                  {item.color} • Weight: {item.weight}
+                                </span>
+                              </div>
+
+                              <div className={styles.itemMeta}>
+                                <span className={styles.itemQty}>
+                                  ×{item.quantity}
+                                </span>
+                                <span className={styles.itemPrice}>
+                                  {order.currency
+                                    ? formatAmount(
+                                        lineTotalCents,
+                                        order.currency
+                                      )
+                                    : `$${(unitPrice * item.quantity).toFixed(
+                                        2
+                                      )}`}
+                                </span>
+                              </div>
+                            </li>
+                          );
+                        })}
                       </ul>
-                    </div>
-                  ) : (
-                    <p>No item data available.</p>
-                  )}
+                    ) : (
+                      <p>No items on record for this order.</p>
+                    )}
+                  </div>
                 </div>
               )}
             </li>
