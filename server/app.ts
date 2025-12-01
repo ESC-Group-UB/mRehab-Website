@@ -14,6 +14,8 @@ import stripeRoutes from "./routes/stripe";
 import stripeWebhookRoutes from "./routes/stripeWebhooks";
 import ordersRoutes from "./routes/orders";
 import AIRouter from "./routes/AI";
+import uploadCsvRoutes from "./routes/uploadCsv";
+
 
 
 
@@ -36,6 +38,10 @@ app.use("/api/uploadSession", uploadSessionRoutes);
 app.use("/api/stripe", stripeRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/AI", AIRouter);
+app.use("/api/uploadCsv", uploadCsvRoutes);
+
+
+
 
 // Health check
 app.get("/api/hello", (_req, res) => {
