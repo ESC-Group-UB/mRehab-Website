@@ -21,12 +21,39 @@ export type ShippingStatus =
   | "canceled"
   | "failed";
 
+
+ export interface Product {
+  id: string;
+  name: string;
+  price: number;  
+  image_paths: string[];
+  description: string;
+  details: string;
+}
+
+ export interface CartItem {
+  product: Product;
+  color: string;
+  weight: string;
+  quantity: number;
+  device?: string;
+}
+
 /** Each purchased item inside an order */
 export interface OrderItem {
-  description: string;          // product name/description from Stripe
-  quantity: number;             // number of units purchased
-  amount_total: number;         // total price for this line in cents
-  currency: string;             // currency code, e.g. "usd"
+  // Stripe-level info
+  description: string;      // product name/description from Stripe
+  quantity: number;         // number of units purchased
+  amount_total: number;     // total price for this line in cents
+  currency: string;         // currency code, e.g. "usd"
+
+  // Snapshot of our app's product/cart data at time of purchase
+  productId?: string;
+  productName?: string;
+  unit_price?: number;      // price per unit in your Product model
+  color?: string;
+  weight?: string;
+  device?: string;
 }
 
 export interface Order {
@@ -43,12 +70,14 @@ export interface Order {
   shippingStatus: ShippingStatus;
   createdAt: string;
 
-  /** 🆕 Array of line items (each product purchased) */
-  items?: OrderItem[];
+  /** Array of line items (each product purchased) */
+  items?: CartItem[];
 }
 
 /** Format a Stripe.Address into a single line suitable for DB storage/search. */
-export function formatStripeAddress(addr?: Stripe.Address | null): string | null {
+export function formatStripeAddress(
+  addr?: Stripe.Address | null
+): string | null {
   if (!addr) return null;
 
   const line1 = addr.line1?.trim();
@@ -75,13 +104,26 @@ export function formatStripeAddress(addr?: Stripe.Address | null): string | null
 /**
  * Build an Order object from a Stripe Checkout Session.
  * Optionally include detailed line items if provided.
+ *
+ * Assumes the frontend stored the cart in:
+ *   session.metadata.cart = JSON.stringify(CartItem[])
  */
 export function buildOrderFromSession(
   session: Stripe.Checkout.Session,
-  lineItems?: Stripe.ApiList<Stripe.LineItem> // optional param
+  cartItems: CartItem[],
 ): Order {
   const rawAddr = session.customer_details?.address ?? null;
   console.log("BUILDING ORDER SESSION", session.metadata);
+
+  // 🔍 Try to parse cart from metadata.cart (if present)
+  const rawCart = session.metadata?.cartData;
+  if (rawCart) {
+    try {
+      cartItems = JSON.parse(rawCart) as CartItem[];
+    } catch (err) {
+      console.warn("⚠️ Failed to parse session.metadata.cart:", err);
+    }
+  }
 
   const order: Order = {
     id: session.id,
@@ -96,18 +138,8 @@ export function buildOrderFromSession(
     caseLink: session.metadata?.caseLink,
     shippingStatus: "pending",
     createdAt: new Date().toISOString(),
+    items: cartItems,
   };
-
-  // 🧾 Attach detailed items if available
-  if (lineItems?.data?.length) {
-    order.items = lineItems.data.map((li) => ({
-      description: li.description ?? "Unknown Item",
-      quantity: li.quantity ?? 1,
-      amount_total: li.amount_total ?? 0,
-      currency: li.currency ?? session.currency ?? "usd",
-    }));
-  }
-
   return order;
 }
 
@@ -154,4 +186,52 @@ export async function ordersByEmail(email: string): Promise<Order[]> {
     console.error("❌ Failed to fetch orders by email:", err);
     throw err;
   }
+}
+
+const UserCartsTableName = process.env.UserCarts;
+
+
+// take in a cart and upload it to dynamoDB,
+// associated with a user and a unique cartId
+export async function uploadCart(
+  cart: CartItem[],
+  userId: string = "anonymous"
+): Promise<string> {
+  const cartId =
+    (crypto as any).randomUUID?.() ??
+    crypto.randomBytes(16).toString("hex");
+  const now = new Date().toISOString();
+
+  await dynamoDB
+    .put({
+      TableName: UserCartsTableName!,
+      Item: {
+        id: cartId,
+        Username: userId,
+        items: cart,
+      },
+    })
+    .promise();
+  console.log("Cart uploaded successfully.");
+  return cartId;
+}
+
+export async function getCart(cartId: string, Username: string): Promise<CartItem[] | null> {
+  const res = await dynamoDB
+    .get({
+      TableName: UserCartsTableName!,
+      Key: { id: cartId, Username: Username },
+    })
+    .promise();
+  return (res.Item as { items?: CartItem[] } | undefined)?.items ?? null;
+}
+
+export async function deleteCart(cartId: string, Username: string): Promise<void> {
+  await dynamoDB
+    .delete({
+      TableName: UserCartsTableName!,
+      Key: { id: cartId, Username: Username },
+    })
+    .promise();
+  console.log("Cart deleted successfully.");
 }

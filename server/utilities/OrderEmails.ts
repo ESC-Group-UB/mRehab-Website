@@ -1,6 +1,5 @@
 import sendEmail from "./BrevoMailer";
-import {Order} from "../AWS/orders"
-
+import { Order, CartItem } from "../AWS/orders";
 
 /**
  * Send an "order received" confirmation email to a customer.
@@ -46,11 +45,15 @@ If you have any questions, just reply to this email and we’ll be happy to help
       </p>
     </div>
   `;
+
   console.log(`📧 Sending order confirmation email to ${customerEmail} for order #${orderId}`);
   await sendEmail(customerEmail, subject, html);
 }
 
-
+/**
+ * Internal notification to you when a new order is created.
+ * Uses the new Order + CartItem + Product interfaces.
+ */
 export async function sendInternalOrderNotification(order: Order): Promise<void> {
   const subject = `📦 [${process.env.NODE_ENV?.toUpperCase() || "DEV"}] New Order #${order.id}`;
 
@@ -61,8 +64,10 @@ export async function sendInternalOrderNotification(order: Order): Promise<void>
   const environment = process.env.NODE_ENV || "development";
   const systemTag = `mRehab • ${environment.toUpperCase()} • ${new Date().toLocaleString()}`;
 
-  const itemsTable = order.items
-    ? `
+  // Build items table from CartItem[]
+  const itemsTable: string =
+    order.items && order.items.length > 0
+      ? `
       <h3 style="margin-top:24px; margin-bottom:6px;">Order Items</h3>
       <table style="width:100%; border-collapse:collapse; border:1px solid #ddd; font-size:14px;">
         <thead>
@@ -74,20 +79,38 @@ export async function sendInternalOrderNotification(order: Order): Promise<void>
         </thead>
         <tbody>
           ${order.items
-            .map(
-              (i) => `
+            .map((item: CartItem) => {
+              const name = item.product?.name ?? "Unknown item";
+              const colorPart = item.color ? ` • Color: ${item.color}` : "";
+              const weightPart = item.weight ? ` • Weight: ${item.weight}` : "";
+              const devicePart = item.device ? ` • Device: ${item.device}` : "";
+
+              // ASSUMPTION: product.price is stored in cents (Stripe-style).
+              const lineAmountCents = (item.product?.price ?? 0) * item.quantity;
+              const lineAmountDisplay = `${(lineAmountCents / 100).toFixed(2)} ${
+                order.currency?.toUpperCase() || ""
+              }`;
+
+              return `
               <tr>
-                <td style="padding:8px; border:1px solid #ddd;">${i.description}</td>
-                <td align="center" style="padding:8px; border:1px solid #ddd;">${i.quantity}</td>
-                <td align="right" style="padding:8px; border:1px solid #ddd;">${(
-                  i.amount_total / 100
-                ).toFixed(2)} ${i.currency?.toUpperCase() || ""}</td>
-              </tr>`
-            )
+                <td style="padding:8px; border:1px solid #ddd;">
+                  ${name}
+                  <div style="font-size:12px; color:#6b7280;">
+                    ${colorPart}${weightPart}${devicePart}
+                  </div>
+                </td>
+                <td align="center" style="padding:8px; border:1px solid #ddd;">
+                  ${item.quantity}
+                </td>
+                <td align="right" style="padding:8px; border:1px solid #ddd;">
+                  ${lineAmountDisplay}
+                </td>
+              </tr>`;
+            })
             .join("")}
         </tbody>
       </table>`
-    : "";
+      : "";
 
   const html = `
     <div style="font-family:'Segoe UI', Roboto, Arial, sans-serif; color:#1f2937; background:#ffffff; padding:20px;">

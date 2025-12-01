@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import Stripe from "stripe";
 import {buildOrderFromSession, Order, uploadOrder} from "../AWS/orders";
 import {sendOrderReceivedEmail, sendInternalOrderNotification} from "../utilities/OrderEmails";
+import { getCart, deleteCart } from "../AWS/orders";
 
 
 const webhookRouter = express.Router();
@@ -34,13 +35,16 @@ webhookRouter.post(
       const session = event.data.object as Stripe.Checkout.Session;
       // 
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+      console.log("Line items from session:", lineItems);
+      console.log("metadata from session:", session.metadata);
+      const cartId = session.metadata?.cartId as string;
+      const cartItems = (await getCart(cartId, session.metadata?.userEmail as string)) ?? [];
+      console.log("Cart items retrieved");
 
-      const order:Order = buildOrderFromSession(session, lineItems);
+
+      const order:Order = buildOrderFromSession(session, cartItems);
       console.log("✅ New order received:", order);
       
-
-      
-
       // TODO: save order to DB (DynamoDB, etc.)
         await uploadOrder(order);
       // TODO: send confirmation email to customer
@@ -48,6 +52,8 @@ webhookRouter.post(
         await sendInternalOrderNotification(
           order
         );
+      // Remove user's cart after successful order
+      await deleteCart(cartId, session.metadata?.userEmail as string);
     }
 
     res.sendStatus(200);

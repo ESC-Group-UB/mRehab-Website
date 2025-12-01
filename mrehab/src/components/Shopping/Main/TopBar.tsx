@@ -1,10 +1,59 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 
+const CART_KEY = "mrehab_cart";
+
 export const ShoppingTopBar: FC = () => {
+  const [cartCount, setCartCount] = useState(0);
+
+  // Read cart from localStorage on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const raw = window.localStorage.getItem(CART_KEY);
+      if (!raw) return;
+
+      const parsed = JSON.parse(raw) as Array<{ quantity?: number }>;
+      const total = parsed.reduce(
+        (sum, item) => sum + (item.quantity ?? 0),
+        0
+      );
+      setCartCount(total);
+    } catch {
+      // ignore parse errors
+    }
+
+    // Optional: listen for updates from other tabs or custom events
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key !== CART_KEY) return;
+      try {
+        const value = e.newValue;
+        if (!value) {
+          setCartCount(0);
+          return;
+        }
+        const parsed = JSON.parse(value) as Array<{ quantity?: number }>;
+        const total = parsed.reduce(
+          (sum, item) => sum + (item.quantity ?? 0),
+          0
+        );
+        setCartCount(total);
+      } catch {
+        setCartCount(0);
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  const goToCart = () => {
+    window.location.href = "/shopping/cart";
+  };
+
   return (
     <div style={styles.container}>
-
       {/* LEFT SIDE */}
       <div style={styles.left}>
         <div style={styles.textGroup}>
@@ -15,27 +64,16 @@ export const ShoppingTopBar: FC = () => {
 
       {/* RIGHT SIDE */}
       <div style={styles.right}>
-
-        {/* SEARCH BAR
-        <div style={styles.searchWrapper}>
-          <input
-            type="text"
-            placeholder="Search"
-            style={styles.searchInput}
-          />
-
-          <span style={styles.searchIcon}>
-            {FiSearch({})}
-          </span>
-        </div> */}
-
-        {/* CART ICON */}
-        <span style={styles.cartIcon}>
-          {FiShoppingCart({})}
-        </span>
-
+        {/* CART ICON + BADGE */}
+        <div style={styles.cartWrapper} onClick={goToCart}>
+          {FiShoppingCart({ style: styles.cartIcon })}
+          {cartCount > 0 && (
+            <span style={styles.cartBadge}>
+              {cartCount > 99 ? "99+" : cartCount}
+            </span>
+          )}
+        </div>
       </div>
-
     </div>
   );
 };
@@ -84,33 +122,36 @@ const styles: Record<string, Style> = {
     gap: "25px",
   },
 
-  /* SEARCH */
-  searchWrapper: {
+  /* CART WRAPPER (for badge) */
+  cartWrapper: {
     position: "relative",
-    width: "280px",
-  },
-
-  searchInput: {
-    width: "100%",
-    padding: "12px 40px 12px 15px",
-    borderRadius: "25px",
-    border: "1px solid #b7b7b7",
-    fontSize: "16px",
-    outline: "none",
-  },
-
-  searchIcon: {
-    position: "absolute",
-    right: "14px",
-    top: "50%",
-    transform: "translateY(-50%)",
-    fontSize: "20px",
-    color: "#555",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
   },
 
   /* CART ICON */
   cartIcon: {
     fontSize: "30px",
-    cursor: "pointer",
+  },
+
+  /* BADGE */
+  cartBadge: {
+    position: "absolute",
+    top: "-4px",
+    right: "-8px",
+    minWidth: "18px",
+    height: "18px",
+    padding: "0 4px",
+    borderRadius: "999px",
+    backgroundColor: "#ef4444",
+    color: "#fff",
+    fontSize: "11px", 
+    fontWeight: 600,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "0 0 0 2px #fff",
   },
 };
