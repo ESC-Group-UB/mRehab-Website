@@ -16,6 +16,7 @@ import IntrestForm from './pages/IntrestForm';
 import ShoppingCartPage from './pages/Shopping/shopping-cart';
 import ProductInfoPage from './pages/Shopping/featured';
 import ShoppingPage from './pages/Shopping/shopping';
+import ProfilePage from './pages/Profile/ProfilePage';
 
 import ThankYou from './pages/thankyou';
 
@@ -45,6 +46,7 @@ const AppRouter: React.FC = () => (
             <Route path="/shopping/cart" element={<ShoppingCartPage />} />
             <Route path="/shopping/info" element={<ProductInfoPage />} />
             <Route path="/shopping" element={<ShoppingPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
         </Routes>
     </Router>
 );
