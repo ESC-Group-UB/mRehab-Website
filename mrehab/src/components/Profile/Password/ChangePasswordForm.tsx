@@ -1,6 +1,6 @@
-// src/pages/Auth/Profile/ProfilePage.tsx
+
 import React, { useEffect, useState } from "react";
-import { Navbar } from "../../../components/Navbar";
+import styles from "./ChangePasswordForm.module.css";
 
 const API_BASE = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -36,7 +36,7 @@ function getTokensOrRedirect(): { accessToken: string } | null {
   };
 }
 
-const ProfilePage: React.FC = () => {
+const ChangePasswordForm: React.FC = () => {
   const [passwordForm, setPasswordForm] = useState<PasswordFormState>({
     currentPassword: "",
     newPassword: "",
@@ -50,7 +50,6 @@ const ProfilePage: React.FC = () => {
     getTokensOrRedirect();
   }, []);
 
-  // ----- Change Password -----
   const handlePasswordChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
@@ -126,79 +125,76 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <>
-      <Navbar />
-      <div className="profile-page">
-        <div className="profile-page__content">
-          <h1>Account Settings</h1>
-
-          {/* ---- Change Password ONLY ---- */}
-          <section className="profile-section profile-section--password">
-            <h2>Change Password</h2>
-            <form onSubmit={handlePasswordSubmit}>
-              <div className="form-group">
-                <label htmlFor="currentPassword">
-                  Current Password
-                  <input
-                    id="currentPassword"
-                    type="password"
-                    name="currentPassword"
-                    value={passwordForm.currentPassword}
-                    onChange={handlePasswordChange}
-                    required
-                  />
-                </label>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="newPassword">
-                  New Password
-                  <input
-                    id="newPassword"
-                    type="password"
-                    name="newPassword"
-                    value={passwordForm.newPassword}
-                    onChange={handlePasswordChange}
-                    required
-                  />
-                </label>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="confirmNewPassword">
-                  Confirm New Password
-                  <input
-                    id="confirmNewPassword"
-                    type="password"
-                    name="confirmNewPassword"
-                    value={passwordForm.confirmNewPassword}
-                    onChange={handlePasswordChange}
-                    required
-                  />
-                </label>
-              </div>
-
-              <button type="submit" className="btn btn-primary" disabled={loading}>
-                {loading ? "Updating..." : "Update Password"}
-              </button>
-
-              {passwordMessage && (
-                <p
-                  className={
-                    passwordMessage.type === "error"
-                      ? "form-message form-message--error"
-                      : "form-message form-message--success"
-                  }
-                >
-                  {passwordMessage.text}
-                </p>
-              )}
-            </form>
-          </section>
+    <section className={styles.container}>
+      <h2 className={styles.title}>Change Password</h2>
+      <form className={styles.form} onSubmit={handlePasswordSubmit}>
+        <div className={styles.field}>
+          <label htmlFor="currentPassword" className={styles.label}>
+            Current Password
+          </label>
+          <input
+            id="currentPassword"
+            type="password"
+            name="currentPassword"
+            value={passwordForm.currentPassword}
+            onChange={handlePasswordChange}
+            required
+            className={styles.input}
+          />
         </div>
-      </div>
-    </>
+
+        <div className={styles.field}>
+          <label htmlFor="newPassword" className={styles.label}>
+            New Password
+          </label>
+          <input
+            id="newPassword"
+            type="password"
+            name="newPassword"
+            value={passwordForm.newPassword}
+            onChange={handlePasswordChange}
+            required
+            className={styles.input}
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="confirmNewPassword" className={styles.label}>
+            Confirm New Password
+          </label>
+          <input
+            id="confirmNewPassword"
+            type="password"
+            name="confirmNewPassword"
+            value={passwordForm.confirmNewPassword}
+            onChange={handlePasswordChange}
+            required
+            className={styles.input}
+          />
+        </div>
+
+        <button
+          type="submit"
+          className={styles.button}
+          disabled={loading}
+        >
+          {loading ? "Updating..." : "Update Password"}
+        </button>
+
+        {passwordMessage && (
+          <p
+            className={
+              passwordMessage.type === "error"
+                ? styles.messageError
+                : styles.messageSuccess
+            }
+          >
+            {passwordMessage.text}
+          </p>
+        )}
+      </form>
+    </section>
   );
 };
 
-export default ProfilePage;
+export default ChangePasswordForm;

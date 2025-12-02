@@ -6,6 +6,8 @@ import AccuracyGraph from "../../components/AccuracyGraph";
 import AddViewer from "../../components/DashBoard/addViewer";
 import ResultsSection from "../../components/DashBoard/ResultsSection";
 import OrdersHistory from "../../components/DashBoard/OrderHistory";
+import ChangePasswordForm from "../../components/Profile/Password/ChangePasswordForm";
+import UpdateInfoForm from "../../components/Profile/Info/UpdateInfoForm";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -127,6 +129,9 @@ export default function PatientDashboard() {
       >
         Sign Out
       </button>
+      <ChangePasswordForm></ChangePasswordForm>
+      <UpdateInfoForm></UpdateInfoForm>
+
       </div>
     </>
   );

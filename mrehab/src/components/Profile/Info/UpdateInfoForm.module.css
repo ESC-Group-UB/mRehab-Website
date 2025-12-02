@@ -1,0 +1,122 @@
+.container {
+  margin-top: 2rem;
+  padding: 1.75rem 1.5rem;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  max-width: 640px;
+}
+
+.title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.fieldSmall {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* On the city / state / zip row we want 3 columns: city grows, state/zip smaller */
+.row:nth-of-type(2) {
+  grid-template-columns: 2fr 1fr 1.2fr;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.input {
+  padding: 0.7rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.input::placeholder {
+  color: #94a3b8;
+}
+
+.input:focus {
+  border-color: #0f766e;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.16);
+}
+
+.button {
+  margin-top: 0.75rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: var(--color-main, #0f766e);
+  color: var(--color-white, #ffffff);
+  transition: background-color 0.2s ease, transform 0.05s ease;
+  align-self: flex-start;
+}
+
+.button:disabled {
+  opacity: 0.7;
+  cursor: default;
+  transform: none;
+}
+
+.button:not(:disabled):hover {
+  background: var(--color-main-hover, #115e59);
+  transform: translateY(-0.5px);
+}
+
+.messageError {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #b91c1c;
+}
+
+.messageSuccess {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #15803d;
+}
+
+/* Mobile tweak */
+@media (max-width: 640px) {
+  .container {
+    padding: 1.25rem 1rem;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .row:nth-of-type(2) {
+    grid-template-columns: 1fr;
+  }
+}
