@@ -31,8 +31,8 @@ const   CartItemCard: FC<CartItemCardProps> = ({ item, onUpdate, onRemove }) => 
 
   const handleDeviceConfirm = (result: DeviceSelectionResult) => {
     const deviceLabel = `${result.brand} ${result.deviceModel}`;
-    // still storing device in `weight` for now
-    onUpdate({ device: deviceLabel });
+    const caseLink = result.caseLink;
+    onUpdate({ device: deviceLabel, caseLink });
     setIsModalOpen(false);
   };
 

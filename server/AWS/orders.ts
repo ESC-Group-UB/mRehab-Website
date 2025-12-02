@@ -36,7 +36,9 @@ export type ShippingStatus =
   color: string;
   weight: string;
   quantity: number;
-  device?: string;
+  device: string;
+  caseLink?: string;
+
 }
 
 /** Each purchased item inside an order */
