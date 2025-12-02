@@ -3,6 +3,8 @@ import { CartItem } from "../../../components/BuyNow/ProductInfo";
 import CartItemCard from "../../../components/Shopping/Cart/CartItemCard";
 import pageStyles from "./shopping-cart.module.css";
 import { Navbar } from "../../../components/Navbar";
+import Modal from "../../../components/Modal";
+import { title } from "process";
 
 const CART_KEY = "mrehab_cart";
 const API_URL = `${process.env.REACT_APP_BACKEND_API_URL}api/stripe/create-checkout-session`;
@@ -41,6 +43,10 @@ function saveCartToLocalStorage(cart: CartItem[]) {
 
 export default function ShoppingCartPage() {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [modal, setModal] = useState(false);
+  const [modalContent, setModalContent] = useState<React.ReactNode>(null);
+  
+
 
   const checkoutClick = async () => {
     console.log("Checkout clicked");
@@ -48,13 +54,29 @@ export default function ShoppingCartPage() {
     // check to ensure user is logged in
     const idToken = localStorage.getItem("idToken");
     if (!idToken) {
-      alert("Please log in to proceed to checkout.");
+      setModalContent(
+        <div>
+          <h2>Login Required</h2>
+          <p>Please log in to proceed to checkout.</p>
+          <button onClick={() => {
+            window.location.href = "/login";
+            localStorage.setItem("redirectAfterLogin", "/shopping/cart");
+          }}>Go to Login</button>
+        </div>
+      );
+      setModal(true);
       return;
     }
 
     // check to ensure cart is not empty
     if (items.length === 0) {
-      alert("Your cart is empty.");
+      setModalContent(
+        <div>
+          <h2>Empty Cart</h2>
+          <p>Your cart is empty.</p>
+        </div>
+      );
+      setModal(true);
       return;
     }
 
@@ -62,7 +84,13 @@ export default function ShoppingCartPage() {
     for (const item of items) {
       console.log("Checking item:", item);
       if (item.device === null || item.device === undefined) {
-        alert(`Please select a device for the product: ${item.product.name}`);
+        setModalContent(
+          <div>
+            <h2>Device Selection Required</h2>
+            <p>Please select a device for the product: {item.product.name}</p>
+          </div>
+        );
+        setModal(true);
         return;
       }
     }
@@ -117,8 +145,13 @@ export default function ShoppingCartPage() {
   );
 
   return (
-    <>
-    <Navbar />
+  <>
+  <Navbar />
+  {/* Device Modal */}
+  <Modal isOpen={modal} onClose={() => setModal(false)} title="Attention">
+    {modalContent}
+  </Modal>
+
     <div className={pageStyles.page}>
       <div className={pageStyles.container}>
         <section className={pageStyles.itemsSection}>
