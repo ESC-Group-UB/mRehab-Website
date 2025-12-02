@@ -15,6 +15,7 @@ import stripeWebhookRoutes from "./routes/stripeWebhooks";
 import ordersRoutes from "./routes/orders";
 import AIRouter from "./routes/AI";
 import uploadCsvRoutes from "./routes/uploadCsv";
+import ProfilePageRouter from "./routes/acounts";
 
 
 
@@ -39,6 +40,7 @@ app.use("/api/stripe", stripeRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/AI", AIRouter);
 app.use("/api/uploadCsv", uploadCsvRoutes);
+app.use("/api/accounts", ProfilePageRouter);
 
 
 // Health check

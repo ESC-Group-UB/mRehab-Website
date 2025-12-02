@@ -29,7 +29,6 @@ export function Navbar() {
       // Optional avatar/initials if available; graceful fallbacks
       const picture = decoded?.picture || decoded?.avatar_url || null;
       const name: string =
-        decoded?.name ||
         [decoded?.given_name, decoded?.family_name].filter(Boolean).join(" ") ||
         decoded?.email ||
         "";
