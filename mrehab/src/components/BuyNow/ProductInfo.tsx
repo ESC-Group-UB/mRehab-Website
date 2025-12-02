@@ -16,6 +16,7 @@ export interface CartItem {
   weight: string;
   quantity: number;
   device?: string;
+  caseLink?: string;
 }
 
 const CART_KEY = "mrehab_cart";

@@ -95,6 +95,7 @@ export default function ShoppingCartPage() {
 
   const handleUpdateItem = (index: number, updates: Partial<CartItem>) => {
     setItems((prev) => {
+      console.log("Updating item at index", index, "with", updates);
       const updated = [...prev];
       updated[index] = { ...updated[index], ...updates };
       saveCartToLocalStorage(updated);
