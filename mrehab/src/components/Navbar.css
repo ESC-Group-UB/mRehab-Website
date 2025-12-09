@@ -22,24 +22,93 @@
   border-bottom-color: #e9e9e9;
 }
 
+.navbar-left {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 .navbar-left .logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.625rem;
-  font-size: 1.9rem;
-  font-weight: 700;
-  color: var(--color-main);
+  gap: 0.75rem;
   text-decoration: none;
   transform: translateZ(0);
+  transition: transform 200ms ease;
+}
+
+.navbar-left .logo:hover {
+  transform: translateY(-1px);
+}
+
+.logo img {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-main);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* ================= Desktop Navigation ================= */
+.navbar-nav {
+  display: none;
+  align-items: center;
+  gap: 2rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (min-width: 768px) {
+  .navbar-nav {
+    display: flex;
+  }
+}
+
+.nav-link {
+  position: relative;
+  color: var(--text-color, #333);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  transition: color 200ms ease;
+  white-space: nowrap;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-main);
+  transition: width 200ms ease;
+}
+
+.nav-link:hover {
+  color: var(--color-main);
+}
+
+.nav-link:hover::after {
+  width: 100%;
 }
 
 .actions {
   display: flex;
   align-items: center;
   gap: 0.55rem;
+  flex-shrink: 0;
 }
 
-/* ================= Menu Button ================= */
+/* ================= Menu Button (Mobile Only) ================= */
 .menu-button {
   display: inline-flex;
   align-items: center;
@@ -53,6 +122,12 @@
   border-radius: 12px;
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+
+@media (min-width: 768px) {
+  .menu-button {
+    display: none;
+  }
 }
 
 .menu-button:hover {
@@ -142,7 +217,7 @@
   color: var(--text-color);
 }
 
-/* ================= Dropdown Panel ================= */
+/* ================= Dropdown Panel (Mobile Only) ================= */
 .dropdown-panel {
   position: absolute;
   top: calc(100% + 8px);
@@ -159,6 +234,12 @@
   pointer-events: none;
   transition: opacity 120ms ease, transform 120ms ease, box-shadow 120ms ease;
   z-index: 101;
+}
+
+@media (min-width: 768px) {
+  .dropdown-panel {
+    display: none;
+  }
 }
 
 .dropdown-panel.open {
