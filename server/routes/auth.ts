@@ -3,7 +3,7 @@
 // for interacting with AWS Cognito through the authService helper functions.
 
 import express from "express";
-import { signUpUser, confirmUser, loginUser, checkIfValidEmail } from "../AWS/authService";
+import { signUpUser, confirmUser, loginUser, checkIfValidEmail, initiateForgotPassword, confirmForgotPassword } from "../AWS/authService";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -57,6 +57,53 @@ router.post("/login", async (req, res) => {
     const auth = await loginUser(email, password);
     
     res.json(auth.AuthenticationResult);
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    res.status(400).json({ error: errorMessage });
+  }
+});
+
+/**
+ * POST /forgot-password
+ * Initiates the forgot password flow by sending a verification code to the user's email.
+ * Expects: email
+ * Returns: success message or error
+ */
+router.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  try {
+    await initiateForgotPassword(email);
+    // Don't reveal if email exists or not for security
+    res.json({ message: "If an account exists with this email, a password reset code has been sent." });
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    // Still return success message to prevent email enumeration
+    console.error("Forgot password error:", errorMessage);
+    res.json({ message: "If an account exists with this email, a password reset code has been sent." });
+  }
+});
+
+/**
+ * POST /confirm-forgot-password
+ * Confirms the password reset with the verification code and sets the new password.
+ * Expects: email, code, newPassword
+ * Returns: success message or error
+ */
+router.post("/confirm-forgot-password", async (req, res) => {
+  const { email, code, newPassword } = req.body;
+  
+  if (!email || !code || !newPassword) {
+    return res.status(400).json({ error: "Email, code, and new password are required" });
+  }
+
+  try {
+    await confirmForgotPassword(email, code, newPassword);
+    res.json({ message: "Password reset successfully" });
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     res.status(400).json({ error: errorMessage });

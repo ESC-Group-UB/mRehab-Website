@@ -9,6 +9,7 @@ import { UserStories } from './pages/userStories';
 import Dashboard from './pages/dashboard'; // Importing the Dashboard component
 import Login from './pages/login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
 import PatientDashboard from './pages/patientDashboard';
 import BuyNowConfirm from './pages/BuyNowConfirm';
 import BuyNowSucess from './pages/BuyNowSucess';
@@ -38,6 +39,7 @@ const AppRouter: React.FC = () => (
             <Route path="/dashboard" element={<Dashboard />} /> {/* Adding the Dashboard route */}
             <Route path="/login" element={<Login />} /> {/* Adding the Login route */}
             <Route path="/signup" element={<Signup />} /> {/* Adding the Signup route */}
+            <Route path="/forgot-password" element={<ForgotPassword />} /> {/* Adding the ForgotPassword route */}
             <Route path="/patient-dashboard" element={<PatientDashboard />} /> {/* Adding the PatientDashboard route */}
             <Route path="/interest-form" element={<IntrestForm />} /> {/* Adding the Interest Form route */}
             {/* Add more routes as needed */}
