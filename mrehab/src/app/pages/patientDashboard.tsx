@@ -98,7 +98,7 @@ export default function PatientDashboard() {
           setDataKey={setDataKey}
         />
 
-        {error && <p style={{ color: "red", marginBottom: "20px" }}>⚠️ {error}</p>}
+        {error && <p style={{ color: "var(--color-error)", marginBottom: "20px" }}>⚠️ {error}</p>}
 
         {entries.length > 0 && <AccuracyGraph data={entries} dataKey={datakey} />}
 

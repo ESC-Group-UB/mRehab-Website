@@ -105,9 +105,6 @@ export default function Dashboard() {
           <>
 
 
-            <DeleteAccount />
-            <ChangePasswordForm /> 
-
             <FiltersBar
               filterHand={filterHand}
               filterExercise={filterExercise}
@@ -122,7 +119,7 @@ export default function Dashboard() {
             />
 
             {error && (
-              <p style={{ color: "red", marginBottom: "20px" }}>
+              <p style={{ color: "var(--color-error)", marginBottom: "20px" }}>
                 ⚠️ {error}
               </p>
             )}

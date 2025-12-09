@@ -2,16 +2,27 @@
   /* Primary Colors */
   --color-main: #ab0060;
   --color-main-hover: #e60583;
+  --color-main-dark: #8e004f;
   --color-pink-muted: #ffb0d6;
 
   /* Neutral Colors */
   --color-white: #ffffff;
   --color-black: #000000;
   --color-gray-light: #f1f1f5;
+  --color-gray-border: #e5e7eb;
+  --color-gray-bg: #f9fafb;
+  --color-gray-text: #64748b;
   --color-text-dark: #1b1f23;
   --color-text-muted: #6a6a6a;
+  --color-text: #333333;
 
   /* Accent Colors */
   --color-accent-blue: #00b4d8;
   --color-accent-purple: #d8b4d8;
+  
+  /* Error/Status Colors */
+  --color-error: #ef4444;
+  --color-error-bg: #fdecea;
+  --color-success: #15803d;
+  --color-success-bg: #f0fdf4;
 }

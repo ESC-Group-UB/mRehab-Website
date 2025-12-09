@@ -1,10 +1,12 @@
+@import url('../../../colors.css');
+
 .card {
   display: flex;
   justify-content: space-between;
   gap: 1.25rem;
   padding: 1rem 1.25rem;
   border-radius: 12px;
-  background: #ffffff;
+  background: var(--color-white);
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
   margin-bottom: 1rem;
   align-items: flex-start;
@@ -16,8 +18,8 @@
   height: 100px;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border: 1px solid var(--color-gray-border);
+  background: var(--color-gray-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,13 +72,13 @@
 .label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #64748b;
+  color: var(--color-gray-text);
   min-width: 72px;
 }
 
 .value {
   font-size: 0.9rem;
-  color: #0f172a;
+  color: var(--color-text-dark);
 }
 
 .deviceDisplay {
@@ -105,8 +107,13 @@
   font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
-  background: #2563eb;
-  color: white;
+  background: var(--color-main);
+  color: var(--color-white);
+  transition: background-color 0.2s ease;
+}
+
+.deviceAction:hover {
+  background: var(--color-main-hover);
 }
 
 .deviceActionSecondary {
@@ -115,8 +122,8 @@
   padding: 0.25rem 0.75rem;
   font-size: 0.8rem;
   cursor: pointer;
-  background: #e5e7eb;
-  color: #111827;
+  background: var(--color-gray-border);
+  color: var(--color-text-dark);
 }
 
 .editIconButton {
@@ -134,11 +141,17 @@
 
 .qtyButton {
   border-radius: 999px;
-  border: 1px solid #cbd5f5;
+  border: 1px solid var(--color-gray-border);
   padding: 0.15rem 0.6rem;
   font-size: 1rem;
   cursor: pointer;
-  background: #f9fafb;
+  background: var(--color-gray-bg);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.qtyButton:hover {
+  border-color: var(--color-main);
+  background: var(--color-white);
 }
 
 .qtyValue {
@@ -150,10 +163,15 @@
   align-self: flex-start;
   border: none;
   background: transparent;
-  color: #ef4444;
+  color: var(--color-error);
   font-size: 0.85rem;
   cursor: pointer;
   padding: 0;
+  transition: color 0.2s ease;
+}
+
+.removeButton:hover {
+  color: var(--color-main);
 }
 
 .price {

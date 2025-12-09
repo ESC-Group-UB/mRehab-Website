@@ -14,17 +14,17 @@
 .hero {
   text-align: center;
   padding: 5rem 2rem;
-  background-color: #f9f9f9;
+  background-color: var(--color-gray-light);
 }
 .heroTitle {
   font-size: clamp(2rem, 1.2rem + 2.5vw, 3rem);
   font-weight: 700;
   margin-bottom: 1rem;
-  color: #111;
+  color: var(--color-text-dark);
 }
 .heroSubtitle {
   font-size: clamp(1rem, 0.95rem + 0.5vw, 1.25rem);
-  color: #444;
+  color: var(--color-text-muted);
   max-width: 720px;
   margin: 0 auto;
   line-height: 1.7;
@@ -36,7 +36,7 @@
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 2rem;
   padding: var(--section-pad) 2rem;
-  background-color: #fff;
+  background-color: var(--color-white);
 }
 
 /* Tighten on tablets/phones */
@@ -172,18 +172,18 @@
 /* ====== Final CTA Section ====== */
 .cta {
   text-align: center;
-  background-color: #f1f1f1;
+  background-color: var(--color-gray-light);
   padding: var(--section-pad) 2rem;
 }
 .cta h2 {
   font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.25rem);
   font-weight: 700;
-  color: #111;
+  color: var(--color-text-dark);
   margin-bottom: 1rem;
 }
 .ctaSubtitle {
   font-size: clamp(1rem, 0.95rem + 0.4vw, 1.15rem);
-  color: #555;
+  color: var(--color-text-muted);
   margin-bottom: 2rem;
   max-width: 680px;
   margin-left: auto;
@@ -193,8 +193,8 @@
 
 /* Desktop button */
 .ctaButton {
-  background: linear-gradient(135deg, var(--color-main), #e60583);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-main), var(--color-main-hover));
+  color: var(--color-white);
   padding: 1rem 2rem;
   font-size: 1rem;
   font-weight: 700;
@@ -202,7 +202,7 @@
   border-radius: 999px;
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 160ms ease, background-color 0.2s ease;
-  box-shadow: 0 10px 24px rgba(230, 5, 131, 0.22);
+  box-shadow: 0 10px 24px rgba(171, 0, 96, 0.22);
 }
 .ctaButton:hover {
   transform: translateY(-1px);

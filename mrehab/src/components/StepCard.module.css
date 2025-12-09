@@ -1,5 +1,7 @@
+@import url('../colors.css');
+
 .card {
-  background-color: #fff;
+  background-color: var(--color-white);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -20,8 +22,8 @@
 }
 
 .stepBadge {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--color-main);
+  color: var(--color-white);
   font-weight: bold;
   border-radius: 50%;
   width: 32px;
@@ -42,19 +44,24 @@
 }
 
 .desc {
-  color: #555;
+  color: var(--color-text-muted);
   line-height: 1.5;
   flex: 1;
 }
 
 .actionBtn {
   margin-top: 1rem;
-  background-color: black;
-  color: white;
+  background-color: var(--color-main);
+  color: var(--color-white);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.actionBtn:hover {
+  background-color: var(--color-main-hover);
 }
 
 .icon {
