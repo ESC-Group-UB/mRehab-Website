@@ -12,8 +12,7 @@ export default function ProductInfoPage() {
     const [product, setProduct] = useState<Product>();
     const [images, setImages] = useState<string[]>([]);
     const [selectedImage, setSelectedImage] = useState<string>("");
-    const [modalOpen, setModalOpen] = useState(false);
-    const [modalContent, setModalContent] = useState<React.ReactNode>(null);
+   
 
     // Load product
     useEffect(() => {

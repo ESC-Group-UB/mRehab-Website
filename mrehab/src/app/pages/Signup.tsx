@@ -6,7 +6,6 @@ import styles from "./Signup.module.css";
 import { Navbar } from "../../components/Navbar";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
-const home = process.env.REACT_APP_API_URL;
 
 const Signup: React.FC = () => {
   

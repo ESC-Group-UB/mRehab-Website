@@ -73,7 +73,8 @@ router.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
   
   if (!email) {
-    return res.status(400).json({ error: "Email is required" });
+    res.status(400).json({ error: "Email is required" });
+    return;
   }
 
   try {
@@ -98,7 +99,8 @@ router.post("/confirm-forgot-password", async (req, res) => {
   const { email, code, newPassword } = req.body;
   
   if (!email || !code || !newPassword) {
-    return res.status(400).json({ error: "Email, code, and new password are required" });
+    res.status(400).json({ error: "Email, code, and new password are required" });
+    return;
   }
 
   try {

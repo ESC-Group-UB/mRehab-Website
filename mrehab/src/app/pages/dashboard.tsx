@@ -5,8 +5,6 @@ import FiltersBar from "../../components/DashBoard/FiltersBar";
 import ResultsSection from "../../components/DashBoard/ResultsSection";
 import { jwtDecode } from "jwt-decode";
 import ActivitiesSelector from "../../components/DashBoard/ActivitiesSelector";
-import DeleteAccount from "../../components/Profile/DeleteAccount/DeleteAccount";
-import ChangePasswordForm from "../../components/Profile/Password/ChangePasswordForm";
 import styles from "./dashboard.module.css";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
