@@ -72,7 +72,7 @@
   grid-column: 2 / -1;     /* occupy the main column in the grid */
   width: 100%;
   aspect-ratio: 4 / 3;     /* desktop/tablet default ratio */
-  background: #fafafa;
+  background: var(--color-gray-bg);
   border-radius: 12px;
   position: relative;
   overflow: hidden;        /* hide any overflow on zoom */
@@ -141,8 +141,11 @@
     height: 6px;
   }
   .thumbnailList::-webkit-scrollbar-thumb {
-    background: #ddd;
+    background: var(--color-gray-border);
     border-radius: 999px;
+  }
+  .thumbnailList::-webkit-scrollbar-thumb:hover {
+    background: var(--color-main);
   }
 
   .thumbButton {

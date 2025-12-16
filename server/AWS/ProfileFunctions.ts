@@ -182,6 +182,95 @@ async function deleteAllForUserFromTable(
   }
 }
 
+// ---------- HELPER: Remove user from AllowedToView and SharingWith lists ----------
+async function removeUserFromAuthorizedUsersLists(
+  deletedUsername: string
+): Promise<void> {
+  if (!AuthorizedUsersTableName) return;
+
+  try {
+    // Scan all items in the AuthorizedUsers table
+    let lastEvaluatedKey: any = undefined;
+    const itemsToUpdate: Array<{ Username: string; AllowedToView?: string[]; SharingWith?: string[] }> = [];
+
+    do {
+      const scanParams: any = {
+        TableName: AuthorizedUsersTableName,
+      };
+      if (lastEvaluatedKey) {
+        scanParams.ExclusiveStartKey = lastEvaluatedKey;
+      }
+
+      const scanResult = await dynamoDB.scan(scanParams).promise();
+      
+      if (scanResult.Items) {
+        for (const item of scanResult.Items) {
+          // Skip the deleted user's own entry
+          if (item.Username === deletedUsername) {
+            continue;
+          }
+
+          const username = item.Username;
+          const allowedToView: string[] = item.AllowedToView || [];
+          const sharingWith: string[] = item.SharingWith || [];
+
+          // Check if deleted user appears in AllowedToView
+          const hasInAllowedToView = allowedToView.includes(deletedUsername);
+
+          // Check if deleted user appears in SharingWith
+          const hasInSharingWith = sharingWith.includes(deletedUsername);
+
+          if (hasInAllowedToView || hasInSharingWith) {
+            itemsToUpdate.push({
+              Username: username,
+              AllowedToView: hasInAllowedToView 
+                ? allowedToView.filter((u: string) => u !== deletedUsername)
+                : undefined,
+              SharingWith: hasInSharingWith
+                ? sharingWith.filter((u: string) => u !== deletedUsername)
+                : undefined,
+            });
+          }
+        }
+      }
+
+      lastEvaluatedKey = scanResult.LastEvaluatedKey;
+    } while (lastEvaluatedKey);
+
+    // Update all items that need to be modified
+    for (const item of itemsToUpdate) {
+      const updateExpressions: string[] = [];
+      const expressionAttributeValues: any = {};
+
+      if (item.AllowedToView !== undefined) {
+        updateExpressions.push("AllowedToView = :allowedToView");
+        expressionAttributeValues[":allowedToView"] = item.AllowedToView;
+      }
+
+      if (item.SharingWith !== undefined) {
+        updateExpressions.push("SharingWith = :sharingWith");
+        expressionAttributeValues[":sharingWith"] = item.SharingWith;
+      }
+
+      if (updateExpressions.length > 0) {
+        await dynamoDB
+          .update({
+            TableName: AuthorizedUsersTableName,
+            Key: { Username: item.Username },
+            UpdateExpression: `SET ${updateExpressions.join(", ")}`,
+            ExpressionAttributeValues: expressionAttributeValues,
+          })
+          .promise();
+      }
+    }
+
+    console.log(`Removed ${deletedUsername} from ${itemsToUpdate.length} user entries`);
+  } catch (err) {
+    console.error("Error removing user from authorized users lists:", err);
+    throw err;
+  }
+}
+
 // ---------- DELETE ACCOUNT EVERYWHERE ----------
 export async function deleteAccountEverywhere({
   sub,
@@ -190,14 +279,17 @@ export async function deleteAccountEverywhere({
     throw new Error("COGNITO_POOL_ID env var is not set");
   }
 
-  // 1) Delete from DynamoDB (user data)
-  // Adjust the partition key names to match your schema!
-  await deleteAllForUserFromTable(AuthorizedUsersTableName, "UserId", sub);
-  await deleteAllForUserFromTable(ActivitySessionsTableName, "UserId", sub);
-  await deleteAllForUserFromTable(OrdersTableName, "UserId", sub);
-  await deleteAllForUserFromTable(UserSettingsTableName, "UserId", sub);
+  // 1) Remove user from AllowedToView and SharingWith lists in other users' entries
+  // This must happen BEFORE deleting the user's own entry
+  await removeUserFromAuthorizedUsersLists(sub);
 
-  // 2) Delete user from Cognito (admin-level)
+  // 2) Delete from DynamoDB (user data)
+  // Adjust the partition key names to match your schema!
+  await deleteAllForUserFromTable(AuthorizedUsersTableName, "Username", sub);
+  await deleteAllForUserFromTable(ActivitySessionsTableName, "Username", sub);
+  await deleteAllForUserFromTable(UserSettingsTableName, "Username", sub);
+
+  // 3) Delete user from Cognito (admin-level)
   await CognitoISP
     .adminDeleteUser({
       UserPoolId,

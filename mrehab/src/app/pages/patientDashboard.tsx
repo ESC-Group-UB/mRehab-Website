@@ -8,6 +8,7 @@ import ResultsSection from "../../components/DashBoard/ResultsSection";
 import OrdersHistory from "../../components/DashBoard/OrderHistory";
 import ChangePasswordForm from "../../components/Profile/Password/ChangePasswordForm";
 import UpdateInfoForm from "../../components/Profile/Info/UpdateInfoForm";
+import DeleteAccount from "../../components/Profile/DeleteAccount/DeleteAccount";
 
 const baseURL = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -24,6 +25,7 @@ export default function PatientDashboard() {
   const [datakey, setDataKey] = useState("");
 
   const handleSignOut = () => {
+    console.log("Signing out");
     localStorage.removeItem("idToken");
     localStorage.removeItem("accessToken");
     window.location.href = "/login";
@@ -31,7 +33,10 @@ export default function PatientDashboard() {
 
   useEffect(() => {
     const idToken = localStorage.getItem("idToken");
-    if (!idToken) return handleSignOut();
+    if (!idToken) {
+      alert("No idToken found, redirecting to login");
+      return handleSignOut();
+    }
 
     try {
       const decoded: any = jwtDecode(idToken);
@@ -97,7 +102,7 @@ export default function PatientDashboard() {
           setDataKey={setDataKey}
         />
 
-        {error && <p style={{ color: "red", marginBottom: "20px" }}>⚠️ {error}</p>}
+        {error && <p style={{ color: "var(--color-error)", marginBottom: "20px" }}>⚠️ {error}</p>}
 
         {entries.length > 0 && <AccuracyGraph data={entries} dataKey={datakey} />}
 
@@ -131,6 +136,7 @@ export default function PatientDashboard() {
       </button>
       <ChangePasswordForm></ChangePasswordForm>
       <UpdateInfoForm></UpdateInfoForm>
+      <DeleteAccount />
 
       </div>
     </>

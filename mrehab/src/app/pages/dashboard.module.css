@@ -1,9 +1,11 @@
+@import url('../../colors.css');
+
 .dashLayout {
   display: grid;
   grid-template-columns: 280px 1fr; /* Sidebar width | Content grows */
   height: 100vh;                    /* Full viewport */
   overflow: hidden;                 /* Prevent page scroll */
-  background: #fff;
+  background: var(--color-white);
 }
 
 .dashSidebar {
@@ -33,7 +35,7 @@
   .dashSidebar {
     grid-row: 1;
     border-right: none;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-gray-border);
   }
   .dashContent {
     grid-row: 2;
