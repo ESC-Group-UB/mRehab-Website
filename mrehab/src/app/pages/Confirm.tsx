@@ -34,7 +34,7 @@ const ConfirmSignup: React.FC = () => {
       });
 
       // You were using home + login previously; keep that behavior
-      window.location.href = `${home}login`;
+      window.location.href = `${home}/login`;
       // or: navigate("/login");
     } catch (err: any) {
       console.error("❌ Verify failed:", err.response?.data || err.message);
