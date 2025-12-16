@@ -10,7 +10,7 @@
   margin: 0 0 12px 0;
   font-size: clamp(1.2rem, 1rem + 1vw, 1.6rem);
   font-weight: 800;
-  color: var(--text-color, #111);
+  color: var(--color-text-dark);
 }
 
 .list {
@@ -23,16 +23,16 @@
 
 /* Card */
 .card {
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-gray-border);
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   overflow: hidden;
-  background: #fff;
+  background: var(--color-white);
   transition: box-shadow 160ms ease, border-color 160ms ease;
 }
 .card:focus-within {
-  border-color: var(--color-main, #e60583);
-  box-shadow: 0 0 0 2px rgba(230,5,131,0.15), 0 4px 14px rgba(0,0,0,0.06);
+  border-color: var(--color-main);
+  box-shadow: 0 0 0 2px rgba(171, 0, 96, 0.15), 0 4px 14px rgba(0,0,0,0.06);
 }
 
 /* Clickable header (styled button) */
@@ -43,16 +43,17 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  background: #fff;
+  background: var(--color-white);
   border: 0;
   cursor: pointer;
   text-align: left;
+  transition: background-color 160ms ease;
 }
 .headerBtnOpen {
-  background: #f9f9f9;
+  background: var(--color-gray-bg);
 }
 .headerBtn:focus-visible {
-  outline: 2px solid var(--color-main, #e60583);
+  outline: 2px solid var(--color-main);
   outline-offset: 2px;
 }
 
@@ -65,7 +66,7 @@
 }
 
 .pkgIcon {
-  color: var(--color-main, #e60583);
+  color: var(--color-main);
   flex: 0 0 auto;
 }
 
@@ -79,7 +80,7 @@
   margin: 0;
   font-weight: 600;
   font-size: 1rem;
-  color: var(--text-color, #111);
+  color: var(--color-text-dark);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -88,7 +89,7 @@
 .meta {
   margin: 0;
   font-size: clamp(0.88rem, 0.84rem + 0.2vw, 0.95rem);
-  color: #555;
+  color: var(--color-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -101,25 +102,25 @@
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #333;
-  background: #eee;
+  color: var(--color-text-dark);
+  background: var(--color-gray-bg);
 }
 
 /* Right side chevron */
 .chev {
   flex: 0 0 auto;
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 /* Details panel */
 .details {
   padding: 16px;
-  background: #fafafa;
-  border-top: 1px solid #eee;
+  background: var(--color-gray-bg);
+  border-top: 1px solid var(--color-gray-border);
 }
 .details p {
   margin: 0 0 8px 0;
-  color: #333;
+  color: var(--color-text-dark);
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -147,15 +148,16 @@
 .error {
   padding: 16px;
   font-size: 0.95rem;
-  color: #333;
+  color: var(--color-text-dark);
 }
 
 .link {
   color: var(--color-main);
   text-decoration: underline;
+  transition: color 0.2s ease;
 }
 .link:hover {
-  opacity: 0.85;
+  color: var(--color-main-hover);
 }
 
 

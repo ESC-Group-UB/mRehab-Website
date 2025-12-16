@@ -3,7 +3,7 @@ import DetailsSection from "./DetailsSection";
 import styles from "./ProductInfo.module.css";
 // import { BuyNowButton } from "../BuyNow/BuyNowButton";
 import { Product } from "../Shopping/Prodcuts";
-
+import Modal from "../Modal";
 
 
 interface Props {
@@ -16,6 +16,7 @@ export interface CartItem {
   weight: string;
   quantity: number;
   device?: string;
+  caseLink?: string;
 }
 
 const CART_KEY = "mrehab_cart";
@@ -46,6 +47,9 @@ const ProductInfo: FC<Props> = ({ product }) => {
 
   const increaseQty = () => setQuantity((q) => q + 1);
   const decreaseQty = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<React.ReactNode>(null);
 
   const onAddToCart = () => {
     const newCartItem: CartItem = {
@@ -83,12 +87,15 @@ const ProductInfo: FC<Props> = ({ product }) => {
 
     // Optional: feedback
     // toast / snackbar / console.log
-    alert("Added to cart!");
+    setModalContent(<p>Added to cart!</p>);
+    setModalOpen(true);
     console.log("Added to cart:", newCartItem);
   };
 
   return (
     <aside className={styles.rightInfo} aria-label="Product information">
+
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Attention">{modalContent}</Modal>
       {/* Product Name */}
       <h1 className={styles.title}>{product.name}</h1>
 

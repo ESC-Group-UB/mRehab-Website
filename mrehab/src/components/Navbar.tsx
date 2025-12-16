@@ -29,7 +29,6 @@ export function Navbar() {
       // Optional avatar/initials if available; graceful fallbacks
       const picture = decoded?.picture || decoded?.avatar_url || null;
       const name: string =
-        decoded?.name ||
         [decoded?.given_name, decoded?.family_name].filter(Boolean).join(" ") ||
         decoded?.email ||
         "";
@@ -38,7 +37,7 @@ export function Navbar() {
       if (name) {
         const parts = name.trim().split(/\s+/);
         const first = parts[0]?.[0] || "";
-        const second = parts.length > 1 ? parts[1]?.[0] || "" : "";
+        const second = parts.length > 1 && parts[1] ? parts[1][0] || "" : "";
         setInitials((first + second).toUpperCase());
       }
     } catch {
@@ -102,12 +101,27 @@ export function Navbar() {
     <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <div className="navbar-left">
         <a href="/" className="logo" aria-label="Go to Home">
-          <img src="/mrehabIcon.png" alt="mRehab Logo" height="35" />
+          <img src="/mrehabIcon.png" alt="mRehab Logo" height="40" />
+          <span className="logo-text">mRehab</span>
         </a>
       </div>
 
-      {/* Unified actions (Menu + Avatar) for all breakpoints */}
+      {/* Desktop Navigation Links */}
+      <nav className="navbar-nav" aria-label="Main navigation">
+        <a href="/how-it-works" className="nav-link">
+          How It Works
+        </a>
+        <a href="/for-providers" className="nav-link">
+          For Providers
+        </a>
+        <a href="/shopping" className="nav-link">
+          Shop
+        </a>
+      </nav>
+
+      {/* Unified actions (Menu + Avatar) */}
       <div className="actions">
+        {/* Mobile Menu Button */}
         <button
           ref={menuBtnRef}
           type="button"
@@ -166,7 +180,7 @@ export function Navbar() {
         </a>
       </div>
 
-      {/* Dropdown panel */}
+      {/* Mobile Dropdown panel */}
       <div
         id="main-menu"
         ref={menuPanelRef}

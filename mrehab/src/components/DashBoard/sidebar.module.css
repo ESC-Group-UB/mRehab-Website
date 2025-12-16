@@ -11,8 +11,8 @@
 .sidebar {
   position: relative;
   height: 100vh;
-  background: #fff;
-  border-right: 1px solid #e0e0e0;
+  background: var(--color-white);
+  border-right: 1px solid var(--color-gray-border);
   display: flex;
   flex-direction: column;
   transition: width 0.3s ease;
@@ -38,7 +38,7 @@
   height: 1.5rem;
   border: none;
   background: var(--color-main);
-  color: #fff;
+  color: var(--color-white);
   border-radius: 50%;
   cursor: pointer;
   font-weight: bold;
@@ -60,9 +60,10 @@
   width: 100%;
   padding: 0.5rem 0.75rem;
   font-size: 0.95rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-gray-border);
   border-radius: 6px;
   transition: border 0.2s;
+  background: var(--color-gray-bg);
 }
 .searchInput:focus {
   border-color: var(--color-main);
@@ -126,7 +127,7 @@
 }
 .active {
   background: var(--color-main);
-  color: #fff;
+  color: var(--color-white);
 }
 
 /* =======================
@@ -134,7 +135,7 @@
    ======================= */
 .footer {
   padding: 1rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--color-gray-border);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

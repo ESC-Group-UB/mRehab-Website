@@ -153,6 +153,46 @@ export async function loginUser(email: string, password: string) {
   return CognitoISP.initiateAuth(params).promise();
 }
 
+// 🔑 Initiate forgot password flow
+export async function initiateForgotPassword(email: string) {
+  const secretHash = generateSecretHash(
+    email,
+    awsConfig.clientId,
+    process.env.COGNITO_CLIENT_SECRET!
+  );
+
+  const params = {
+    ClientId: awsConfig.clientId,
+    Username: email,
+    SecretHash: secretHash,
+  };
+
+  return CognitoISP.forgotPassword(params).promise();
+}
+
+// 🔑 Confirm forgot password with code and new password
+export async function confirmForgotPassword(
+  email: string,
+  confirmationCode: string,
+  newPassword: string
+) {
+  const secretHash = generateSecretHash(
+    email,
+    awsConfig.clientId,
+    process.env.COGNITO_CLIENT_SECRET!
+  );
+
+  const params = {
+    ClientId: awsConfig.clientId,
+    Username: email,
+    ConfirmationCode: confirmationCode,
+    Password: newPassword,
+    SecretHash: secretHash,
+  };
+
+  return CognitoISP.confirmForgotPassword(params).promise();
+}
+
 // check if vaild email
 export async function checkIfValidEmail(email: string): Promise<boolean> {
   const params = {

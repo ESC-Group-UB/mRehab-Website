@@ -31,23 +31,32 @@ const   CartItemCard: FC<CartItemCardProps> = ({ item, onUpdate, onRemove }) => 
 
   const handleDeviceConfirm = (result: DeviceSelectionResult) => {
     const deviceLabel = `${result.brand} ${result.deviceModel}`;
-    // still storing device in `weight` for now
-    onUpdate({ device: deviceLabel });
+    const caseLink = result.caseLink;
+    onUpdate({ device: deviceLabel, caseLink });
     setIsModalOpen(false);
   };
 
-  const imageSrc =
-    (item.product as any).imageUrl ||
-    (item.product as any).image ||
-    (item.product as any).thumbnail ||
-    "";
+  // Get thumbnail image from product's image_paths array
+  const imageSrc = item.product.image_paths && item.product.image_paths.length > 0
+    ? item.product.image_paths[0]
+    : "";
 
   return (
     <>
       <article className={styles.card}>
+        {/* Thumbnail Image */}
+        {imageSrc && (
+          <div className={styles.thumbnailWrapper}>
+            <img
+              src={imageSrc}
+              alt={item.product.name}
+              className={styles.thumbnail}
+            />
+          </div>
+        )}
+
         <div className={styles.left}>
           {/* Title */}
-          
           <h3 onClick={() => { window.location.href = `/shopping/info?id=${item.product.id}`; }} className={styles.title}>{item.product.name}</h3>
 
           {/* Meta info */}
@@ -114,21 +123,11 @@ const   CartItemCard: FC<CartItemCardProps> = ({ item, onUpdate, onRemove }) => 
           </button>
         </div>
 
-        {/* Right side: price + image */}
+        {/* Right side: price */}
         <div className={styles.right}>
           <div className={styles.price}>
             ${item.product.price.toFixed(2)}
           </div>
-
-          {imageSrc && (
-            <div className={styles.imageWrapper}>
-              <img
-                src={imageSrc}
-                alt={item.product.name}
-                className={styles.image}
-              />
-            </div>
-          )}
         </div>
       </article>
 

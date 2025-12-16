@@ -12,6 +12,7 @@ export default function ProductInfoPage() {
     const [product, setProduct] = useState<Product>();
     const [images, setImages] = useState<string[]>([]);
     const [selectedImage, setSelectedImage] = useState<string>("");
+   
 
     // Load product
     useEffect(() => {

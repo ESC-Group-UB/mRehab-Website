@@ -45,9 +45,11 @@
   margin-bottom: 1rem;
 }
 
+@import url('../colors.css');
+
 .description {
   font-size: clamp(0.95rem, 0.9rem + 0.3vw, 1rem);
-  color: #444;
+  color: var(--color-text-muted);
   margin-bottom: 1.5rem;
   line-height: 1.6;
 }
@@ -60,20 +62,31 @@
 
 .primary {
   padding: 0.75rem 1.5rem;
-  background-color: black;
-  color: white;
+  background-color: var(--color-main);
+  color: var(--color-white);
   border: none;
   cursor: pointer;
   border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.primary:hover {
+  background-color: var(--color-main-hover);
 }
 
 .secondary {
   padding: 0.75rem 1.5rem;
   background-color: transparent;
-  color: black;
-  border: 1px solid black;
+  color: var(--color-main);
+  border: 1px solid var(--color-main);
   cursor: pointer;
   border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.secondary:hover {
+  background-color: var(--color-main);
+  color: var(--color-white);
 }
 
 /* ===================== Responsive ===================== */

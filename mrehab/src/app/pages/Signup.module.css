@@ -66,16 +66,16 @@
 }
 
 .step.active {
-  background: #fde7f1;
-  color: #7a0042;
+  background: var(--color-pink-muted);
+  color: var(--color-main);
 }
 .step.active .stepDot {
   background: var(--color-main);
-  color: #fff;
+  color: var(--color-white);
 }
 .step.done {
-  background: #eef8f2;
-  color: #1a7f53;
+  background: var(--color-success-bg);
+  color: var(--color-success);
 }
 
 /* Titles */
@@ -136,7 +136,7 @@ label,
 .input:focus {
   border-color: var(--color-main);
   outline: none;
-  background: #fff;
+  background: var(--color-white);
 }
 
 .helpText {
@@ -159,15 +159,16 @@ label,
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  border: 1px solid #ddd;
-  background: #fff;
+  border: 1px solid var(--color-gray-border);
+  background: var(--color-white);
   padding: 6px 10px;
   border-radius: 8px;
   font-size: 0.9rem;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 .ghostBtn:hover {
-  background: #f3f3f3;
+  background: var(--color-gray-bg);
 }
 
 /* Fieldset for role */
@@ -188,9 +189,13 @@ label,
   padding: 10px 12px;
   border: 1px solid var(--color-input-border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--color-white);
   cursor: pointer;
   user-select: none;
+  transition: border-color 0.2s ease;
+}
+.radio:hover {
+  border-color: var(--color-main);
 }
 .radio input {
   accent-color: var(--color-main);
@@ -213,16 +218,16 @@ label,
   width: 100%;
   padding: 12px 16px;
   background-color: var(--color-main);
-  color: #fff;
+  color: var(--color-white);
   font-weight: 700;
   border: none;
   border-radius: 12px;
   font-size: 1.05rem;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.02s ease;
+  transition: background-color 0.2s ease, transform 0.02s ease;
 }
 .signupButton:hover {
-  background-color: #8e004f;
+  background-color: var(--color-main-hover);
 }
 .signupButton:active {
   transform: translateY(1px);
@@ -236,7 +241,7 @@ label,
   margin-top: 12px;
   font-size: 0.95rem;
   text-align: center;
-  color: #555;
+  color: var(--color-text-muted);
   font-family: 'Titillium Web', sans-serif;
 }
 

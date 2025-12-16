@@ -8,6 +8,8 @@
   margin-bottom: 12px;
 }
 
+@import url('../../../colors.css');
+
 /* BUY BUTTON */
 .buyBtn {
   width: 100%;
@@ -16,14 +18,15 @@
   border-radius: 999px;
   font-size: 1rem;
   font-weight: 700;
-  color: #fff;
-  background:#FF007A;
+  color: var(--color-white);
+  background: var(--color-main);
   border: none;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .buyBtn:hover:not([disabled]) {
-  opacity: 0.95;
+  background: var(--color-main-hover);
 }
 
 .errorMsg {
@@ -72,8 +75,13 @@
 
 .confirmBtn {
   padding: 8px 14px;
-  background:  #FF007A;
-  color: #fff;
+  background: var(--color-main);
+  color: var(--color-white);
+  transition: background-color 0.2s ease;
+}
+
+.confirmBtn:hover {
+  background: var(--color-main-hover);
 }
 
 .caseInputGroup {
