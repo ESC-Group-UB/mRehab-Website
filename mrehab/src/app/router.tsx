@@ -18,6 +18,7 @@ import ShoppingCartPage from './pages/Shopping/shopping-cart';
 import ProductInfoPage from './pages/Shopping/featured';
 import ShoppingPage from './pages/Shopping/shopping';
 import ProfilePage from './pages/Profile/ProfilePage';
+import ConfirmSignup from './pages/Confirm';
 
 import ThankYou from './pages/thankyou';
 
@@ -49,6 +50,7 @@ const AppRouter: React.FC = () => (
             <Route path="/shopping/info" element={<ProductInfoPage />} />
             <Route path="/shopping" element={<ShoppingPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/confirm" element={<ConfirmSignup />} /> {/* Adding the ConfirmSignup route */}
         </Routes>
     </Router>
 );

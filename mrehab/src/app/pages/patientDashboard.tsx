@@ -25,6 +25,7 @@ export default function PatientDashboard() {
   const [datakey, setDataKey] = useState("");
 
   const handleSignOut = () => {
+    console.log("Signing out");
     localStorage.removeItem("idToken");
     localStorage.removeItem("accessToken");
     window.location.href = "/login";
@@ -32,7 +33,10 @@ export default function PatientDashboard() {
 
   useEffect(() => {
     const idToken = localStorage.getItem("idToken");
-    if (!idToken) return handleSignOut();
+    if (!idToken) {
+      alert("No idToken found, redirecting to login");
+      return handleSignOut();
+    }
 
     try {
       const decoded: any = jwtDecode(idToken);

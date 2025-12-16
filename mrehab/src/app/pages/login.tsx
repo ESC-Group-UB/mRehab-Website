@@ -35,24 +35,27 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      
-      if (!res.ok) throw new Error(data.message || "Login failed");
-      // Store tokens in localStorage
-      localStorage.setItem("idToken", data.IdToken);
-      localStorage.setItem("accessToken", data.AccessToken);
 
-      //check to see if redirect path is set
-      const redirectPath = localStorage.getItem("redirectAfterLogin");
-      if (redirectPath) {
-        localStorage.removeItem("redirectAfterLogin");
-        window.location.href = redirectPath;
+      console.log("Login response:", data);
+      if (data.error) {
+        if (data.error === "User is not confirmed.") {
+          console.log("User is not confirmed, Redirecting to confirm page");
+          navigate("/confirm");
+        }
+        console.log("Login error:", data.error);
         return;
       }
 
       // Redirect to propper dashboard based on role
       const decoded: any = jwtDecode(data.IdToken);
+      console.log("Decoded token:", decoded);
       const groups = decoded["cognito:groups"] || [];
-      
+
+      // set the id token to the local storage
+      localStorage.setItem("idToken", data.IdToken);
+      localStorage.setItem("accessToken", data.AccessToken);
+      localStorage.setItem("tokenExpiry", data.ExpiresIn);
+
       if (groups.includes("Provider") || groups.includes("provider")) {
         navigate("/dashboard");
       } else if (groups.includes("Patient") || groups.includes("patient")) {
